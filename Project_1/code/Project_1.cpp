@@ -68,9 +68,9 @@ double * solutionVector(int n) {
 	// Fill the solution vector
 	double *f;
 	f = new double[n];
-	double h = 1.0/(n + 1);
-	for (int i = 1; i < n; i++) {
-		f[i] = 100*std::exp(-10.0*i*h)*h*h; 
+	double h = 1.0/(n + 1.0);
+	for (int i = 1; i < n+1; i++) {
+		f[i-1] = 100.0*std::exp(-10.0*i*h)*h*h; 
 	}
 	return f;
 }
@@ -108,13 +108,13 @@ void constTriDiaSolver(int a, int c, double *b, double *v, double *f, int n) {
 // Create vector with analytical solution
 double * exactSolution(int n) {
 	double x;
-	double h = 1.0/(n + 1);
+	double h = 1.0/(n + 1.0);
 	double *u;
 	u = new double[n];
 
-	for (int i = 1; i < n; i++) { 
+	for (int i = 1; i < n+1; i++) { 
 		x = i*h;
-		u[i] = 1 - (1 - std::exp(-10))*x - std::exp(-10 * x);
+		u[i-1] = 1 - (1 - std::exp(-10.0))*x - std::exp(-10.0*x);
 	}
 	return u;
 }
@@ -135,9 +135,9 @@ double maxErrorDiaSolver(double *u, double *v, int n) {
 }
 
 void testDiaSolver(int n) {
-	double a_value = -1;
-	double b_value = 2;
-	double c_value = -1;
+	double a_value = -1.0;
+	double b_value = 2.0;
+	double c_value = -1.0;
 	double maxError;
 
 	// Create vectors
@@ -146,7 +146,7 @@ void testDiaSolver(int n) {
 	a = createVector(a_value, n);
 	b = createVector(b_value, n);
 	c = createVector(c_value, n);
-	v = createVector(0.0, n+2);
+	v = createVector(0.0, n);
 
 	u = exactSolution(n);   // this is only an exact solution for ONE case
 	f = solutionVector(n);
