@@ -1,0 +1,27 @@
+Endringer:
+
+- Jeg synes pow(h, 2) er litt overkill, så endret til h*h
+
+
+- Dritt-definisjon som oppgaveteksten har av 'n' : Arrayene er ikke n lang, men n+2. Dette blir det en del rot av:
+	n er antall beregninger. Det gjør len(alle_array) = n + 2 hvis de har null på hver side. 
+	h = 1/(n + 1)
+	Dette er på formen:
+		h = 1/(len(array) - 1)
+	Derfor vet jeg at lengden på alle array er n+2.
+	+ 2 er padding: u[0] = 0, u[n-1] = 0
+	Untatt a, b, c, som skal være n lang
+
+	Jeg har løst det nå ved å ha alle arrayene n lang. Du kan se for deg at både v og u har "usynlig" 0-verdi som første og siste element.
+
+
+
+
+!!!!! MERK:
+
+
+Jeg skulle slette mappen FYS3150/code, men det er noen filer der. Jeg vet ikke helt hva de filene er. Er dette filer vi fikk utdelt? Trenger vi å bruke dem?
+
+
+I oppgaveteskten til testDiaSolver(int n), står det "as a function of log10(h)". Forstår ikke hva de mener med det...
+
