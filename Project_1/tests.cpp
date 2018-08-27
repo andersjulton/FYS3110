@@ -1,12 +1,9 @@
-#include "stdafx.h"
+#include "tests.h"
+#include <armadillo>
 #include "thomas.h"
-#include <cmath>
-#include <chrono>
-#include <algorithm>
 
+// Find the largest relative error in array v in respect to array u
 double maxError(double *u, double *v, int n) {
-	// Find the largest relative error in array v in respect to array u
-
 	double maxError = std::log10(std::fabs((v[0] - u[0])/u[0]));
 	double epsilon;
 	for (int i = 1; i < n; i++) {
@@ -18,9 +15,8 @@ double maxError(double *u, double *v, int n) {
 	return maxError;
 }
 
+//Testing the functions for Thomas algorithm
 double maxErrorDiaSolver(int n) {
-	//Testing the functions for Thomas algorithm
-
 	double a_value = -1.0;
 	double b_value = 2.0;
 	double c_value = -1.0;
@@ -31,7 +27,7 @@ double maxErrorDiaSolver(int n) {
 	b = createVector(b_value, n);
 	v = createVector(0.0, n);
 
-	u = exactSolution(n);
+	u = exactSolution(n); 
 	f = solutionVector(n);
 
 	constTriDiaSolver(a_value, c_value, b, v, f, n);
@@ -45,9 +41,8 @@ double maxErrorDiaSolver(int n) {
 	return error;
 }
 
+//Compare TriDiaSolver general and with constants
 void compareTime(int a_value, int b_value, int c_value, int n) {
-	//Compare TriDiaSolver general and with constants
-
 	std::chrono::duration<double> elapsed;
 	double *timeGeneralTriDiaSlover, *timeConstTriDiaSlover;
 
@@ -68,13 +63,13 @@ void compareTime(int a_value, int b_value, int c_value, int n) {
 		generalTriDiaSolver(a, b, c, v, f, n);
 		auto end = std::chrono::high_resolution_clock::now();
 		elapsed = (end - begin);
-		timeGeneralTriDiaSlover[i] = (double)elapsed.count();
-
+		timeGeneralTriDiaSlover[i] = (double) elapsed.count();
+		
 		begin = std::chrono::high_resolution_clock::now();
 		constTriDiaSolver(a_value, c_value, b, v, f, n);
 		end = std::chrono::high_resolution_clock::now();
 		elapsed = (end - begin);
-		timeConstTriDiaSlover[i] = (double)elapsed.count();
+		timeConstTriDiaSlover[i] = (double) elapsed.count();
 	}
 
 	std::sort(timeGeneralTriDiaSlover, timeGeneralTriDiaSlover + 5);
@@ -92,9 +87,8 @@ void compareTime(int a_value, int b_value, int c_value, int n) {
 	delete[] timeConstTriDiaSlover;
 }
 
+//Compare TriDiaSolver with Armadillo
 void compareTimeArmadillo(int n) {
-	//Compare TriDiaSolver with Armadillo
-
 	std::chrono::duration<double> elapsed;
 	double *timeTriDiaSlover, *timeArmadillo;
 
@@ -108,7 +102,7 @@ void compareTimeArmadillo(int n) {
 	// Create vectors
 	double *b, *f, *v;
 	b = createVector(b_value, n);
-	v = createVector(0.0, n);
+	v = createVector(0.0, n); 
 	f = solutionVector(n);
 
 	printf("\nFor n = %d\n", n);
@@ -119,14 +113,14 @@ void compareTimeArmadillo(int n) {
 		auto end = std::chrono::high_resolution_clock::now();
 		elapsed = (end - begin);
 		//std::cout << "Time elapsed: " << elapsed.count() << " seconds" << std::endl;
-		timeTriDiaSlover[i] = (double)elapsed.count();
-
+		timeTriDiaSlover[i] = (double) elapsed.count();
+		
 		begin = std::chrono::high_resolution_clock::now();
 		// !!! What?
 		end = std::chrono::high_resolution_clock::now();
 		elapsed = (end - begin);
 		//std::cout << "Time elapsed: " << elapsed.count() << " seconds" << std::endl;
-		timeArmadillo[i] = (double)elapsed.count();
+		timeArmadillo[i] = (double) elapsed.count();
 	}
 
 	std::sort(timeTriDiaSlover, timeTriDiaSlover + 5);

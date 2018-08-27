@@ -1,4 +1,0 @@
-Project_1_final.vcxproj
-Project_1_final.vcxproj.filters
-Project_1_final.vcxproj.user
-n_*.txt

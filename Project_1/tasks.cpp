@@ -1,9 +1,9 @@
-#include "stdafx.h"
+#include "tasks.h"
 #include <stdio.h>
 #include "utils.h"
 #include "tests.h"
 #include "thomas.h"
-#include <cmath>
+#include <math.h>
 
 void partB(int a_value, int b_value, int c_value) {
 	printf("Project 1, part B\n\n");
@@ -33,7 +33,7 @@ void partB(int a_value, int b_value, int c_value) {
 void partC(int a_value, int b_value, int c_value) {
 	printf("Project 1, part C\n");
 	int n = 10;
-	for (int i = 0; i < 6; i++) {
+	for(int i = 0; i < 6; i++) {
 		compareTime(a_value, b_value, c_value, n);
 		n = n*10;
 	}
@@ -41,16 +41,15 @@ void partC(int a_value, int b_value, int c_value) {
 }
 
 void partD() {
-	printf("Project 1, part D\n\n");
+	printf("Project 1, part C\n");
 	double error;
 	double h;
 	int n = 10;
-	printf("         n |       log10(h)       |       max error\n");
-	printf("   ---------------------------------------------------\n");
+	printf("     log10(h)                     max error\n");
 	for (int i = 0; i < 7; i++) {
 		h = 1.0/(n + 1.0);
 		error = maxErrorDiaSolver(n);
-		printf("%10d | %20.15f | %18.15f\n", n, log10(h), error);
+		printf("%20.15f %25.15f\n", log10(h), error);
 		n = n*10;
 	}
 	printf("\n");
@@ -59,7 +58,7 @@ void partD() {
 void partE() {
 	printf("Project 1, part E\n");
 	int n = 10;
-	for (int i = 0; i < 6; i++) {
+	for(int i = 0; i < 6; i++) {
 		compareTimeArmadillo(n);
 		n = n*10;
 	}
