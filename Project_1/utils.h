@@ -1,3 +1,4 @@
+#pragma once
 
 void	printError(double *u, double *v, int n);
 

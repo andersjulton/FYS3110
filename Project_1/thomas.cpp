@@ -1,8 +1,9 @@
-#include "thomas.h"
+#include "stdafx.h"
 #include <cmath>
 
-//  Allocating space for a vector and fill elements with a constant value
 double *createVector(double value, int n) {
+	//  Allocating space for a vector and fill elements with a constant value
+
 	double *vector;
 	vector = new double[n];
 	for (int i = 0; i < n; i++) {
@@ -11,8 +12,9 @@ double *createVector(double value, int n) {
 	return vector;
 }
 
-// Function for creating the right hand side vector of the linear equation 
 double *solutionVector(int n) {
+	// Function for creating the right hand side vector of the linear equation 
+
 	double *f;
 	f = new double[n];
 
@@ -26,8 +28,9 @@ double *solutionVector(int n) {
 	return f;
 }
 
-// General algorithm for performing TDMA 
 void generalTriDiaSolver(double *a, double *b, double *c, double *v, double *f, int n) {
+	// General algorithm for performing TDMA 
+
 	double *d, *g;
 	double temp;
 	d = createVector(b[0], n);
@@ -47,14 +50,15 @@ void generalTriDiaSolver(double *a, double *b, double *c, double *v, double *f, 
 	delete[] g;
 }
 
-//Special algorithm with constant values
 void constTriDiaSolver(double a, double c, double *b, double *v, double *f, int n) {
+	//Special algorithm with constant values
+
 	double *d, *g;
 	d = createVector(b[0], n);
 	g = createVector(f[0], n);
 	double ac = a*c;
 	// Forward substitution
-	for (int i = 1; i < n; i++) {	
+	for (int i = 1; i < n; i++) {
 		d[i] = b[i] - ac/d[i-1];
 		g[i] = f[i] - a*g[i-1]/d[i-1];
 	}
@@ -67,8 +71,9 @@ void constTriDiaSolver(double a, double c, double *b, double *v, double *f, int 
 	delete[] g;
 }
 
-// Create vector with analytical solution
 double *exactSolution(int n) {
+	// Create vector with analytical solution
+
 	double *u;
 	u = new double[n];
 
