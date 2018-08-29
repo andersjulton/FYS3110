@@ -1,9 +1,8 @@
-/Debug/*
+\Debug\*
 n_*.txt
 Project_1_final.sln
 Project_1_final.vcxproj
 Project_1_final.vcxproj.filters
 Project_1_final.vcxproj.user
-stdafx.cpp
-stdafx.h
-targetver.h
+\proj\*
+\.vs\*
