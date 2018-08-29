@@ -1,3 +1,4 @@
+#pragma once
 
 double *createVector(double value, int n);
 

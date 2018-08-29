@@ -1,3 +1,4 @@
+#pragma once
 
 double maxError(double *u, double *v, int n);
 

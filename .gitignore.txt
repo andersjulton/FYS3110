@@ -1,7 +1,10 @@
-n_*.txt
-Project_1_final.sln
 Project_1_final.vcxproj
 Project_1_final.vcxproj.filters
 Project_1_final.vcxproj.user
-proj/
-.vs/
+n_*.txt
+Project_1_final.sln
+stdafx.cpp
+stdafx.h
+targetver.h
+/.vs/*
+/Debug/*
