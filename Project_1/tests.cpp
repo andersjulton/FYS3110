@@ -2,6 +2,10 @@
 #include <cmath>
 #include <chrono>
 #include <algorithm>
+#include "armadillo"
+
+using namespace arma;
+using namespace std;
 
 double maxError(double *u, double *v, int n) {
 	// Find the largest relative error in array v in respect to array u
@@ -104,28 +108,55 @@ void compareTimeArmadillo(int n) {
 	double b_value = 2.0;
 	double c_value = -1.0;
 
-	// Create vectors
+	//Create vectors
 	double *b, *f, *v;
 	b = createVector(b_value, n);
 	v = createVector(0.0, n);
 	f = solutionVector(n);
 
+	mat A(n, n, fill::zeros);
+	A(0, 0) = b_value;
+	A(0, 1) = c_value;
+	for (int i = 1; i < (n - 1); i++) {
+		A(i, i-1) = a_value;
+		A(i, i) = b_value;
+		A(i, i+1) = c_value;
+	}
+	A(n-1, n-2) = a_value;
+	A(n-1, n-1) = b_value;
+
+	vec x;
+
+	std::vector<double> f_vector;
+	f_vector.assign(f, f + n);
+	vec y(f_vector);
+
 	printf("\nFor n = %d\n", n);
 	for (int i = 0; i < 5; i++) {
-
+		// own code
 		auto begin = std::chrono::high_resolution_clock::now();
 		constTriDiaSolver(a_value, c_value, b, v, f, n);
 		auto end = std::chrono::high_resolution_clock::now();
 		elapsed = (end - begin);
-		//std::cout << "Time elapsed: " << elapsed.count() << " seconds" << std::endl;
 		timeTriDiaSlover[i] = (double)elapsed.count();
-
+		printf("Time elapsed: %.7f seconds\n", timeTriDiaSlover[i]);
+		// armadillo
 		begin = std::chrono::high_resolution_clock::now();
-		// !!! What?
+		x = armadillo_LU_solve(A, y);
 		end = std::chrono::high_resolution_clock::now();
 		elapsed = (end - begin);
-		//std::cout << "Time elapsed: " << elapsed.count() << " seconds" << std::endl;
 		timeArmadillo[i] = (double)elapsed.count();
+		printf("Time elapsed: %.7f seconds\n", timeArmadillo[i]);
+
+		double maxError = fabs(v[0] - x(0))/x(0);
+		double error;
+		for (int i = 1; i < n; i++) {
+			error = fabs(v[i] - x(i))/x(i);
+			if (error > maxError) {
+				maxError = error;
+			}
+		}
+		printf("Largest relative error was %.20f\n", (maxError*100));
 	}
 
 	std::sort(timeTriDiaSlover, timeTriDiaSlover + 5);
@@ -138,5 +169,5 @@ void compareTimeArmadillo(int n) {
 	delete[] f;
 	delete[] v;
 	delete[] timeTriDiaSlover;
-	delete[] timeArmadillo;
+	delete[] timeArmadillo; 
 }

@@ -58,9 +58,10 @@ void partD() {
 void partE() {
 	printf("Project 1, part E\n");
 	int n = 10;
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 4; i++) {
 		compareTimeArmadillo(n);
 		n = n*10;
 	}
+	//compareTimeArmadillo(n);
 	printf("\n");
 }

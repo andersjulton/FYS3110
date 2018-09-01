@@ -1,4 +1,10 @@
 #include <cmath>
+#include "armadillo"
+#include <stdlib.h>
+#include <string>
+
+using namespace std;
+using namespace arma;
 
 double *createVector(double value, int n) {
 	//  Allocating space for a vector and fill elements with a constant value
@@ -22,7 +28,7 @@ double *solutionVector(int n) {
 	double x = h;
 	for (int i = 0; i < n; i++) {
 		x += h;
-		f[i] = 100.0*std::exp(-10.0*x)*hh;
+		f[i] = 100.0*exp(-10.0*x)*hh;
 	}
 	return f;
 }
@@ -80,7 +86,25 @@ double *exactSolution(int n) {
 	double x = h;
 	for (int i = 0; i < n; i++) {
 		x += h;
-		u[i] = 1 - (1 - std::exp(-10.0))*x - std::exp(-10.0*x);
+		u[i] = 1 - (1 - exp(-10.0))*x - exp(-10.0*x);
 	}
 	return u;
 }
+
+vec armadillo_LU_solve(mat A, vec b) {
+	mat L, U;
+	lu(L, U, A);
+
+	// only for optimization 
+	mat L_prime = trimatl(L);
+	mat U_prime = trimatu(U);
+
+	//To solve LUx = b, you first solve Ly = b and then Ux = y.
+	vec y, x;
+	y = solve(L, b);
+	x = solve(U, y);
+
+	return x;
+}	
+
+
