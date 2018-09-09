@@ -101,8 +101,8 @@ vec armadillo_LU_solve(mat A, vec b) {
 
 	//To solve LUx = b, you first solve Ly = b and then Ux = y.
 	vec y, x;
-	y = solve(L, b);
-	x = solve(U, y);
+	y = solve(L_prime, b);
+	x = solve(U_prime, y);
 
 	return x;
 }	

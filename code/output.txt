@@ -1,0 +1,80 @@
+make program && ./main.exe -1 2 -1
+c++ -std=c++11 -Wall main.cpp func.cpp -L/usr/local/lib -I/usr/local/include -larmadillo -llapack -lblas -o main.exe
+
+Write any of the following commands:
+ 	B    : run only part B of the assignment
+ 	C    : run only part C of the assignment
+ 	D    : run only part D of the assignment
+ 	E    : run only part E of the assignment
+ 	all  : run all parts of the assignment
+ 	a    : change the value of variable a 
+ 	b    : change the value of variable b 
+ 	c    : change the value of variable c 
+ 	info : write out this message
+ 	q    : quit program
+
+>> all
+Project 1, part B
+File n_10.txt has been written.
+File n_100.txt has been written.
+File n_1000.txt has been written.
+
+
+Project 1, part C
+For n = 10
+Time it took for generalTriDiaSolver: 9.95e-07 s
+Time it took for constTriDiaSolver: 9.51e-07 s
+For n = 100
+Time it took for generalTriDiaSolver: 4.764e-06 s
+Time it took for constTriDiaSolver: 4.455e-06 s
+For n = 1000
+Time it took for generalTriDiaSolver: 4.5722e-05 s
+Time it took for constTriDiaSolver: 4.0464e-05 s
+For n = 10000
+Time it took for generalTriDiaSolver: 0.000308534 s
+Time it took for constTriDiaSolver: 0.000286123 s
+For n = 100000
+Time it took for generalTriDiaSolver: 0.00263163 s
+Time it took for constTriDiaSolver: 0.00235455 s
+For n = 1000000
+Time it took for generalTriDiaSolver: 0.0257909 s
+Time it took for constTriDiaSolver: 0.0237718 s
+For n = 10000000
+Time it took for generalTriDiaSolver: 0.273077 s
+Time it took for constTriDiaSolver: 0.25086 s
+For n = 100000000
+Time it took for generalTriDiaSolver: 3.80013 s
+Time it took for constTriDiaSolver: 3.2667 s
+
+Project 1, part D
+
+         n |       log10(h)       |       max error
+   ---------------------------------------------------
+        10 |   -1.041392685158225 | 14.199142149525697
+       100 |   -2.004321373782643 | 13.132606105631879
+      1000 |   -3.000434077479319 | 10.896511472153646
+     10000 |   -4.000043427276863 |  8.946367033840909
+    100000 |   -5.000004342923105 |  6.571190650911607
+   1000000 |   -6.000000434294265 |  4.647244262632861
+  10000000 |   -7.000000043429446 |  2.731561001558240
+
+Project 1, part E
+
+For n = 10
+Time it took for TriDiaSolver: 8.98e-07 s
+Time it took for armadillo: 2.3654e-05 s
+
+For n = 100
+Time it took for TriDiaSolver: 4.245e-06 s
+Time it took for armadillo: 0.000628747 s
+
+For n = 1000
+Time it took for TriDiaSolver: 2.2763e-05 s
+Time it took for armadillo: 0.039772 s
+
+For n = 10000
+Time it took for TriDiaSolver: 0.000214626 s
+Time it took for armadillo: 17.2934 s
+
+>> q
+Bye!

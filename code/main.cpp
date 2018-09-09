@@ -1,11 +1,15 @@
 #include <fstream>
-#include "tasks.h"
+#include "func.h"
 #include <iostream>
 #include <string>
 
+void partB(int a_value, int b_value, int c_value);
+void partC(int a_value, int b_value, int c_value);
+void partD();
+void partE();
+
 int main(int argc, char* argv[]) {
-	// Reading in dimensions and values for vectors
-	//int n = atoi(argv[1]);
+	// Reading in dimensions and values for vectors;
 	double a_value = atoi(argv[1]);
 	double b_value = atoi(argv[2]);
 	double c_value = atoi(argv[3]);
@@ -62,7 +66,7 @@ int main(int argc, char* argv[]) {
 			b_value = std::stod(number);
 			printf("%.5f\n", b_value);
 			printf("\n");
-		}else if (choice.compare("c") == 0) {
+		} else if (choice.compare("c") == 0) {
 			std::cout << "c = ";
 			getline(std::cin, number);
 			c_value = std::stod(number);
@@ -73,4 +77,68 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	return 0;
+}
+
+void partB(int a_value, int b_value, int c_value) {
+	printf("Project 1, part B\n");
+	double *a, *b, *c, *f, *v;
+	int n = 10;
+
+	for (int i = 0; i < 3; i++) {
+		a = createVector(a_value, n);
+		b = createVector(b_value, n);
+		c = createVector(c_value, n);
+		v = createVector(0.0, n);
+		f = solutionVector(n);
+
+		generalTriDiaSolver(a, b, c, v, f, n);
+		writeToFile(v, n);
+		printf("File n_%d.txt has been written.\n", n);
+
+		delete[] a;
+		delete[] b;
+		delete[] c;
+		delete[] f;
+		delete[] v;
+
+		n = n*10;
+	}
+	printf("\n\n");
+}
+
+void partC(int a_value, int b_value, int c_value) {
+	printf("Project 1, part C\n");
+	int n = 10;
+	for (int i = 0; i < 8; i++) {
+		compareTime(a_value, b_value, c_value, n);
+		n = n*10;
+	}
+	printf("\n");
+}
+
+void partD() {
+	printf("Project 1, part D\n\n");
+	double error;
+	double h;
+	int n = 10;
+	printf("         n |       log10(h)       |       max error\n");
+	printf("   ---------------------------------------------------\n");
+	for (int i = 0; i < 7; i++) {
+		h = 1.0/(n + 1.0);
+		error = maxErrorDiaSolver(n);
+		printf("%10d | %20.15f | %18.15f\n", n, log10(h), error);
+		n = n*10;
+	}
+	printf("\n");
+}
+
+void partE() {
+	printf("Project 1, part E\n");
+	int n = 10;
+	for (int i = 0; i < 4; i++) {
+		compareTimeArmadillo(n);
+		n = n*10;
+	}
+	//compareTimeArmadillo(n);
+	printf("\n");
 }
