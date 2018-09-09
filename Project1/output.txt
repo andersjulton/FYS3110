@@ -1,4 +1,4 @@
-make program && ./main.exe -1 2 -1
+Project1 eirillsh$ make program && ./main.exe -1 2 -1
 c++ -std=c++11 -Wall main.cpp func.cpp -L/usr/local/lib -I/usr/local/include -larmadillo -llapack -lblas -o main.exe
 
 Write any of the following commands:
@@ -22,59 +22,71 @@ File n_1000.txt has been written.
 
 Project 1, part C
 For n = 10
-Time it took for generalTriDiaSolver: 9.95e-07 s
-Time it took for constTriDiaSolver: 9.51e-07 s
+Time it took for generalTriDiaSolver: 7.99e-07 s
+Time it took for constTriDiaSolver: 7.93e-07 s
+Ratio: 1.00757 s
 For n = 100
-Time it took for generalTriDiaSolver: 4.764e-06 s
-Time it took for constTriDiaSolver: 4.455e-06 s
+Time it took for generalTriDiaSolver: 3.672e-06 s
+Time it took for constTriDiaSolver: 3.434e-06 s
+Ratio: 1.06931 s
 For n = 1000
-Time it took for generalTriDiaSolver: 4.5722e-05 s
-Time it took for constTriDiaSolver: 4.0464e-05 s
+Time it took for generalTriDiaSolver: 2.8325e-05 s
+Time it took for constTriDiaSolver: 2.634e-05 s
+Ratio: 1.07536 s
 For n = 10000
-Time it took for generalTriDiaSolver: 0.000308534 s
-Time it took for constTriDiaSolver: 0.000286123 s
+Time it took for generalTriDiaSolver: 0.000279247 s
+Time it took for constTriDiaSolver: 0.00024905 s
+Ratio: 1.12125 s
 For n = 100000
-Time it took for generalTriDiaSolver: 0.00263163 s
-Time it took for constTriDiaSolver: 0.00235455 s
+Time it took for generalTriDiaSolver: 0.00296932 s
+Time it took for constTriDiaSolver: 0.00310751 s
+Ratio: 0.955531 s
 For n = 1000000
-Time it took for generalTriDiaSolver: 0.0257909 s
-Time it took for constTriDiaSolver: 0.0237718 s
+Time it took for generalTriDiaSolver: 0.0269674 s
+Time it took for constTriDiaSolver: 0.0245777 s
+Ratio: 1.09723 s
 For n = 10000000
-Time it took for generalTriDiaSolver: 0.273077 s
-Time it took for constTriDiaSolver: 0.25086 s
+Time it took for generalTriDiaSolver: 0.278583 s
+Time it took for constTriDiaSolver: 0.25269 s
+Ratio: 1.10247 s
 For n = 100000000
-Time it took for generalTriDiaSolver: 3.80013 s
-Time it took for constTriDiaSolver: 3.2667 s
+Time it took for generalTriDiaSolver: 9.45188 s
+Time it took for constTriDiaSolver: 4.1306 s
+Ratio: 2.28826 s
 
 Project 1, part D
 
          n |       log10(h)       |       max error
    ---------------------------------------------------
-        10 |   -1.041392685158225 | 14.199142149525697
-       100 |   -2.004321373782643 | 13.132606105631879
-      1000 |   -3.000434077479319 | 10.896511472153646
-     10000 |   -4.000043427276863 |  8.946367033840909
-    100000 |   -5.000004342923105 |  6.571190650911607
-   1000000 |   -6.000000434294265 |  4.647244262632861
-  10000000 |   -7.000000043429446 |  2.731561001558240
+        10 |   -1.041392685158225 | -1.179697782181125
+       100 |   -2.004321373782643 | -3.088036831555088
+      1000 |   -3.000434077479319 | -5.080050905778671
+     10000 |   -4.000043427276863 | -7.079285115156588
+    100000 |   -5.000004342923105 | -6.569146936063876
+   1000000 |   -6.000000434294265 | -4.631322082759128
+  10000000 |   -7.000000043429446 | -2.732513804313045
 
 Project 1, part E
 
 For n = 10
-Time it took for TriDiaSolver: 8.98e-07 s
-Time it took for armadillo: 2.3654e-05 s
+Time it took for TriDiaSolver: 6.98e-07 s
+Time it took for armadillo: 1.6836e-05 s
+Ratio: 24.1203 s
 
 For n = 100
-Time it took for TriDiaSolver: 4.245e-06 s
-Time it took for armadillo: 0.000628747 s
+Time it took for TriDiaSolver: 3.008e-06 s
+Time it took for armadillo: 0.000584782 s
+Ratio: 194.409 s
 
 For n = 1000
-Time it took for TriDiaSolver: 2.2763e-05 s
-Time it took for armadillo: 0.039772 s
+Time it took for TriDiaSolver: 2.7121e-05 s
+Time it took for armadillo: 0.0456238 s
+Ratio: 1682.23 s
 
 For n = 10000
-Time it took for TriDiaSolver: 0.000214626 s
-Time it took for armadillo: 17.2934 s
+Time it took for TriDiaSolver: 0.000227696 s
+Time it took for armadillo: 16.6341 s
+Ratio: 73053.8 s
 
 >> q
 Bye!

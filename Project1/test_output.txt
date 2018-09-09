@@ -1,0 +1,22 @@
+Project1 eirillsh$ make test && ./test.exe
+c++ -std=c++11 -Wall test.cpp func.cpp -L/usr/local/lib -I/usr/local/include -larmadillo -llapack -lblas -o test.exe
+
+TESTING
+
+*double createVector(double value, int n)
+	- PASSED : elements in array matched expected value
+
+
+double maxError(double *u, double *v, int n)
+	- PASSED : max value matched expected max value
+
+
+void generalTriDiaSolver(double *a, double *b, double *c, double *v, double *f, int n)
+	-max error = 2.7e-14
+	-max relative error = 1.8e-14
+
+
+void constTriDiaSolver(double a, double b, double c, double *v, double *f, int n)
+	-max error = 5.3e-15
+	-max relative error = 1.3e-14
+
