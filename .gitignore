@@ -5,4 +5,5 @@ Project_1_final.vcxproj.user
 proj/
 .vs/
 .DS_Store
+*.exe
 n_*.txt
