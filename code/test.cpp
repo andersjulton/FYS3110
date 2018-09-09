@@ -65,7 +65,7 @@ int main() {
 
 	printf("\nvoid generalTriDiaSolver(double *a, double *b, double *c, double *v, double *f, int n)\n");
 
-	n = 100;
+	n = 1000;
 	double *a, *b, *c, *x, *v, *f; 
 	srand(time(NULL));
 	v = createVector(0, n);
@@ -74,14 +74,13 @@ int main() {
 	a = createVector(0, n-1);
 	b = createVector(0, n);
 	c = createVector(0, n-1);
-	double multiplier = 100;
+	double multiplier = 10;
 
 	for (int i = 0; i < (n - 1); i++) {
 		x[i] = rand()/double(RAND_MAX)*multiplier;
 		a[i] = rand()/double(RAND_MAX)*multiplier;
-		b[i] = rand()/double(RAND_MAX)*multiplier;
 		c[i] = rand()/double(RAND_MAX)*multiplier;
-
+		b[i] = a[i] + c[i] + rand()/double(RAND_MAX)*multiplier;
 	}
 	x[n-1] = rand()/double(RAND_MAX)*multiplier;
 	b[n-1] = rand()/double(RAND_MAX)*multiplier;
@@ -118,10 +117,9 @@ int main() {
 
 
 	printf("\nvoid constTriDiaSolver(double a, double b, double c, double *v, double *f, int n)\n");
-	double a_value = rand()/double(RAND_MAX)*multiplier;
-	double b_value = rand()/double(RAND_MAX)*multiplier;
-	double c_value = rand()/double(RAND_MAX)*multiplier;
-	printf("%.15f\t%.15f\t%.15f\n", a_value, b_value, c_value);
+	double a_value = 4;
+	double b_value = 10;
+	double c_value = 3;
 	double *u, *g;
 	u = createVector(0, n);
 	g = createVector(0, n);
@@ -148,7 +146,6 @@ int main() {
 		}
 	}
 	printf("\t-max error = %.2g\n\t-max relative error = %.2g\n\n", max_error, max_relError);
-	for (int i = 0; i < n; i++) {printf("%.15f\t%.15f\t%.15f\n", u[i], x[i], g[i]);}
 	delete[] u;
 	delete[] g;
 
