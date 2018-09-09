@@ -24,12 +24,14 @@ void printError(double *u, double *v, int n) {
 void writeToFile(double *v, int n) {
 	// write v-array to a txt-file
 
-	ofstream myfile("n_"+std::to_string(n)+".txt");
+	ofstream myfile("n_"+to_string(n)+".txt");
 	if (myfile.is_open()) {
-		myfile << n << "\n";
+		myfile << (n + 2) << "\n";
+		myfile << 0 << "\n";
 		for (int i = 0; i < n; i++) {
 			myfile << v[i] << "\n";
 		}
+		myfile << 0 << "\n";
 	}
 }
 
@@ -54,8 +56,8 @@ double *solutionVector(int n) {
 	double hh = h*h;
 	double x = h;
 	for (int i = 0; i < n; i++) {
-		x += h;
 		f[i] = 100.0*exp(-10.0*x)*hh;
+		x += h;
 	}
 	return f;
 }
@@ -77,8 +79,6 @@ void generalTriDiaSolver(double *a, double *b, double *c, double *v, double *f, 
 	v[n-1] = g[n-1]/d[n-1];
 	for (int j = n-2; j > -1; j--) {
 		v[j] = (g[j] - c[j]*v[j+1])/d[j];
-		//g[j] = g[j] - c[j]*g[j+1]/d[j+1];
-		//v[j] = g[j]/d[j];
 	}
 	delete[] d;
 	delete[] g;
@@ -86,7 +86,6 @@ void generalTriDiaSolver(double *a, double *b, double *c, double *v, double *f, 
 
 void constTriDiaSolver(double a, double b, double c, double *v, double *f, int n) {
 	//Special algorithm with constant values
-
 	double *d, *g;
 	d = createVector(b, n);
 	g = createVector(f[0], n);
@@ -114,8 +113,8 @@ double *exactSolution(int n) {
 	double h = 1.0/(n + 1.0);
 	double x = h;
 	for (int i = 0; i < n; i++) {
-		x += h;
 		u[i] = 1.0 - (1.0 - exp(-10.0))*x - exp(-10.0*x);
+		x += h;
 	}
 	return u;
 }
@@ -192,6 +191,7 @@ void compareTime(int a_value, int b_value, int c_value, int n) {
 	f = solutionVector(n);
 
 	printf("For n = %d\n", n);
+	// timing 5 times
 	for (int i = 0; i < 5; i++) {
 
 		auto begin = chrono::high_resolution_clock::now();
@@ -206,7 +206,7 @@ void compareTime(int a_value, int b_value, int c_value, int n) {
 		elapsed = (end - begin);
 		timeConstTriDiaSlover[i] = (double)elapsed.count();
 	}
-
+	// Finding the median
 	sort(timeGeneralTriDiaSlover, timeGeneralTriDiaSlover + 5);
 	printf("Time it took for generalTriDiaSolver: %g s\n", timeGeneralTriDiaSlover[2]);
 
@@ -260,6 +260,7 @@ void compareTimeArmadillo(int n) {
 	vec y(f_vector);
 
 	printf("\nFor n = %d\n", n);
+	// timing 5 times
 	for (int i = 0; i < 5; i++) {
 		// time own code
 		auto begin = chrono::high_resolution_clock::now();
@@ -274,7 +275,7 @@ void compareTimeArmadillo(int n) {
 		elapsed = (end - begin);
 		timeArmadillo[i] = (double)elapsed.count();
 	}
-
+	// Finding the median
 	sort(timeTriDiaSlover, timeTriDiaSlover + 5);
 	printf("Time it took for TriDiaSolver: %g s\n", timeTriDiaSlover[2]);
 

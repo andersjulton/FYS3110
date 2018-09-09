@@ -71,7 +71,7 @@ int main() {
 	a = createVector(0, n-1);
 	b = createVector(0, n);
 	c = createVector(0, n-1);
-	float multiplier = 1;
+	float multiplier = 1000;
 
 	for (int i = 0; i < (n - 1); i++) {
 		x[i] = rand()/double(RAND_MAX)*multiplier;
@@ -94,8 +94,13 @@ int main() {
 	success = true;
 	eps = 1e-12;
 
-	for (int i = 0; i < n; i++) {
-		if (fabs(v[i] - x[i]) > eps) {
+	double max_error = fabs(v[0] - x[0]);
+	double max_relError = fabs(v[0] - x[0])/x[0];
+	double i_error, i_relError;
+	for (int i = 1; i < n; i++) {
+		i_error = fabs(v[i] - x[i]);
+		i_relError = fabs(v[i] - x[i])/x[i];
+		if (fabs(v[i] - x[i]) > ma) {
 			success = false;
 			break;
 		}

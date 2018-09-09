@@ -85,9 +85,9 @@ void partB(int a_value, int b_value, int c_value) {
 	int n = 10;
 
 	for (int i = 0; i < 3; i++) {
-		a = createVector(a_value, n);
+		a = createVector(a_value, n-1);
 		b = createVector(b_value, n);
-		c = createVector(c_value, n);
+		c = createVector(c_value, n-1);
 		v = createVector(0.0, n);
 		f = solutionVector(n);
 
