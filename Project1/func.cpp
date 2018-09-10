@@ -213,7 +213,7 @@ void compareTime(int a_value, int b_value, int c_value, int n) {
 	sort(timeConstTriDiaSlover, timeConstTriDiaSlover + 5);
 	printf("Time it took for constTriDiaSolver: %g s\n", timeConstTriDiaSlover[2]);
 
-	printf("Ratio: %g s\n", (timeGeneralTriDiaSlover[2]/timeConstTriDiaSlover[2]));
+	printf("Ratio: %g \n", (timeGeneralTriDiaSlover[2]/timeConstTriDiaSlover[2]));
 
 	delete[] a;
 	delete[] b;
@@ -282,7 +282,7 @@ void compareTimeArmadillo(int n) {
 	sort(timeArmadillo, timeArmadillo + 5);
 	printf("Time it took for armadillo: %g s\n", timeArmadillo[2]);
 
-	printf("Ratio: %g s\n", timeArmadillo[2]/timeTriDiaSlover[2]);
+	printf("Ratio: %g \n", timeArmadillo[2]/timeTriDiaSlover[2]);
 
 	delete[] f;
 	delete[] v;
