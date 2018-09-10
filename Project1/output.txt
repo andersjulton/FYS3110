@@ -24,35 +24,35 @@ Project 1, part C
 For n = 10
 Time it took for generalTriDiaSolver: 7.99e-07 s
 Time it took for constTriDiaSolver: 7.93e-07 s
-Ratio: 1.00757 s
+Ratio: 1.00757 
 For n = 100
 Time it took for generalTriDiaSolver: 3.672e-06 s
 Time it took for constTriDiaSolver: 3.434e-06 s
-Ratio: 1.06931 s
+Ratio: 1.06931 
 For n = 1000
 Time it took for generalTriDiaSolver: 2.8325e-05 s
 Time it took for constTriDiaSolver: 2.634e-05 s
-Ratio: 1.07536 s
+Ratio: 1.07536 
 For n = 10000
 Time it took for generalTriDiaSolver: 0.000279247 s
 Time it took for constTriDiaSolver: 0.00024905 s
-Ratio: 1.12125 s
+Ratio: 1.12125 
 For n = 100000
 Time it took for generalTriDiaSolver: 0.00296932 s
 Time it took for constTriDiaSolver: 0.00310751 s
-Ratio: 0.955531 s
+Ratio: 0.955531 
 For n = 1000000
 Time it took for generalTriDiaSolver: 0.0269674 s
 Time it took for constTriDiaSolver: 0.0245777 s
-Ratio: 1.09723 s
+Ratio: 1.09723 
 For n = 10000000
 Time it took for generalTriDiaSolver: 0.278583 s
 Time it took for constTriDiaSolver: 0.25269 s
-Ratio: 1.10247 s
+Ratio: 1.10247 
 For n = 100000000
 Time it took for generalTriDiaSolver: 9.45188 s
 Time it took for constTriDiaSolver: 4.1306 s
-Ratio: 2.28826 s
+Ratio: 2.28826 
 
 Project 1, part D
 
@@ -71,22 +71,22 @@ Project 1, part E
 For n = 10
 Time it took for TriDiaSolver: 6.98e-07 s
 Time it took for armadillo: 1.6836e-05 s
-Ratio: 24.1203 s
+Ratio: 24.1203 
 
 For n = 100
 Time it took for TriDiaSolver: 3.008e-06 s
 Time it took for armadillo: 0.000584782 s
-Ratio: 194.409 s
+Ratio: 194.409 
 
 For n = 1000
 Time it took for TriDiaSolver: 2.7121e-05 s
 Time it took for armadillo: 0.0456238 s
-Ratio: 1682.23 s
+Ratio: 1682.23 
 
 For n = 10000
 Time it took for TriDiaSolver: 0.000227696 s
 Time it took for armadillo: 16.6341 s
-Ratio: 73053.8 s
+Ratio: 73053.8 
 
 >> q
 Bye!
