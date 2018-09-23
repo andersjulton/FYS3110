@@ -14,6 +14,55 @@ double* createVector(double value, int n) {
 	return vector;
 }
 
+//  Allocating space for a m x n matrix and fill elements with 0
+double **createMatrix(int m, int n) {
+	double **mat;
+	mat = new double*[m];
+	for(int i = 0; i < m; i++) {
+		mat[i] = new double[n];
+		for(int j = 0; j < n; j++) {
+			mat[i][j] = 0.0;
+		}
+	}
+	return mat;
+}
+
+// delete 2D-array
+void deleteMatrix(double **mat, int n) {
+	for (int i = 0; i < n; i++) {
+		delete[] mat[i];
+	}
+	delete[] mat;
+}
+
+// Allocating space for a n x n diagonal matrix and fill the diagonal with d
+double **createDiaMatrix(double d, int n) {
+	// two seperate loops to avoid if-tests
+	double **mat;
+	mat = createMatrix(n, n);
+	for(int i = 0; i < n; i++) {
+		mat[i][i] = d;
+	}
+	return mat;
+}
+
+// Create a tridiagonal matrix
+double **createTriDiaMatrix(double off_value, double d_value, int n) {
+	// two seperate loops to avoid if-tests
+	double **mat;
+	mat = createMatrix(n, n);
+	mat[0][0] = d_value;
+	mat[0][1] = off_value;
+	for (int i = 1; i < (n - 1); i++) {
+		mat[i][i-1] = off_value;
+		mat[i][i] = d_value;
+		mat[i][i+1] = off_value;
+	}
+	mat[n-1][n-2] = off_value;
+	mat[n-1][n-1] = d_value;
+	return mat;
+}
+
 // returns the largest relative error comparing two arrays
 double maxError(double *expected, double *computed, int n) {
 	double max, max_i;

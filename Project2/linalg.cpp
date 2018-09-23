@@ -14,6 +14,7 @@ void bisect(double *a, double *b, int n);
 int getSignChange(double *a, double *b, int n, double lambda);
 double *getInterval(double *a, double *b, int n);
 
+
 int main() {
   double *a, *b;
   int n = 10;
@@ -22,6 +23,7 @@ int main() {
   bisect(a, b, n);
   return 0;
 }
+
 
 double **createMatrix(int m, int n) {
   //  Allocating space for a m x n matrix and fill elements with 0
@@ -103,7 +105,7 @@ void jacobi(double **A, int n) {
   return;
 }
 
-void rotate (double **A, double **R, int k, int l, int n) {
+void rotate(double **A, double **R, int k, int l, int n) {
   double s, c;
   if ( A[k][l] != 0.0 ) {
     double t, theta;
@@ -148,7 +150,7 @@ void rotate (double **A, double **R, int k, int l, int n) {
   return;
 }
 
-double maxoffdiag (double **A, int *k, int *l, int n) {
+double maxoffdiag(double **A, int *k, int *l, int n) {
   double max = 0.0;
   for (int i = 0; i < n; i++) {
     for (int j = i + 1; j < n; j++) {
@@ -162,7 +164,7 @@ double maxoffdiag (double **A, int *k, int *l, int n) {
   return max;
 }
 
-void bisect (double *a, double *b, int n) {
+void bisect(double *a, double *b, int n) {
   // Get interval by the Gershgorin circle theorem
   double *interval;
   int xmin, xmax;

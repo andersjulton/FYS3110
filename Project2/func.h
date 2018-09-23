@@ -1,9 +1,13 @@
 #pragma once
 
-double *solutionVector(int n);
+int jacobi(double **A, int n);
 
-void	generalTriDiaSolver(double *a, double *b, double *c, double *v, double *f, int n);
+void rotate(double **A, double **R, int k, int l, int n);
 
-void	constTriDiaSolver(double a, double b, double c, double *v, double *f, int n);
+double maxOffDiag (double **A, int *k, int *l, int n);
 
-double *exactSolution(int n);
+void bisect(double *a, double *b, int n);
+
+int getSignChange(double *a, double *b, int n, double lambda);
+
+double *getInterval(double *a, double *b, int n);
