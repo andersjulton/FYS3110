@@ -5,8 +5,11 @@
 #include <string>
 
 
-int main(int argc, char* argv[]) {
-		
+int main() {
+		double **A;
+		int n = 5;
+		int iterations;
+		A = createTriDiaMatrix(1, 2, n);
 
-	return 0;	
+	return 0;
 }

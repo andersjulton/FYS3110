@@ -5,10 +5,22 @@
 #include <string>
 #include <algorithm>
 #include <fstream>
+#include <iostream>
 
 using namespace std;
 
-
+int main () {
+	double **A;
+	int n = 5;
+	int iterations;
+	A = createTriDiaMatrix(1, 2, n);
+	iterations = jacobi(A, n);
+	std::cout << A[0][0] << '\n';
+	for (int i = 0; i < n; i++) {
+		std::cout << A[i][i] << '\n';
+	}
+	return 0;
+}
 int jacobi(double **A, int n) {
 	// Setting up the eigenvector matrix
 	int k, l;
@@ -90,7 +102,7 @@ void bisect(double *a, double *b, int n) { // should it return the eigenvalues?
 	double *interval;
 	int xmin, xmax;
 	interval = getInterval(a, b, n);
-	xmin = interval[0]; 
+	xmin = interval[0];
 	xmax = interval[1];
 	// Calculate number of eigenvalues
 	int smin, smax, nlambda;
@@ -118,7 +130,7 @@ void bisect(double *a, double *b, int n) { // should it return the eigenvalues?
 			}
 			while ((x0 - xu) > eps) {
 				z += 1;			// counter?
-				u = 0; 
+				u = 0;
 				q0 = 1;			// variable init. too many times. Should it change?
 				for (int j = 0; j < n; j++) {
 					if (q0 == 0) {	// why is this in the loop? q0 is always 1. This is NEVER true
@@ -138,7 +150,7 @@ void bisect(double *a, double *b, int n) { // should it return the eigenvalues?
 							if (x[u] > x1) {
 								x[u] = x1;
 							}
-						}	
+						}
 					} else {
 						x0 = x1;
 					}
@@ -167,7 +179,7 @@ double *getInterval(double *a, double *b, int n) {
         xmin = a[i] - h;
       }
   }
-  interval[0] = xmin; 
+  interval[0] = xmin;
   interval[1] = xmax;
   return interval;
 }
@@ -202,6 +214,6 @@ int getSignChange(double *a, double *b, int n, double lambda) {
     }
   }
   delete[] s;
-  delete[] p; 
+  delete[] p;
   return sum;
 }
