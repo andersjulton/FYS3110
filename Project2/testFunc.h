@@ -5,8 +5,8 @@ using namespace arma;
 
 vec armadillo_LU_solve(mat A, vec b);
 
-double maxErrorDiaSolver(int n);
+mat copyMatrixToArma(double **A, int n);
 
-void compareTime(int a_value, int b_value, int c_value, int n);
+int compareArmaMatrix(double **A, mat armaA, int n);
 
-void compareTimeArmadillo(int n);
+int compareArmaVector(double *b, vec armab, int n);

@@ -9,32 +9,24 @@
 
 using namespace std;
 
-int main () {
-	double **A;
-	int n = 5;
-	int iterations;
-	A = createTriDiaMatrix(1, 2, n);
-	iterations = jacobi(A, n);
-	std::cout << A[0][0] << '\n';
-	for (int i = 0; i < n; i++) {
-		std::cout << A[i][i] << '\n';
-	}
-	return 0;
-}
-int jacobi(double **A, int n) {
+
+int jacobi(double **A, double **R, int n) {
 	// Setting up the eigenvector matrix
 	int k, l;
-	double **R;
-	R = createDiaMatrix(n, 1);
-	double epsilon = 1.0e-8;
+	double epsilon = 1.0e-12;
 	double max_number_iterations = (double) n*(double) n*(double) n;
 	int iterations = 0;
-	double max_offdiag = maxOffDiag(A, &k, &l, n);
+  int *indexOfMax = getMaxInRow(A, n);
+  k = 0;
+  l = indexOfMax[0];
+	double max_offdiag = maxOffDiag(A, indexOfMax, &k, &l, n);
 	while ( fabs(max_offdiag) > epsilon && (double) iterations < max_number_iterations ) {
-		max_offdiag = maxOffDiag(A, &k, &l, n);
-		rotate(A, R, k, l, n);
+    rotate(A, R, k, l, n);
+    updateMaxInRow(A, indexOfMax, k, l, n);
+		max_offdiag = maxOffDiag(A, indexOfMax, &k, &l, n);
 		iterations++;
 	}
+  delete[] indexOfMax;
 	return iterations;
 }
 
@@ -44,15 +36,13 @@ void rotate(double **A, double **R, int k, int l, int n) {
     double t, theta;
     theta = (A[l][l] - A[k][k])/(2*A[k][l]);
     if ( theta > 0 ) {
-      t = 1.0/(theta + sqrt(1.0 + theta*theta));
-    }
-    else {
-      t = -1.0/(theta + sqrt(1.0 + theta*theta));
+      t = -theta + sqrt(1.0 + theta*theta);
+    } else {
+      t = -theta - sqrt(1.0 + theta*theta);
     }
     c = 1/sqrt(1 + t*t);
     s = c*t;
-  }
-  else {
+  } else {
     c = 1.0;
     s = 0.0;
   }
@@ -83,137 +73,61 @@ void rotate(double **A, double **R, int k, int l, int n) {
   return;
 }
 
-double maxOffDiag(double **A, int *k, int *l, int n) {
-  double max = 0.0;
+double maxOffDiag(double **A, int *indexOfMax, int *k, int *l, int n) {
   for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      if (fabs(A[i][j]) > max) {
-        max = fabs(A[i][j]);
-        *l = i;
-        *k = j;
+    if (fabs(A[i][indexOfMax[i]]) > fabs(A[*k][*l])) {
+      *k = i;
+      *l = indexOfMax[i]; 
+    }
+  }
+  return A[*k][*l];
+}
+
+void updateMaxInRow(double **A, int *indexOfMax, int k, int l, int n) {
+  // update index of largest element in row l & k
+  for (int i = 0; i < n; i++) {
+    if (fabs(A[l][i]) > fabs(A[l][indexOfMax[l]]) && i != l) {
+      indexOfMax[l] = i; 
+    } 
+    if (fabs(A[k][i]) > fabs(A[k][indexOfMax[k]]) && i != k) {
+      indexOfMax[k] = i; 
+    } // see if update in column made changes in max in row i
+    if (indexOfMax[i] == k || indexOfMax[i] == l) {
+      // Update row if l or k justed to be max in row 
+      if (i != k && i != l) {
+        // row l and k are regardless updated
+        for (int j = 0; j < n; j++) {
+          if (fabs(A[i][j]) > fabs(A[i][indexOfMax[i]]) && i != j) {
+            indexOfMax[i] = j;
+          }
+        }
+      }
+    } else {
+      // upate max in row if changed col-value is larger
+      if ((fabs(A[i][l]) > fabs(A[i][indexOfMax[i]])) && i != l) {
+        indexOfMax[i] = l;
+      }
+      if ((fabs(A[i][k]) > fabs(A[i][indexOfMax[i]])) && i != k) {
+        indexOfMax[i] = k;
       }
     }
   }
-  return max;
 }
 
-void bisect(double *a, double *b, int n) { // should it return the eigenvalues?
-	// Get interval by the Gershgorin circle theorem
-	double *interval;
-	int xmin, xmax;
-	interval = getInterval(a, b, n);
-	xmin = interval[0];
-	xmax = interval[1];
-	// Calculate number of eigenvalues
-	int smin, smax, nlambda;
-	smin = getSignChange(a, b, n, xmin);
-	smax = getSignChange(a, b, n, xmax);
-	nlambda = smin - smax;
-	// Calculate eigenvalues
-	double eps = 10e-8;
-	double q0, q1, x1, xu, x0;
-	x0 = xmax;
-	int z = 0;		// what is z? A counter?
-	int m1 = 0;
-	int u;
-	double *x, *wu;
-	x = createVector(xmax, nlambda);
-	wu = createVector(xmin, nlambda);
-	for (int k = nlambda - 1; k > -1; k--) {
-		xu = xmin;
-		for (int i = k; i > -1; i--) {
-			if (xu < wu[i]) {
-				xu = wu[i];
-			}
-			if (x0 > x[k]) {
-				x0 = x[k];
-			}
-			while ((x0 - xu) > eps) {
-				z += 1;			// counter?
-				u = 0;
-				q0 = 1;			// variable init. too many times. Should it change?
-				for (int j = 0; j < n; j++) {
-					if (q0 == 0) {	// why is this in the loop? q0 is always 1. This is NEVER true
-						q0 = eps;
-					}
-					q1 = a[i] - x1 - b[i]*b[i]/q0;  // q0 is always one
-					if (q1 < 0) {
-						u += 1;
-					}
-					if (u < k) {
-						if (u < m1) {	// so all times but 1?
-							xu = wu[m1];
-							x1 = xu;
-						} else {
-							xu = wu[u + 1];
-							x1 = xu;
-							if (x[u] > x1) {
-								x[u] = x1;
-							}
-						}
-					} else {
-						x0 = x1;
-					}
-				}
-			}
-		}
-		x[k] = (x0 + xu)/2.0;		// should x be returned?
-	}
-	delete[] x; 					// should x be returned?
-	delete[] wu;
-}
-
-// Find max value of interval by Gershgorin’s Theorem
-double *getInterval(double *a, double *b, int n) {
-  double xmax, xmin, h;
-  double *interval;
-  interval = createVector(0, 2);
-  xmin = a[n-1] - abs(b[n-1]);
-  xmax = a[n-1] + abs(b[n-1]);
-  for (int i = (n - 2); i > -1; i--) {
-      h = abs(b[i]) + abs(b[i+1]);
-      if ((a[i] + h) > xmax) {
-        xmax = a[i] + h;
-      }
-      if ((a[i] - h) < xmin) {
-        xmin = a[i] - h;
-      }
-  }
-  interval[0] = xmin;
-  interval[1] = xmax;
-  return interval;
-}
-
-int getSignChange(double *a, double *b, int n, double lambda) {
-  double *p, *s;
-  int sum = 0;			// sum or count?
-  s = createVector(0, n+1);
-  p = createVector(0, n+1);
-  p[0] = 1; p[1] = a[0] - lambda;
-  s[0] = 1;
-  if (p[1] < 0) {
-    s[1] = -1;
-  } else if (p[1] > 0 ) {
-    s[1] = 1;
-  } else {
-    s[1] = -1*s[0];
-  }
-  for (int i = 2; i < n+1; i++) {
-      p[i] = (a[0] - lambda)*p[i-1] - p[i-2];
-      if (p[i] < 0) {
-        s[i] = -1;
-      } else if (p[i] > 0) {
-        s[i] = 1;
-      } else {
-        s[i] = -1*s[i-1];
-      }
-  }
+// get position of the largest value in row when i != j
+int* getMaxInRow(double **A, int n) {
+  int *indexOfMax = new int[n];
   for (int i = 0; i < n; i++) {
-    if(((s[i] > 0) && (s[i+1] > 0)) || ((s[i] < 0) && (s[i+1] < 0))) {
-      sum += 1;
+    if (i > 0) {
+      indexOfMax[i] = 0;
+    } else {
+      indexOfMax[0] = 1;
+    }
+    for (int j = 0; j < n; j++) {
+      if (fabs(A[i][j]) > fabs(A[i][indexOfMax[i]]) && i != j) {
+        indexOfMax[i] = j;
+      }
     }
   }
-  delete[] s;
-  delete[] p;
-  return sum;
+  return indexOfMax;
 }

@@ -245,7 +245,7 @@ void bisect(double *a, double *b, int n) {
             u += 1;
           }
           if (u < k) {
-            if (u < m1) {
+             if (u < m1) {
               xu = wu[m1];
               x1 = xu;
             }

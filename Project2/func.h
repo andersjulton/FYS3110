@@ -1,12 +1,10 @@
 
-int jacobi(double **A, int n);
+int jacobi(double **A, double **R, int n);
+
+int* getMaxInRow(double **A, int n);
+
+double maxOffDiag(double **A, int *indexOfMax, int *k, int *l, int n);
+
+void updateMaxInRow(double **A, int *indexOfMax, int k, int l, int n);
 
 void rotate(double **A, double **R, int k, int l, int n);
-
-double maxOffDiag (double **A, int *k, int *l, int n);
-
-void bisect(double *a, double *b, int n);
-
-int getSignChange(double *a, double *b, int n, double lambda);
-
-double *getInterval(double *a, double *b, int n);
