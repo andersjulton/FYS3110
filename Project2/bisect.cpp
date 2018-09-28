@@ -5,7 +5,7 @@
 using namespace std;
 
 // Bisect method for finding eigenvalues of a tridiagonal symmetric matrix
-double *Gershgorin(double *off, double *dia, int n) {
+double *bisect(double *off, double *dia, int n) {
 	double *interval = getInterval(off, dia, n);
 	double xmin = interval[0];
 	double xmax = interval[1];
@@ -22,7 +22,7 @@ int isolate(double xmin, double xmax, double *off, double *dia, double *eig, int
 	if (numOfEig == 0) {
 		return count;
 	} else if (numOfEig == 1) {
-		eig[count] = bisect(xmin, xmax, off, dia, n);
+		eig[count] = extract(xmin, xmax, off, dia, n);
 		count++;
 		return count;
 	} else {
@@ -34,7 +34,7 @@ int isolate(double xmin, double xmax, double *off, double *dia, double *eig, int
 }
 
 // find a single eigenvalue on given interval
-double bisect(double xmin, double xmax, double *off, double *dia, int n) {
+double extract(double xmin, double xmax, double *off, double *dia, int n) {
 	double eps = 1e-13;
 	int maxIter = 100;
 	int iter = 0;

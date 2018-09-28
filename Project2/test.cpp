@@ -54,7 +54,8 @@ void printResult(int success, string method) {
 void testBisect(double a, double d, int n) {
 	double *off = createVector(a, n);
 	double *dia = createVector(d, n);
-	double *eig = Gershgorin(off, dia, n);
+	
+	double *eig = bisect(off, dia, n);
 	printf("Test eigenvalues Bisect\n");
 	double **A;
 	A = createTriDiaMatrix(a, d, n);
