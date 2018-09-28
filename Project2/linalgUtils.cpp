@@ -1,10 +1,4 @@
-#include <fstream>
-#include "utils.h"
 #include "armadillo"
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
-#include <string>
 
 using namespace std;
 using namespace arma;
@@ -52,7 +46,6 @@ double** transpose(double **A, int n) {
 // copy symmetric matrix A to arma mat
 mat copySymMatrixToArma(double **A, int n) {
 	mat armaA(n, n, fill::zeros);
-
 	for (int i = 0; i < n; i++) {
 		armaA(i, i) = A[i][i];
 		for (int j = i+1; j < n; j++) {
@@ -62,12 +55,4 @@ mat copySymMatrixToArma(double **A, int n) {
 	}
 	return armaA;
 }
-
-
-
-
-
-
-
-
 

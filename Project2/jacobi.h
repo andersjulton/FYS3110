@@ -1,3 +1,4 @@
+#pragma once
 
 int jacobi(double **A, double **R, int n);
 

@@ -1,48 +1,31 @@
-#include <cmath>
-#include <stdlib.h>
 #include "utils.h"
 #include "bisect.h"
-#include <string>
-#include <algorithm>
-#include <fstream>
-#include <iostream>
+#include <cmath>
 
 using namespace std;
 
+// Bisect method for finding eigenvalues of a tridiagonal symmetric matrix
 double *Gershgorin(double *off, double *dia, int n) {
 	double *interval = getInterval(off, dia, n);
 	double xmin = interval[0];
 	double xmax = interval[1];
-	printf("X min = %.5f, max = %.5f\n", xmin, xmax);
-	int signMin = getSignChange(off, dia, n, xmin);
-	int signMax = getSignChange(off, dia, n, xmax);
-	int numOfEig = signMax - signMin;
-	printf("S min = %d, max = %d\n", signMin, signMax);
-	printf("numEig = %d\n", numOfEig);
 	double *eig = createVector(0, n);
 	isolate(xmin, xmax, off, dia, eig, 0, n);
 	return eig;
 }
 
+// isolate a eigenvalue on an interval
 int isolate(double xmin, double xmax, double *off, double *dia, double *eig, int count, int n) {
 	int signMin = getSignChange(off, dia, n, xmin);
 	int signMax = getSignChange(off, dia, n, xmax);
 	int numOfEig = signMax - signMin;
-	//printf("X min = %.5f, max = %.5f\n", xmin, xmax);
-	//printf("S min = %d, max = %d\n", signMin, signMax);
 	if (numOfEig == 0) {
 		return count;
 	} else if (numOfEig == 1) {
-		//printf("X min = %.5f, max = %.5f\n", xmin, xmax);
-		//printf("S min = %d, max = %d\n", signMin, signMax);
 		eig[count] = bisect(xmin, xmax, off, dia, n);
 		count++;
 		return count;
 	} else {
-		if (numOfEig < 0) {
-			printf("HALLA\n");
-			return count;
-		}
 		double xmiddle = xmin + (xmax - xmin)/2.0;
 		count = isolate(xmin, xmiddle, off, dia, eig, count, n);
 		count = isolate(xmiddle, xmax, off, dia, eig, count, n);
@@ -50,11 +33,10 @@ int isolate(double xmin, double xmax, double *off, double *dia, double *eig, int
 	return count;
 }
 
-
-// call when final interval found
+// find a single eigenvalue on given interval
 double bisect(double xmin, double xmax, double *off, double *dia, int n) {
 	double eps = 1e-13;
-	int maxIter = 200;
+	int maxIter = 100;
 	int iter = 0;
 	int signMin, signMax, numOfEig;
 	double x;
@@ -101,7 +83,7 @@ double *getInterval(double *off, double *dia, int n) {
 	return interval;
 }
 
-
+// Find number of eigenvalues smaller than lambda
 int getSignChange(double *off, double *dia, int n, double lambda) {
 	int count = 0;
 	double eps = 1e-12;

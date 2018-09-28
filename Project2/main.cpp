@@ -1,7 +1,5 @@
-#include <fstream>
 #include "jacobi.h"
 #include "utils.h"
-#include <iostream>
 #include <string>
 
 using namespace std;

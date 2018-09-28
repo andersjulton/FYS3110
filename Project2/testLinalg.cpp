@@ -1,38 +1,29 @@
-#include <fstream>
-#include "jacobi.h"
-#include "utils.h"
 #include "armadillo"
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
-#include <string>
 
 using namespace std;
 using namespace arma;
 
+// test if matrix A and armadillo's matrix armaA are identical
 int compareArmaMatrix(double **A, mat armaA, int n) {
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			//printf(" (%3.f, %3.f)  ", A[i][j], armaA(i, j));
 			if (fabs(A[i][j] - armaA(i, j)) > 1e-10) {
 				printf("(%d, %d) -> (%3.f != %3.f)  ", i, j, A[i][j], armaA(i, j));
 				return 1;
 			}
 		}
-		//printf("\n");
 	}
 	return 0;
 }
 
+// test if array b and armadillo's vector armab are identical
 int compareArmaVector(double *b, vec armab, int n) {
 	for (int i = 0; i < n; i++) {
-		//printf(" (%3.f, %3.f)  ", b[i], armab(i));
 		if (fabs(b[i] - armab(i)) > 1e-10) {
 			printf("(%d) -> (%.8f != %.8f)  \n", i, b[i], armab(i));
 		return 1;
 		}
 	}
-	//printf("\n");
 	return 0;
 }
 
@@ -72,10 +63,10 @@ int testVector(double *u, double *v, int n) {
 // Test orthogonality provided that A is a list of columns
 int testOrthogonality(double **A, int n){
 	double delta;
-	for (int i = 0; i < n; i++) {		// testing kolumn i (transposed)
-		for (int j = i; j < n; j++) {	// testing kolumn j 
+	for (int i = 0; i < n; i++) {
+		for (int j = i; j < n; j++) {
 			delta = 0.0;
-			for (int k = 0; k < n; k++) { // delta_ij = ?
+			for (int k = 0; k < n; k++) {
 				delta += A[k][i]*A[k][j];
 			}
 			if (j == i) {
@@ -93,4 +84,3 @@ int testOrthogonality(double **A, int n){
 	}
 	return 0;
 }
-

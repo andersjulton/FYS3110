@@ -1,20 +1,14 @@
 #include <cmath>
-#include <stdlib.h>
 #include "utils.h"
 #include "jacobi.h"
-#include <string>
-#include <algorithm>
-#include <fstream>
-#include <iostream>
 
 using namespace std;
 
 
 int jacobi(double **A, double **R, int n) {
-	// Setting up the eigenvector matrix
 	int k, l;
 	double epsilon = 1.0e-12;
-	double max_number_iterations = (double) n*(double) n*(double) n;
+	double max_number_iterations = (double) n*(double) n*(double) n; // WHY
 	int iterations = 0;
   int *indexOfMax = getMaxInRow(A, n);
   k = 0;

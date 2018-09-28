@@ -1,4 +1,4 @@
-
+#pragma once
 
 double *Gershgorin(double *off, double *dia, int n);
 

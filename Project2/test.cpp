@@ -1,14 +1,12 @@
-#include <fstream>
 #include "jacobi.h"
 #include "utils.h"
 #include "testLinalg.h"
 #include "bisect.h"
 #include "linalgUtils.h"
 #include "armadillo"
-#include <iostream>
-#include <cstdlib>
 #include <ctime>
 #include <string>
+#include <stdlib.h>
 
 using namespace std;
 using namespace arma;
@@ -63,7 +61,6 @@ void testBisect(double a, double d, int n) {
 	mat armaA = copySymMatrixToArma(A, n);
 	vec eigval = eig_sym(armaA);
 	compareArmaVector(eig, eigval, n);
-
 
 	delete[] off;
 	delete[] dia;
