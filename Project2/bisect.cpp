@@ -14,7 +14,7 @@ double *bisect(double *off, double *dia, int n) {
 	return eig;
 }
 
-// isolate a eigenvalue on an interval
+// isolate an eigenvalue on an interval
 int isolate(double xmin, double xmax, double *off, double *dia, double *eig, int count, int n) {
 	int signMin = getSignChange(off, dia, n, xmin);
 	int signMax = getSignChange(off, dia, n, xmax);
@@ -105,4 +105,3 @@ int getSignChange(double *off, double *dia, int n, double lambda) {
 	}
 	return count;
 }
-
