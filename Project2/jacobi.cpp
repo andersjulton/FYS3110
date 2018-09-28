@@ -1,7 +1,7 @@
 #include <cmath>
 #include <stdlib.h>
 #include "utils.h"
-#include "func.h"
+#include "jacobi.h"
 #include <string>
 #include <algorithm>
 #include <fstream>

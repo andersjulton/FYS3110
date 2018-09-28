@@ -1,5 +1,5 @@
 #include <fstream>
-#include "func.h"
+#include "jacobi.h"
 #include "utils.h"
 #include <iostream>
 #include <string>
