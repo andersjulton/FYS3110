@@ -13,3 +13,4 @@ int testVector(double *u, double *v, int n);
 int testEig(double *eigval, double **eigvec, double **A, int n);
 
 int testOrthogonality(double **A, int n);
+

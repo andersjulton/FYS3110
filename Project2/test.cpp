@@ -27,8 +27,8 @@ int main() {
 	printResult(success, "copySymMatrixToArma");
 	printf("Testing Jacobi\n");
 	testJacobi(1, 2, 100);
-	testJacobi(-4, 18, 20);
-	testJacobi(8, 1, 10);
+	testJacobi(-4, 18, 200);
+	testJacobi(8, 0.4, 10);
 	printf("Testing Bisect\n");
 	printf("n = %d\n", n);
 	testBisect(a, d, n);
