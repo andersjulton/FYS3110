@@ -85,12 +85,20 @@ void updateMaxInRow(double **A, int *indexOfMax, int k, int l, int n) {
 			}
 		}
 	}
-	// see if new element in column k > max 
+	// see if new element in column k or l > max 
 	for (int i = 0; i < k; i++) {
-		if ((fabs(A[i][k]) > fabs(A[i][indexOfMax[i]]))) { indexOfMax[i] = k;}
+		if (max(fabs(A[i][k]), fabs(A[i][k])) > fabs(A[i][indexOfMax[i]])) {
+			//printf("I like cake\n");
+			if ( (fabs(A[i][k]) > fabs(A[i][l])) ) { 
+				indexOfMax[i] = k;
+			} else { 
+				indexOfMax[i] = l;
+			}
+		} //else {printf("This happens\n");} 
 	}
-	// see if new element in column k > max
-	for (int i = 0; i < l; i++) {
+	//printf("%d\n",(l-k) );
+	// k < l
+	for (int i = k; i < l; i++) {
 		if ((fabs(A[i][l]) > fabs(A[i][indexOfMax[i]]))) { indexOfMax[i] = l;}
 	}
 }
