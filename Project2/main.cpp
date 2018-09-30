@@ -5,33 +5,35 @@
 #include <iostream>
 #include <cmath>
 
-void oneElectron(int n, double epsilon);
-void twoElectrons(int n, double omega, std::string filename, double epsilon);
+void oneElectron(int n, double epsilon, double rho_N);
+void twoElectrons(int n, double omega, std::string filename, double epsilon, bool writeToFile);
 void bucklingBeam(int n, double epsilon);
 
 int main() {
-	for (int i = 5; i < 20; i++) {
-		bucklingBeam(i, 1e-5);
-	}
-	
-	
-	system("PAUSE");
 	/*
-	int n = 200;
-	double omega = 0.5;
-	std::string filename1 = "wave_21";
-	std::string filename2 = "wave_22";
-	std::string filename3 = "wave_23";	
-	std::string filename4 = "wave_24";
-	//oneElectron(n);
-	twoElectrons(n, 0.01, filename1);
-	twoElectrons(n, 0.5, filename2);
-	twoElectrons(n, 1.0, filename3);
-	twoElectrons(n, 5.0, filename4);*/
+	oneElectron(10, 1e-5, 5);
+	oneElectron(100, 1e-5, 5);
+	oneElectron(200, 1e-5, 5);
+	oneElectron(400, 1e-5, 5);
+	*/
+
+	int n = 400;
+	std::string filename1 = "wave_1";
+	std::string filename2 = "wave_2";
+	std::string filename3 = "wave_3";	
+	std::string filename4 = "wave_4";
+
+	bool print = true;
+	twoElectrons(n, 0.01, filename1, 1e-5, print);
+	twoElectrons(n, 0.5, filename2, 1e-5, print);
+	twoElectrons(n, 1.0, filename3, 1e-5, print);
+	twoElectrons(n, 5.0, filename4, 1e-5, print);
+	system("PAUSE");
 	return 0;
 }
 
 void bucklingBeam(int n, double epsilon) {
+	printf("\nCalculating eigenvalues for the buckling beam for n = %d \n\n", n);
 	int iterations;
 	double **A, **R;
 	double *u;
@@ -46,17 +48,14 @@ void bucklingBeam(int n, double epsilon) {
 	d = 2.0/(h*h);
 	A = createTriDiaMatrix(a, d, n);
 	iterations = jacobi(A, R, n, epsilon);
-	printf("\nIterations \n");
-	printf("n = %d  Actual iterations = %d  Analytical iterations = %5.0f\n", n, iterations, maxInt);
+
 	double *eig = diagToVector(A, n);
 	double **E = transpose(R, n);
 	double lambda;
 	sortEig(eig, E, n);
-	printf("\nEigenvalues \n");
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < 4; i++) {
 		lambda = d + 2*a*cos((i+1)*pi/(n + 1));
-		
-		//printf("Calculated = %5.4f     Actual = %5.4f\n", eig[i], lambda);
+		printf("Calculated = %5.4f  Analytical = %5.4f\n", eig[i], lambda);
 	}
 	deleteMatrix(E, n);
 	deleteMatrix(A, n);
@@ -65,14 +64,14 @@ void bucklingBeam(int n, double epsilon) {
 	delete[] u;
 }
 
-void oneElectron(int n, double epsilon) {
+void oneElectron(int n, double epsilon, double rho_N) {
+	printf("\nCalculating eigenvalues for one electron for n = %d and rho_max = %2.1f\n\n", n, rho_N);
 	int iterations;
-	double rho_0, rho_N, rho_i, h;
+	double rho_0, rho_i, h;
 	double **A, **R;
 	double *u;
 	u = createVector(0, n);
 	R = createDiaMatrix(1, n);
-	rho_N = 10.0;
 	rho_0 = 0;
 	h = (rho_N - rho_0)/n;
 	A = createMatrix(n, n);
@@ -89,16 +88,17 @@ void oneElectron(int n, double epsilon) {
 	A[n-1][n-1] = 2.0/(h*h) + rho_i*rho_i;
 
 	iterations = jacobi(A, R, n, epsilon);
-	std::cout << iterations << '\n';
 
 	double *eig = diagToVector(A, n);
 	double **E = transpose(R, n);
+	double lambda;
 	sortEig(eig, E, n);
-
-	for (int j = 0; j < n; j++) {
-		u[j] = eig[0]*E[0][j];
+	
+	for (int i = 0; i < 4; i++) {
+		lambda = 3.0 + 4.0*i;
+		printf("Calculated = %2.5f. Analytical = %1.0f  Error = %5.5f\n", eig[i], lambda, fabs((eig[i] - lambda)/lambda));
 	}
-	//arrayToFile(u, n, "wave_1");
+	
 	deleteMatrix(A, n);
 	deleteMatrix(R, n);
 	deleteMatrix(E, n);
@@ -106,14 +106,16 @@ void oneElectron(int n, double epsilon) {
 	delete[] u;
 }
 
-void twoElectrons(int n, double omega, std::string filename, double epsilon) {
+void twoElectrons(int n, double omega, std::string filename, double epsilon, bool writeToFile) {
+	printf("\nCalculating eigenvalues for two electrons for n = %d and omega = %3.2f\n", n, omega);
 	int iterations;
 	double rho_0, rho_N, rho_i, h;
 	double **A, **R;
-	double *u;
+	double *u, *un;
 	u = createVector(0, n);
+	un = createVector(0, n);
 	R = createDiaMatrix(1, n);
-	rho_N = 10.0;
+	rho_N = 5;
 	rho_0 = 0;
 	h = (rho_N - rho_0)/n;
 	A = createMatrix(n, n);
@@ -134,14 +136,20 @@ void twoElectrons(int n, double omega, std::string filename, double epsilon) {
 	double **E = transpose(R, n);
 	sortEig(eig, E, n);
 
+	printf("----Eigenvalue in ground state = %5.5f\n", eig[0]);
 
-	for (int j = 0; j < n; j++) {
-		u[j] = eig[0]*E[0][j];
+	extractEigenVec(E, u, 0, n);
+	normalize(u, un, n);
+
+	if (writeToFile) {
+		arrayToFile(u, n, filename, true);
+		arrayToFile(un, n, filename+"n", true);
 	}
-	arrayToFile(u, n, filename);
+	
 	deleteMatrix(A, n);
 	deleteMatrix(R, n);
 	deleteMatrix(E, n);
 	delete[] eig;
 	delete[] u;
+	delete[] un;
 }

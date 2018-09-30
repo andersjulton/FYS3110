@@ -102,12 +102,21 @@ void printError(double *u, double *v, int n) {
 }
 
 // write single array to a txt-file
-void arrayToFile(double *v , int n, std::string filename) {
+void arrayToFile(double *v , int n, std::string filename, bool zeroPadding = false) {
 	std::ofstream myfile(filename + ".txt");
 	if (myfile.is_open()) {
-		myfile << n << "\n";
+		if (zeroPadding) {
+			myfile << n+2 << "\n";
+			myfile << 0.0 << "\n";
+		}
+		else {
+			myfile << n << "\n";
+		}
 		for (int i = 0; i < n; i++) {
 			myfile << v[i] << "\n";
+		}
+		if (zeroPadding) {
+			myfile << 0.0 << "\n";
 		}
 	}
 }
@@ -152,4 +161,20 @@ double **transpose(double **A, int n) {
 double analyticConvergenceRate(int n, double eps, double sumOff) {
 	double N = (1.0 - 2.0/(n*n - n));
 	return ((log(eps) - log(sumOff))/log(N));
+}
+
+void normalize(double *v, double *u, int n) {
+	double sum = 0;
+	for (int i = 0; i < n; i++) {
+		sum += v[i];
+	}
+	for (int j = 0; j < n; j++) {
+		u[j] = v[j]/sum;
+	}
+}
+
+void extractEigenVec(double **A, double *u, int index, int n) {
+	for (int i = 0; i < n; i++) {
+		u[i] = A[index][i];
+	}
 }

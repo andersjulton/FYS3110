@@ -89,7 +89,6 @@ void updateMaxInRow(double **A, int *indexOfMax, int k, int l, int n) {
 	// see if new element in column k or l > max
 	for (int i = 0; i < k; i++) {
 		if (std::max(fabs(A[i][k]), fabs(A[i][k])) > fabs(A[i][indexOfMax[i]])) {
-			//printf("I like cake\n");
 			if ( (fabs(A[i][k]) > fabs(A[i][l])) ) {
 				indexOfMax[i] = k;
 			} else {
