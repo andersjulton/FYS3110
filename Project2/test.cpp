@@ -1,13 +1,11 @@
-#include "jacobi.h"
+#include "jacobi_bisect.h"
 #include "utils.h"
-#include "testLinalg.h"
-#include "bisect.h"
+#include "compareArmadillo.h"
 #include "linalgUtils.h"
 #include "armadillo"
 #include <string>
 #include <stdlib.h>
 #include <cmath>
-#include <chrono>
 
 using namespace std;
 using namespace arma;
@@ -19,10 +17,8 @@ void iterToFileJacobi(double a, double d);
 void testRotate(double a, double d);
 void testFindMax(int n);
 void testCreateTriDiaMatrix();
-void takeTime(int n);
 
 int main() {
-	/*
 	printf("\n------------------------------------------------------------------------\n");
 	testCreateTriDiaMatrix();
 
@@ -44,16 +40,6 @@ int main() {
 	testBisect(a, d, n);
 
 	//iterToFileJacobi(-1, 2);
-	*/
-	printf("\n");
-
-	takeTime(10);
-	takeTime(50);
-	takeTime(100);
-	takeTime(200);
-	takeTime(300);
-	takeTime(400);
-	takeTime(500);
 	return 0;
 }
 
@@ -94,7 +80,7 @@ void testBisect(double a, double d, int n) {
 	int success;
 	double *off = createVector(a, n);
 	double *dia = createVector(d, n);
-	double *eig = bisect(off, dia, n);
+	double *eig = bisect(off, dia, n, 1e-13);
 	double **A = createTriDiaMatrix(a, d, n);
 	mat armaA = copySymMatrixToArma(A, n);
 	vec eigval = eig_sym(armaA);
@@ -114,7 +100,7 @@ void testJacobi(double a, double d, int n) {
 	mat armaA = copySymMatrixToArma(A, n);
 	double **R = createDiaMatrix(1, n);
 
-	jacobi(A, R, n, 1e-12);
+	jacobi(A, R, n, 1e-13);
 	double *eig = diagToVector(A, n);
 	double **E = transpose(R, n);
 	sortEig(eig, E, n);
@@ -254,70 +240,4 @@ void iterToFileJacobi(double a, double d) {
 	intArrayToFile(iter_vector, 40, "iter");
 	delete[] n_vector;
 	delete[] iter_vector;
-}
-
-void takeTime(int n) {
-	chrono::duration<double> elapsed;
-
-	double *timeJacobi = new double[5];
-	double *timeBisect = new double[5];
-	double *timeArmadillo = new double[5];
-
-	double offDiaValue = -1.0;
-	double diaValue = 2.0;
-
-	double **A, **R;
-	mat armaA;
-	vec eig;
-	double *off = createVector(offDiaValue, n);
-	double *dia = createVector(diaValue, n);
-	printf("n = %d\n", n);
-	// timing 5 times
-	for (int i = 0; i < 5; i++) {
-		A = createTriDiaMatrix(offDiaValue, diaValue, n);
-		armaA = copySymMatrixToArma(A, n);
-		R = createDiaMatrix(1, n);
-		// time Jacobi
-		auto begin = chrono::high_resolution_clock::now();
-		jacobi(A, R, n, 1e-8);
-		auto end = chrono::high_resolution_clock::now();
-		elapsed = (end - begin);
-		timeJacobi[i] = (double)elapsed.count();
-		// time Bisect
-		begin = chrono::high_resolution_clock::now();
-		bisect(off, dia, n);
-		end = chrono::high_resolution_clock::now();
-		elapsed = (end - begin);
-		timeBisect[i] = (double)elapsed.count();
-		// time armadillo
-		begin = chrono::high_resolution_clock::now();
-		eig = eig_sym(armaA);
-		end = chrono::high_resolution_clock::now();
-		elapsed = (end - begin);
-		timeArmadillo[i] = (double)elapsed.count();
-		deleteMatrix(A, n);
-		deleteMatrix(R, n);
-	}
-	// Finding the median
-	sort(timeJacobi, timeJacobi + 5);
-	printf("Time it took for Jacobi: %g s\n", timeJacobi[2]);
-
-	sort(timeBisect, timeBisect + 5);
-	printf("Time it took for Bisect: %g s\n", timeBisect[2]);
-
-	sort(timeArmadillo, timeArmadillo + 5);
-	printf("Time it took for armadillo: %g s\n", timeArmadillo[2]);
-
-	printf("Ratio (armadillo/jacobi): %g \n", timeArmadillo[2]/timeJacobi[2]);
-	printf("Ratio (armadillo/bisect): %g \n", timeArmadillo[2]/timeBisect[2]);
-	printf("Ratio (bisect/jacobi): %g \n", timeBisect[2]/timeJacobi[2]);
-	printf("Ratio (jacobi/armadillo): %g \n", timeJacobi[2]/timeArmadillo[2]);
-	printf("Ratio (bisect/armadillo: %g \n", timeBisect[2]/timeArmadillo[2]);
-	printf("Ratio (jacobi/bisect): %g \n", timeJacobi[2]/timeBisect[2]);
-
-	delete[] off;
-	delete[] dia;
-	delete[] timeBisect;
-	delete[] timeJacobi;
-	delete[] timeArmadillo; 
 }

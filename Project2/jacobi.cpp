@@ -1,7 +1,7 @@
 #include <cmath>
 #include <algorithm>
 #include "utils.h"
-#include "jacobi.h"
+#include "jacobi_bisect.h"
 
 
 int jacobi(double **A, double **R, int n, double epsilon) {

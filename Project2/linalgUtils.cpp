@@ -1,7 +1,7 @@
-#include "armadillo"
+#include <cmath>
+#include <string>
 
 using namespace std;
-using namespace arma;
 
 /* version of insertion sort for sorting a list of eigenvalues 
 their corresponding eigenvectors will be placed accordingly
@@ -43,16 +43,76 @@ double** transpose(double **A, int n) {
 	return transA;
 }
 
-// copy symmetric matrix A to arma mat
-mat copySymMatrixToArma(double **A, int n) {
-	mat armaA(n, n, fill::zeros);
-	for (int i = 0; i < n; i++) {
-		armaA(i, i) = A[i][i];
-		for (int j = i+1; j < n; j++) {
-			armaA(i, j) = A[i][j];
-			armaA(j, i) = A[i][j];
-		}
-	}
-	return armaA;
+double analyticConvergenceRate(int n, double eps, double sumOff) {
+	double N = (1.0 - 2.0/(n*n - n));
+	return ((log(eps) - log(sumOff))/log(N));
 }
 
+void normalize(double *v, double *u, int n) {
+	double sum = 0;
+	for (int i = 0; i < n; i++) {
+		sum += v[i];
+	}
+	for (int j = 0; j < n; j++) {
+		u[j] = v[j]/sum;
+	}
+}
+
+void extractEigenVec(double **A, double *u, int index, int n) {
+	for (int i = 0; i < n; i++) {
+		u[i] = A[index][i];
+	}
+}
+
+// Represent diagonal matrix A as a vector
+double* diagToVector(double **A, int n) {
+	double *a = new double[n];
+	for (int i = 0; i < n; i++) {
+		a[i] = A[i][i];
+	}
+	return a;
+}
+
+// Test if Ax = lx
+int testEig(double *eigval, double **eigvec, double **A, int n) {
+	double left, right;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			right = eigvec[i][j]*eigval[i];
+			left = 0.0;
+			for (int k = 0; k < n; k++) {
+				left = left + A[j][k]*eigvec[i][k];
+			}
+			if (fabs(right - left) > 1e-7) {
+				printf("eig(%d)v(%d), %.11f != %.11f \n", i, j, right, left);
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+// Test orthogonality provided that A is a list of columns
+int testOrthogonality(double **A, int n){
+	double delta;
+	for (int i = 0; i < n; i++) {
+		for (int j = i; j < n; j++) {
+			delta = 0.0;
+			for (int k = 0; k < n; k++) {
+				delta += A[k][i]*A[k][j];
+			}
+			if (j == i) {
+				if (fabs(delta) < 1e-10) {
+					printf("delta[%d][%d] = %.13f\n", i, j, delta);
+					return 1;
+				}
+			} else {
+				if (fabs(delta) > 1e-10){
+					printf("delta[%d][%d] = %.13f\n ", i, j, delta);
+					return 1;
+				}
+			}
+		}
+	}
+	return 0;
+}
