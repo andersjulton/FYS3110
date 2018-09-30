@@ -94,9 +94,8 @@ void updateMaxInRow(double **A, int *indexOfMax, int k, int l, int n) {
 			} else {
 				indexOfMax[i] = l;
 			}
-		} //else {printf("This happens\n");}
+		} 
 	}
-	//printf("%d\n",(l-k) );
 	// k < l
 	for (int i = k; i < l; i++) {
 		if ((fabs(A[i][l]) > fabs(A[i][indexOfMax[i]]))) {

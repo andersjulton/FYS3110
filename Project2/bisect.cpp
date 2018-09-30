@@ -7,6 +7,7 @@ double *bisect(double *off, double *dia, int n, double epsilon) {
 	double *interval = getInterval(off, dia, n);
 	double xmin = interval[0];
 	double xmax = interval[1];
+	delete[] interval;
 	double *eig = createVector(0, n);
 	isolate(xmin, xmax, off, dia, eig, 0, n, epsilon);
 	return eig;

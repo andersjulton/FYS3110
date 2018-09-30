@@ -1,8 +1,8 @@
 #include "jacobi_bisect.h"
 #include "utils.h"
 #include "linalgUtils.h"
-//#include "armadillo"
-//#include "compareArmadillo.h"
+#include "armadillo"
+#include "compareArmadillo.h"
 #include <string>
 #include <algorithm>
 #include <iostream>
@@ -18,12 +18,16 @@ void bucklingBeam(int n, double epsilon);
 void takeTime(int n);
 
 int main() {
-	/*
+	
+	bucklingBeam(5, 1e-8);
+	bucklingBeam(10, 1e-8);
+	bucklingBeam(50, 1e-8);
+	bucklingBeam(200, 1e-8);
+
 	oneElectron(10, 1e-5, 5);
 	oneElectron(100, 1e-5, 5);
 	oneElectron(200, 1e-5, 5);
 	oneElectron(400, 1e-5, 5);
-	*/
 
 	int n = 400;
 	std::string filename1 = "wave_1";
@@ -38,7 +42,6 @@ int main() {
 	twoElectrons(n, 5.0, filename4, 1e-5, print);
 	//system("PAUSE");
 
-	/*
 	printf("\n");
 	takeTime(10);
 	takeTime(50);
@@ -47,7 +50,7 @@ int main() {
 	takeTime(300);
 	takeTime(400);
 	takeTime(500);
-	*/
+
 	return 0;
 }
 
@@ -70,17 +73,25 @@ void bucklingBeam(int n, double epsilon) {
 
 	double *eig = diagToVector(A, n);
 	double **E = transpose(R, n);
-	double lambda;
 	sortEig(eig, E, n);
+
+	double *off = createVector(a, n);
+	double *dia = createVector(d, n);
+	double *l = bisect(off, dia, n, epsilon);
+
+	double lambda;
 	for (int i = 0; i < 4; i++) {
 		lambda = d + 2*a*cos((i+1)*pi/(n + 1));
-		printf("Calculated = %5.4f  Analytical = %5.4f\n", eig[i], lambda);
+		printf("Jacobi = %5.4f  Bisect = %5.4f  Analytical = %5.4f\n", eig[i], l[i], lambda);
 	}
 	deleteMatrix(E, n);
 	deleteMatrix(A, n);
 	deleteMatrix(R, n);
 	delete[] eig;
 	delete[] u;
+	delete[] off;
+	delete[] dia;
+	delete[] l;
 }
 
 void oneElectron(int n, double epsilon, double rho_N) {
@@ -161,8 +172,8 @@ void twoElectrons(int n, double omega, std::string filename, double epsilon, boo
 	normalize(u, un, n);
 
 	if (writeToFile) {
-		doubleArrayToFile(u, n, filename, true);			// NEW NAME 
-		doubleArrayToFile(un, n, filename+"n", true);		// NEW NAME 
+		doubleArrayToFile(u, n, filename, true);
+		doubleArrayToFile(un, n, filename+"n", true);		
 	}
 	
 	deleteMatrix(A, n);
@@ -172,7 +183,7 @@ void twoElectrons(int n, double omega, std::string filename, double epsilon, boo
 	delete[] u;
 	delete[] un;
 }
-/*
+
 void takeTime(int n) {
 	chrono::duration<double> elapsed;
 
@@ -237,4 +248,4 @@ void takeTime(int n) {
 	delete[] timeBisect;
 	delete[] timeJacobi;
 	delete[] timeArmadillo; 
-}*/
+}
