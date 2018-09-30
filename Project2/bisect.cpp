@@ -1,44 +1,43 @@
 #include "utils.h"
-#include "bisect.h"
+#include "jacobi_bisect.h"
 #include <cmath>
 
 // Bisect method for finding eigenvalues of a tridiagonal symmetric matrix
-double *bisect(double *off, double *dia, int n) {
+double *bisect(double *off, double *dia, int n, double epsilon) {
 	double *interval = getInterval(off, dia, n);
 	double xmin = interval[0];
 	double xmax = interval[1];
 	double *eig = createVector(0, n);
-	isolate(xmin, xmax, off, dia, eig, 0, n);
+	isolate(xmin, xmax, off, dia, eig, 0, n, epsilon);
 	return eig;
 }
 
 // isolate an eigenvalue on an interval
-int isolate(double xmin, double xmax, double *off, double *dia, double *eig, int count, int n) {
+int isolate(double xmin, double xmax, double *off, double *dia, double *eig, int count, int n, double epsilon) {
 	int signMin = getSignChange(off, dia, n, xmin);
 	int signMax = getSignChange(off, dia, n, xmax);
 	int numOfEig = signMax - signMin;
 	if (numOfEig == 0) {
 		return count;
 	} else if (numOfEig == 1) {
-		eig[count] = extract(xmin, xmax, off, dia, n);
+		eig[count] = extract(xmin, xmax, off, dia, n, epsilon);
 		count++;
 		return count;
 	} else {
 		double xmiddle = xmin + (xmax - xmin)/2.0;
-		count = isolate(xmin, xmiddle, off, dia, eig, count, n);
-		count = isolate(xmiddle, xmax, off, dia, eig, count, n);
+		count = isolate(xmin, xmiddle, off, dia, eig, count, n, epsilon);
+		count = isolate(xmiddle, xmax, off, dia, eig, count, n, epsilon);
 	}
 	return count;
 }
 
 // find a single eigenvalue on given interval
-double extract(double xmin, double xmax, double *off, double *dia, int n) {
-	double eps = 1e-13;
+double extract(double xmin, double xmax, double *off, double *dia, int n, double epsilon) {
 	int maxIter = 100;
 	int iter = 0;
 	int signMin, signMax, numOfEig;
 	double x;
-	while (fabs(xmax - xmin) > eps && iter < maxIter) {
+	while (fabs(xmax - xmin) > epsilon && iter < maxIter) {
 		x = xmin + (xmax - xmin)/2.0;
 		signMin = getSignChange(off, dia, n, xmin);
 		signMax = getSignChange(off, dia, n, x);

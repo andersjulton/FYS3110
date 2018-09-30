@@ -62,13 +62,17 @@ void deleteMatrix(double **mat, int n) {
 	delete[] mat;
 }
 
-// Represent diagonal matrix A as a vector
-double* diagToVector(double **A, int n) {
-	double *a = new double[n];
+// test if two arrays are equal
+int testVector(double *u, double *v, int n) {
+	double error;
 	for (int i = 0; i < n; i++) {
-		a[i] = A[i][i];
+		error = u[i] - v[i];
+		if (fabs(error) > 1e-10) {
+			printf("(%d), error = %.30f\n", i, error);
+			return 1;
+		}
 	}
-	return a;
+	return 0;
 }
 
 // returns the largest relative error comparing two arrays
@@ -101,15 +105,14 @@ void printError(double *u, double *v, int n) {
 	printf("\n");
 }
 
-// write single array to a txt-file
-void arrayToFile(double *v , int n, std::string filename, bool zeroPadding = false) {
+// write single array (double) to a txt-file
+void doubleArrayToFile(double *v , int n, std::string filename, bool zeroPadding = false) {
 	std::ofstream myfile(filename + ".txt");
 	if (myfile.is_open()) {
 		if (zeroPadding) {
 			myfile << n+2 << "\n";
 			myfile << 0.0 << "\n";
-		}
-		else {
+		} else {
 			myfile << n << "\n";
 		}
 		for (int i = 0; i < n; i++) {
@@ -121,60 +124,21 @@ void arrayToFile(double *v , int n, std::string filename, bool zeroPadding = fal
 	}
 }
 
-void sortEig(double *eigval, double **eigvec, int n) {
-	int j;
-	double current, past;
-	double *currentVec, *pastVec;
-	for (int i = 1; i < n; i++) {
-		j = i - 1;
-		current = eigval[i];
-		currentVec = eigvec[i];
-		past = eigval[j];
-		pastVec = eigvec[j];
-		while (current < past) {
-			eigval[j+1] = past;
-			eigvec[j+1] = pastVec;
-			j--;
-			if (j < 0) {
-				break;
-			}
-			past = eigval[j];
-			pastVec = eigvec[j];
+// write single array (int) to a txt-file
+void intArrayToFile(int *v , int n, std::string filename, bool zeroPadding = false) {
+	std::ofstream myfile(filename + ".txt");
+	if (myfile.is_open()) {
+		if (zeroPadding) {
+			myfile << n+2 << "\n";
+			myfile << 0.0 << "\n";
+		} else {
+			myfile << n << "\n";
 		}
-		eigval[j+1] = current;
-		eigvec[j+1] = currentVec;
-	}
-}
-
-// transpose n x n matrix
-double **transpose(double **A, int n) {
-	double **transA = new double*[n];
-	for (int i = 0; i < n; i++) {
-		transA[i] = new double[n];
-		for (int j = 0; j < n; j++) {
-			transA[i][j] = A[j][i];
+		for (int i = 0; i < n; i++) {
+			myfile << v[i] << "\n";
 		}
-	}
-	return transA;
-}
-
-double analyticConvergenceRate(int n, double eps, double sumOff) {
-	double N = (1.0 - 2.0/(n*n - n));
-	return ((log(eps) - log(sumOff))/log(N));
-}
-
-void normalize(double *v, double *u, int n) {
-	double sum = 0;
-	for (int i = 0; i < n; i++) {
-		sum += v[i];
-	}
-	for (int j = 0; j < n; j++) {
-		u[j] = v[j]/sum;
-	}
-}
-
-void extractEigenVec(double **A, double *u, int index, int n) {
-	for (int i = 0; i < n; i++) {
-		u[i] = A[index][i];
+		if (zeroPadding) {
+			myfile << 0.0 << "\n";
+		}
 	}
 }

@@ -20,14 +20,6 @@ double maxEpsilon(double *expected, double *computed, int n);
 
 void printError(double *u, double *v, int n);
 
-void arrayToFile(double *v , int n, std::string filename, bool zeroPadding = false);
+void intArrayToFile(int *v , int n, std::string filename, bool zeroPadding = false);
 
-void sortEig(double *eigval, double **eigvec, int n);
-
-double **transpose(double **A, int n);
-
-double analyticConvergenceRate(int n, double eps, double sumOff);
-
-void normalize(double *v, double *u, int n);
-
-void extractEigenVec(double **A, double *u, int index, int n);
+void doubleArrayToFile(double *v , int n, std::string filename, bool zeroPadding = false);

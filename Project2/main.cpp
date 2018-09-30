@@ -1,13 +1,21 @@
-#include "jacobi.h"
+#include "jacobi_bisect.h"
 #include "utils.h"
+#include "linalgUtils.h"
+//#include "armadillo"
+//#include "compareArmadillo.h"
 #include <string>
 #include <algorithm>
 #include <iostream>
 #include <cmath>
+#include <chrono>
+
+//using namespace arma;
+using namespace std;
 
 void oneElectron(int n, double epsilon, double rho_N);
 void twoElectrons(int n, double omega, std::string filename, double epsilon, bool writeToFile);
 void bucklingBeam(int n, double epsilon);
+void takeTime(int n);
 
 int main() {
 	/*
@@ -28,7 +36,18 @@ int main() {
 	twoElectrons(n, 0.5, filename2, 1e-5, print);
 	twoElectrons(n, 1.0, filename3, 1e-5, print);
 	twoElectrons(n, 5.0, filename4, 1e-5, print);
-	system("PAUSE");
+	//system("PAUSE");
+
+	/*
+	printf("\n");
+	takeTime(10);
+	takeTime(50);
+	takeTime(100);
+	takeTime(200);
+	takeTime(300);
+	takeTime(400);
+	takeTime(500);
+	*/
 	return 0;
 }
 
@@ -142,8 +161,8 @@ void twoElectrons(int n, double omega, std::string filename, double epsilon, boo
 	normalize(u, un, n);
 
 	if (writeToFile) {
-		arrayToFile(u, n, filename, true);
-		arrayToFile(un, n, filename+"n", true);
+		doubleArrayToFile(u, n, filename, true);			// NEW NAME 
+		doubleArrayToFile(un, n, filename+"n", true);		// NEW NAME 
 	}
 	
 	deleteMatrix(A, n);
@@ -153,3 +172,69 @@ void twoElectrons(int n, double omega, std::string filename, double epsilon, boo
 	delete[] u;
 	delete[] un;
 }
+/*
+void takeTime(int n) {
+	chrono::duration<double> elapsed;
+
+	double *timeJacobi = new double[5];
+	double *timeBisect = new double[5];
+	double *timeArmadillo = new double[5];
+
+	double offDiaValue = -1.0;
+	double diaValue = 2.0;
+
+	double **A, **R;
+	mat armaA;
+	vec eig;
+	double *off = createVector(offDiaValue, n);
+	double *dia = createVector(diaValue, n);
+	printf("n = %d\n", n);
+	// timing 5 times
+	for (int i = 0; i < 5; i++) {
+		A = createTriDiaMatrix(offDiaValue, diaValue, n);
+		armaA = copySymMatrixToArma(A, n);
+		R = createDiaMatrix(1, n);
+		// time Jacobi
+		auto begin = chrono::high_resolution_clock::now();
+		jacobi(A, R, n, 1e-8);
+		auto end = chrono::high_resolution_clock::now();
+		elapsed = (end - begin);
+		timeJacobi[i] = (double)elapsed.count();
+		// time Bisect
+		begin = chrono::high_resolution_clock::now();
+		bisect(off, dia, n, 1e-8);
+		end = chrono::high_resolution_clock::now();
+		elapsed = (end - begin);
+		timeBisect[i] = (double)elapsed.count();
+		// time armadillo
+		begin = chrono::high_resolution_clock::now();
+		eig = eig_sym(armaA);
+		end = chrono::high_resolution_clock::now();
+		elapsed = (end - begin);
+		timeArmadillo[i] = (double)elapsed.count();
+		deleteMatrix(A, n);
+		deleteMatrix(R, n);
+	}
+	// Finding the median
+	sort(timeJacobi, timeJacobi + 5);
+	printf("Time it took for Jacobi: %g s\n", timeJacobi[2]);
+
+	sort(timeBisect, timeBisect + 5);
+	printf("Time it took for Bisect: %g s\n", timeBisect[2]);
+
+	sort(timeArmadillo, timeArmadillo + 5);
+	printf("Time it took for armadillo: %g s\n", timeArmadillo[2]);
+
+	printf("Ratio (armadillo/jacobi): %g \n", timeArmadillo[2]/timeJacobi[2]);
+	printf("Ratio (armadillo/bisect): %g \n", timeArmadillo[2]/timeBisect[2]);
+	printf("Ratio (bisect/jacobi): %g \n", timeBisect[2]/timeJacobi[2]);
+	printf("Ratio (jacobi/armadillo): %g \n", timeJacobi[2]/timeArmadillo[2]);
+	printf("Ratio (bisect/armadillo: %g \n", timeBisect[2]/timeArmadillo[2]);
+	printf("Ratio (jacobi/bisect): %g \n", timeJacobi[2]/timeBisect[2]);
+
+	delete[] off;
+	delete[] dia;
+	delete[] timeBisect;
+	delete[] timeJacobi;
+	delete[] timeArmadillo; 
+}*/
