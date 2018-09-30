@@ -4,9 +4,10 @@
 #include "bisect.h"
 #include "linalgUtils.h"
 #include "armadillo"
-#include <ctime>
 #include <string>
 #include <stdlib.h>
+#include <cmath>
+#include <chrono>
 
 using namespace std;
 using namespace arma;
@@ -14,54 +15,93 @@ using namespace arma;
 void testBisect(double a, double d, int n);
 void testJacobi(double a, double d, int n);
 void printResult(int success, string method);
+void iterToFileJacobi(double a, double d);
+void testRotate(double a, double d);
+void testFindMax(int n);
+void testCreateTriDiaMatrix();
+void takeTime(int n);
 
 int main() {
-	double a = 17;
-	double d = 9;
-	int n = 200;
-	double **A;
-	printf("Testing copySymMatrixToArma\n");
-	A = createTriDiaMatrix(a, d, n);
+	/*
+	printf("\n------------------------------------------------------------------------\n");
+	testCreateTriDiaMatrix();
+
+	double a = -1;
+	double d = 2;
+	int n = 20;
+
+	printf("\n------------------------------------------------------------------------\n");
+	testFindMax(n);
+
+	printf("\n------------------------------------------------------------------------\n");
+	testRotate(a, d);
+
+
+	printf("\n------------------------------------------------------------------------\n");
+	testJacobi(1, 2, 100);
+
+	printf("\n------------------------------------------------------------------------\n");
+	testBisect(a, d, n);
+
+	//iterToFileJacobi(-1, 2);
+	*/
+	printf("\n");
+
+	takeTime(10);
+	takeTime(50);
+	takeTime(100);
+	takeTime(200);
+	takeTime(300);
+	takeTime(400);
+	takeTime(500);
+	return 0;
+}
+
+void testCreateTriDiaMatrix() {
+	int n = 20;
+	double pi = 3.14159265359;
+	double h = 1.0/n;
+	double a =  -1.0/(h*h);;
+	double d = 2.0/(h*h);
+	printf("Testing transfer of values from created matrix A to a armadillo matrix\n");
+	double **A = createTriDiaMatrix(a, d, n);
 	mat armaA = copySymMatrixToArma(A, n);
 	int success = compareArmaMatrix(A, armaA, n);
 	printResult(success, "copySymMatrixToArma");
-	printf("Testing Jacobi\n");
-	testJacobi(1, 2, 100);
-	testJacobi(-4, 18, 200);
-	testJacobi(8, 0.4, 10);
-	printf("Testing Bisect\n");
-	printf("n = %d\n", n);
-	testBisect(a, d, n);
 
-	double **R = createDiaMatrix(1, n);
-	jacobi(A, R, n);
-	double *eig = diagToVector(A, n);
-	double **E = transpose(R, n);
-	sortEig(eig, E, n);
-	return 0;
+	printf("Testing if created matrix gives expected eigenvalues\n");
+	vec eigval = eig_sym(armaA);
+	double *expected = new double[n];
+	for (int i = 0; i < n; i++) {
+		expected[i] = d + 2*a*cos((i+1)*pi/(n + 1));
+	}
+	success = compareArmaVector(expected, eigval, n);
+
+	printResult(success, "createTriDiaMatrix");
+	deleteMatrix(A, n);
+	delete[] expected;
 }
 
 void printResult(int success, string method) {
 	if (success == 0) {
-		printf("\t- Method %s passed the test\n\n", method.c_str());
+		printf("\t- Method %s passed the test\n", method.c_str());
 	} else {
-		printf("\t- Method %s failed the test\n\n", method.c_str());
+		printf("\t- Method %s failed the test\n", method.c_str());
 	}
-
 }
 
-
 void testBisect(double a, double d, int n) {
+	int success;
 	double *off = createVector(a, n);
 	double *dia = createVector(d, n);
-	
 	double *eig = bisect(off, dia, n);
-	printf("Test eigenvalues Bisect\n");
-	double **A;
-	A = createTriDiaMatrix(a, d, n);
+	double **A = createTriDiaMatrix(a, d, n);
 	mat armaA = copySymMatrixToArma(A, n);
 	vec eigval = eig_sym(armaA);
-	compareArmaVector(eig, eigval, n);
+
+	printf("Checking if Bisect returns expected eigenvalues\n");
+	success = compareArmaVector(eig, eigval, n);
+	printResult(success, "bisect");
 
 	delete[] off;
 	delete[] dia;
@@ -69,30 +109,215 @@ void testBisect(double a, double d, int n) {
 }
 
 void testJacobi(double a, double d, int n) {
-	double **A;
 	int success;
-	A = createTriDiaMatrix(a, d, n);
+	double **A = createTriDiaMatrix(a, d, n);
 	mat armaA = copySymMatrixToArma(A, n);
-	// check eigenvalues
 	double **R = createDiaMatrix(1, n);
-	jacobi(A, R, n);
+
+	jacobi(A, R, n, 1e-12);
 	double *eig = diagToVector(A, n);
 	double **E = transpose(R, n);
 	sortEig(eig, E, n);
 	vec eigval = eig_sym(armaA);
 
-	compareArmaVector(eig, eigval, n);
-	// check eigenvectors
-	printf("Testing Orthogonality\n");
-	testOrthogonality(E, n);
+	printf("Checking if the Jacobi algorithm returns expected eigenvalues\n");
+	success = compareArmaVector(eig, eigval, n);
+	printResult(success, "Jacobi");
 
-	printf("Testing AE = lamdaE\n");
-	deleteMatrix(A, n);
+	printf("Testing Orthogonality of eigenvectors returned by Jacobi\n");
+	success = testOrthogonality(E, n);
+	printResult(success, "Jacobi");
+
+	printf("Testing Ax = lx for the returned eigenvalues and eigenvectors\n");
+	deleteMatrix(A, n);		// A has been changed
 	A = createTriDiaMatrix(a, d, n);
-	testEig(eig, E, A, n);
+	success = testEig(eig, E, A, n);
+	printResult(success, "Jacobi");
 
 	deleteMatrix(E, n);
 	deleteMatrix(A, n);
 	deleteMatrix(R, n);
-	printf("\n");
+}
+
+void testFindMax(int n) {
+	double **A = createTriDiaMatrix(1.0, 60.0, n);
+	int *maxPos = getMaxInRow(A, n);
+	int k = 0;
+	int l = maxPos[k];
+	printf("Testing if Jacobi's supporting functions distinguishes between diagonal and off-diagonal elements\n");
+	double max = maxOffDiag(A, maxPos, &k, &l, n);
+	int success = 0;
+	if (fabs(60.0 - max) < 1e-12) {
+		success = 1;
+	}
+	printResult(success, "getMaxInRow");
+
+	printf("Testing if Jacobi's supporting functions finds largest off-diagonal element\n");
+	delete[] maxPos;
+	int i = n/3;
+	int j = i + 2;
+	double myMax = 3.14;
+	A[i][j] = myMax;
+	maxPos = getMaxInRow(A, n);
+	max = maxOffDiag(A, maxPos, &k, &l, n);
+	success = 0;
+	if (fabs(myMax - max) > 1e-12) {
+		success = 1;
+	}
+	printResult(success, "getMaxInRow");
+
+	printf("Testing if Jacobi's supporting functions finds the correct coordinates of value max\n");
+	success = (i - k) + (j - l);
+	printResult(success, "maxOffDiag");
+
+	printf("Testing if Jacobi's supporting functions updates max-coordinates correctly\n");
+	myMax = 42.0;
+	i = k;
+	j = i + 1;
+	A[i][j] = myMax;
+	updateMaxInRow(A, maxPos, k, l, n);
+	max = maxOffDiag(A, maxPos, &k, &l, n);
+	success = 0;
+	if (fabs(myMax - max) > 1e-12) {
+		success = 1;
+	}
+	printResult(success, "updateMaxInRow (in row)");
+	myMax = 9000.0;
+	i = k - 1;
+	j = l;
+	A[i][j] = myMax;
+	updateMaxInRow(A, maxPos, k, l, n);
+	max = maxOffDiag(A, maxPos, &k, &l, n);
+	success = 0;
+	if (fabs(myMax - max) > 1e-12) {
+		success = 1;
+	}
+	printResult(success, "updateMaxInRow (in column)");
+	deleteMatrix(A, n);
+	delete[] maxPos;
+}
+
+void testRotate(double a, double d) {
+	int n = 10;
+	double **A = createTriDiaMatrix(a, d, n);
+	double **R = createDiaMatrix(1, n);
+	double **E;
+	double maxOffdiag;
+	int k, l;
+	int *indexOfMax = getMaxInRow(A, n);
+	k = 0;
+	l = indexOfMax[0];
+	int success = 0;
+	for (int i = 0; i < 5; i++) {
+		 maxOffdiag = maxOffDiag(A, indexOfMax, &k, &l, n);
+		rotate(A, R, k, l, n);
+		updateMaxInRow(A, indexOfMax, k, l, n);
+
+		// test
+		E = transpose(R, n);
+		success += testOrthogonality(E, n);
+		deleteMatrix(E, n);
+	}
+	printf("Testing if Orthogonality is preseved after every five rotation in the Jacobi algorithm\n"); 
+	printResult(success, "rotate");
+	delete[] indexOfMax;
+	deleteMatrix(A, n);
+	deleteMatrix(R, n);
+}
+
+
+void iterToFileJacobi(double a, double d) {
+	int *n_vector = new int[40];
+	int *iter_vector = new int[40];
+	int n = 2;
+	double **R, **A;
+	for (int i = 0; i < 10; i++) {
+		n_vector[i] = n;
+		A = createTriDiaMatrix(a, d, n);
+		R = createDiaMatrix(1, n);
+		iter_vector[i] = jacobi(A, R, n, 1e-12);
+		deleteMatrix(A, n);
+		deleteMatrix(R, n);
+		n += 2;
+	}
+	n = 40;
+	for (int i = 0; i < 30; i++) {
+		n_vector[i+10] =  n;
+		A = createTriDiaMatrix(a, d, n);
+		R = createDiaMatrix(1, n);
+		iter_vector[i+10] = jacobi(A, R, n, 1e-12);
+		deleteMatrix(A, n);
+		deleteMatrix(R, n);
+		n += 20;
+	}
+	intArrayToFile(n_vector, 40, "n");
+	intArrayToFile(iter_vector, 40, "iter");
+	delete[] n_vector;
+	delete[] iter_vector;
+}
+
+void takeTime(int n) {
+	chrono::duration<double> elapsed;
+
+	double *timeJacobi = new double[5];
+	double *timeBisect = new double[5];
+	double *timeArmadillo = new double[5];
+
+	double offDiaValue = -1.0;
+	double diaValue = 2.0;
+
+	double **A, **R;
+	mat armaA;
+	vec eig;
+	double *off = createVector(offDiaValue, n);
+	double *dia = createVector(diaValue, n);
+	printf("n = %d\n", n);
+	// timing 5 times
+	for (int i = 0; i < 5; i++) {
+		A = createTriDiaMatrix(offDiaValue, diaValue, n);
+		armaA = copySymMatrixToArma(A, n);
+		R = createDiaMatrix(1, n);
+		// time Jacobi
+		auto begin = chrono::high_resolution_clock::now();
+		jacobi(A, R, n, 1e-8);
+		auto end = chrono::high_resolution_clock::now();
+		elapsed = (end - begin);
+		timeJacobi[i] = (double)elapsed.count();
+		// time Bisect
+		begin = chrono::high_resolution_clock::now();
+		bisect(off, dia, n);
+		end = chrono::high_resolution_clock::now();
+		elapsed = (end - begin);
+		timeBisect[i] = (double)elapsed.count();
+		// time armadillo
+		begin = chrono::high_resolution_clock::now();
+		eig = eig_sym(armaA);
+		end = chrono::high_resolution_clock::now();
+		elapsed = (end - begin);
+		timeArmadillo[i] = (double)elapsed.count();
+		deleteMatrix(A, n);
+		deleteMatrix(R, n);
+	}
+	// Finding the median
+	sort(timeJacobi, timeJacobi + 5);
+	printf("Time it took for Jacobi: %g s\n", timeJacobi[2]);
+
+	sort(timeBisect, timeBisect + 5);
+	printf("Time it took for Bisect: %g s\n", timeBisect[2]);
+
+	sort(timeArmadillo, timeArmadillo + 5);
+	printf("Time it took for armadillo: %g s\n", timeArmadillo[2]);
+
+	printf("Ratio (armadillo/jacobi): %g \n", timeArmadillo[2]/timeJacobi[2]);
+	printf("Ratio (armadillo/bisect): %g \n", timeArmadillo[2]/timeBisect[2]);
+	printf("Ratio (bisect/jacobi): %g \n", timeBisect[2]/timeJacobi[2]);
+	printf("Ratio (jacobi/armadillo): %g \n", timeJacobi[2]/timeArmadillo[2]);
+	printf("Ratio (bisect/armadillo: %g \n", timeBisect[2]/timeArmadillo[2]);
+	printf("Ratio (jacobi/bisect): %g \n", timeJacobi[2]/timeBisect[2]);
+
+	delete[] off;
+	delete[] dia;
+	delete[] timeBisect;
+	delete[] timeJacobi;
+	delete[] timeArmadillo; 
 }
