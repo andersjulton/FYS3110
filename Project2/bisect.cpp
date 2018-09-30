@@ -2,8 +2,6 @@
 #include "bisect.h"
 #include <cmath>
 
-using namespace std;
-
 // Bisect method for finding eigenvalues of a tridiagonal symmetric matrix
 double *bisect(double *off, double *dia, int n) {
 	double *interval = getInterval(off, dia, n);

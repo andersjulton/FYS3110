@@ -2,7 +2,6 @@
 #include <cmath>
 #include <fstream>
 
-using namespace std; 	// Oh, no!
 
 //  Allocating space for a vector and fill elements with a constant value
 double* createVector(double value, int n) {
@@ -103,12 +102,54 @@ void printError(double *u, double *v, int n) {
 }
 
 // write single array to a txt-file
-void arrayToFile(double *v , int n, string filename) {
-	ofstream myfile(filename + ".txt");
+void arrayToFile(double *v , int n, std::string filename) {
+	std::ofstream myfile(filename + ".txt");
 	if (myfile.is_open()) {
 		myfile << n << "\n";
 		for (int i = 0; i < n; i++) {
 			myfile << v[i] << "\n";
 		}
 	}
+}
+
+void sortEig(double *eigval, double **eigvec, int n) {
+	int j;
+	double current, past;
+	double *currentVec, *pastVec;
+	for (int i = 1; i < n; i++) {
+		j = i - 1;
+		current = eigval[i];
+		currentVec = eigvec[i];
+		past = eigval[j];
+		pastVec = eigvec[j];
+		while (current < past) {
+			eigval[j+1] = past;
+			eigvec[j+1] = pastVec;
+			j--;
+			if (j < 0) {
+				break;
+			}
+			past = eigval[j];
+			pastVec = eigvec[j];
+		}
+		eigval[j+1] = current;
+		eigvec[j+1] = currentVec;
+	}
+}
+
+// transpose n x n matrix
+double **transpose(double **A, int n) {
+	double **transA = new double*[n];
+	for (int i = 0; i < n; i++) {
+		transA[i] = new double[n];
+		for (int j = 0; j < n; j++) {
+			transA[i][j] = A[j][i];
+		}
+	}
+	return transA;
+}
+
+double analyticConvergenceRate(int n, double eps, double sumOff) {
+	double N = (1.0 - 2.0/(n*n - n));
+	return ((log(eps) - log(sumOff))/log(N));
 }

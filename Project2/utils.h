@@ -1,8 +1,6 @@
 #pragma once
 #include <string>
 
-using namespace std;
-
 
 double* diagToVector(double **A, int n);
 
@@ -22,4 +20,10 @@ double maxEpsilon(double *expected, double *computed, int n);
 
 void printError(double *u, double *v, int n);
 
-void arrayToFile(double *v , int n, string filename);
+void arrayToFile(double *v , int n, std::string filename);
+
+void sortEig(double *eigval, double **eigvec, int n);
+
+double **transpose(double **A, int n);
+
+double analyticConvergenceRate(int n, double eps, double sumOff);

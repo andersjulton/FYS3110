@@ -1,6 +1,6 @@
 #pragma once
 
-int jacobi(double **A, double **R, int n);
+int jacobi(double **A, double **R, int n, double epsilon);
 
 int* getMaxInRow(double **A, int n);
 

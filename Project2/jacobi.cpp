@@ -1,13 +1,12 @@
 #include <cmath>
+#include <algorithm>
 #include "utils.h"
 #include "jacobi.h"
 
-using namespace std;
 
-int jacobi(double **A, double **R, int n) {
+int jacobi(double **A, double **R, int n, double epsilon) {
 	int k, l;
-	double epsilon = 1e-12;
-	int max_number_iterations = n*n*n; 
+	int max_number_iterations = n*n*n;
 	int iterations = 0;
 	int *indexOfMax = getMaxInRow(A, n);
 	k = 0;
@@ -26,7 +25,7 @@ int jacobi(double **A, double **R, int n) {
 void rotate(double **A, double **R, int k, int l, int n) {
 	double s, c;
 	// Calculate phi
-	if (A[k][l] != 0.0) { 				
+	if (A[k][l] != 0.0) {
 		double t, phi;
 		phi = (A[l][l] - A[k][k])/(2*A[k][l]);
 		if ( phi > 0 ) {
@@ -36,7 +35,7 @@ void rotate(double **A, double **R, int k, int l, int n) {
 		}
 		c = 1/sqrt(1 + t*t);
 		s = c*t;
-	} else {             // This should NEVER happen 
+	} else {             // This should NEVER happen
 		c = 1.0;
 		s = 0.0;
 	}
@@ -81,25 +80,29 @@ void updateMaxInRow(double **A, int *indexOfMax, int k, int l, int n) {
 		if (indexOfMax[i] == k || indexOfMax[i] == l) {
 			// Update row if l or k used to be max in row
 			for (int j = i+1; j < n; j++) {
-				if (fabs(A[i][j]) > fabs(A[i][indexOfMax[i]])) {indexOfMax[i] = j;}
+				if (fabs(A[i][j]) > fabs(A[i][indexOfMax[i]])) {
+					indexOfMax[i] = j;
+				}
 			}
 		}
 	}
-	// see if new element in column k or l > max 
+	// see if new element in column k or l > max
 	for (int i = 0; i < k; i++) {
-		if (max(fabs(A[i][k]), fabs(A[i][k])) > fabs(A[i][indexOfMax[i]])) {
+		if (std::max(fabs(A[i][k]), fabs(A[i][k])) > fabs(A[i][indexOfMax[i]])) {
 			//printf("I like cake\n");
-			if ( (fabs(A[i][k]) > fabs(A[i][l])) ) { 
+			if ( (fabs(A[i][k]) > fabs(A[i][l])) ) {
 				indexOfMax[i] = k;
-			} else { 
+			} else {
 				indexOfMax[i] = l;
 			}
-		} //else {printf("This happens\n");} 
+		} //else {printf("This happens\n");}
 	}
 	//printf("%d\n",(l-k) );
 	// k < l
 	for (int i = k; i < l; i++) {
-		if ((fabs(A[i][l]) > fabs(A[i][indexOfMax[i]]))) { indexOfMax[i] = l;}
+		if ((fabs(A[i][l]) > fabs(A[i][indexOfMax[i]]))) {
+			indexOfMax[i] = l;
+		}
 	}
 }
 
@@ -109,7 +112,9 @@ int* getMaxInRow(double **A, int n) {
   	for (int i = 0; i < (n - 1); i++) {
   		indexOfMax[i] = i + 1;
     	for (int j = i + 2; j < n; j++) {
-    		if (fabs(A[i][j]) > fabs(A[i][indexOfMax[i]])) {indexOfMax[i] = j;}
+    		if (fabs(A[i][j]) > fabs(A[i][indexOfMax[i]])) {
+				indexOfMax[i] = j;
+			}
     	}
   	}
 	return indexOfMax;
