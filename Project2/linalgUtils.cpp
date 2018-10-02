@@ -43,11 +43,7 @@ double** transpose(double **A, int n) {
 	return transA;
 }
 
-double analyticConvergenceRate(int n, double eps, double sumOff) {
-	double N = (1.0 - 2.0/(n*n - n));
-	return ((log(eps) - log(sumOff))/log(N));
-}
-
+// Normalize a vector
 void normalize(double *v, double *u, int n) {
 	double sum = 0;
 	for (int i = 0; i < n; i++) {
@@ -58,6 +54,7 @@ void normalize(double *v, double *u, int n) {
 	}
 }
 
+// Exctract an eigenvector from matrix
 void extractEigenVec(double **A, double *u, int index, int n) {
 	for (int i = 0; i < n; i++) {
 		u[i] = A[index][i];
