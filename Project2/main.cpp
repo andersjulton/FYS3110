@@ -9,7 +9,7 @@
 #include <cmath>
 #include <chrono>
 
-//using namespace arma;
+using namespace arma;
 using namespace std;
 
 void oneElectron(int n, double epsilon, double rho_N);
@@ -54,6 +54,7 @@ int main() {
 	return 0;
 }
 
+// Calculate eigenvalues and eigenvectors for the Buckling beam equation using Jacobi algorithm
 void bucklingBeam(int n, double epsilon) {
 	printf("\nCalculating eigenvalues for the buckling beam for n = %d \n\n", n);
 	int iterations;
@@ -94,6 +95,7 @@ void bucklingBeam(int n, double epsilon) {
 	delete[] l;
 }
 
+// Calculate eigenvalues and eigenvectors for the Schrödinger equation for one electron using Jacobi algorithm
 void oneElectron(int n, double epsilon, double rho_N) {
 	printf("\nCalculating eigenvalues for one electron for n = %d and rho_max = %2.1f\n\n", n, rho_N);
 	int iterations;
@@ -136,6 +138,7 @@ void oneElectron(int n, double epsilon, double rho_N) {
 	delete[] u;
 }
 
+// Calculate eigenvalues and eigenvectors for the Schrödinger equation for two electrons using Jacobi algorithm
 void twoElectrons(int n, double omega, std::string filename, double epsilon, bool writeToFile) {
 	printf("\nCalculating eigenvalues for two electrons for n = %d and omega = %3.2f\n", n, omega);
 	int iterations;
@@ -184,6 +187,7 @@ void twoElectrons(int n, double omega, std::string filename, double epsilon, boo
 	delete[] un;
 }
 
+//Time comparison of Jacobi algorithm, Bisection method and eig_sym from armadillo
 void takeTime(int n) {
 	chrono::duration<double> elapsed;
 
