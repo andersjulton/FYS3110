@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt 
 import numpy as np
 
+#Python script for iteration plot
+
 def read_file(filename):
 	with open(filename, "r") as infile:
 		n = int(infile.readline().strip())
