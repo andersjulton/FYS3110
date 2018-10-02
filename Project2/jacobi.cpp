@@ -3,7 +3,7 @@
 #include "utils.h"
 #include "jacobi_bisect.h"
 
-
+// Jacobi algorithm for finding eigenvalues and eigenvectors for a symmetric tridiagonal matrix
 int jacobi(double **A, double **R, int n, double epsilon) {
 	int k, l;
 	int max_number_iterations = n*n*n;
@@ -22,6 +22,7 @@ int jacobi(double **A, double **R, int n, double epsilon) {
 	return iterations;
 }
 
+// Performs rotation to zero out largets off-diagonal element
 void rotate(double **A, double **R, int k, int l, int n) {
 	double s, c;
 	// Calculate phi
@@ -64,6 +65,7 @@ void rotate(double **A, double **R, int k, int l, int n) {
 	}
 }
 
+// Find largest off-diagonal element, updates indicies 
 double maxOffDiag(double **A, int *indexOfMax, int *k, int *l, int n) {
 	for (int i = 0; i < n-1; i++) {
 		if (fabs(A[i][indexOfMax[i]]) > fabs(A[*k][*l])) {
@@ -74,6 +76,7 @@ double maxOffDiag(double **A, int *indexOfMax, int *k, int *l, int n) {
 	return A[*k][*l];
 }
 
+// Updates index for max element in row
 void updateMaxInRow(double **A, int *indexOfMax, int k, int l, int n) {
 	// see if max in column was k or l
 	for (int i = 0; i < (n-1); i++) {
