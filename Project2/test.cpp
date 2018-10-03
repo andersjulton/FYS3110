@@ -89,6 +89,7 @@ void testBisect(double a, double d, int n) {
 	success = compareArmaVector(eig, eigval, n);
 	printResult(success, "bisect");
 
+	deleteMatrix(A, n);
 	delete[] off;
 	delete[] dia;
 	delete[] eig;
@@ -120,6 +121,7 @@ void testJacobi(double a, double d, int n) {
 	success = testEig(eig, E, A, n);
 	printResult(success, "Jacobi");
 
+	delete[] eig;
 	deleteMatrix(E, n);
 	deleteMatrix(A, n);
 	deleteMatrix(R, n);
@@ -195,7 +197,7 @@ void testRotate(double a, double d) {
 	l = indexOfMax[0];
 	int success = 0;
 	for (int i = 0; i < 5; i++) {
-		 maxOffdiag = maxOffDiag(A, indexOfMax, &k, &l, n);
+		maxOffdiag = maxOffDiag(A, indexOfMax, &k, &l, n);
 		rotate(A, R, k, l, n);
 		updateMaxInRow(A, indexOfMax, k, l, n);
 
@@ -206,6 +208,7 @@ void testRotate(double a, double d) {
 	}
 	printf("Testing if Orthogonality is preseved after every five rotation in the Jacobi algorithm\n"); 
 	printResult(success, "rotate");
+	
 	delete[] indexOfMax;
 	deleteMatrix(A, n);
 	deleteMatrix(R, n);

@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 plt.switch_backend('TkAgg')
 
+#Python script for plotting wave functions
+
 with open("wave_1.txt", "r") as infile:
     n = int(infile.readline())
     u1 = np.zeros(n)
