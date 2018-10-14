@@ -130,6 +130,8 @@ double **createMatrix(int m, int n);
 
 void deleteMatrix(double **mat, int n);
 
+void doubleMatrixToFile(double **v , int n, int m, std::string filename);
+
 int main() {
 
     //earthJupiterSun3D();
@@ -140,9 +142,9 @@ int main() {
 }
 
 void planets () {
-    int n = 10000;
-    double finalTime = 20.0;
-    int m = 7;
+    int n = 100000;
+    double finalTime = 250.0;
+    int m = 10;
     double **pos_x, **pos_y, **pos_z, **vel_x, **vel_y, **vel_z;
     pos_x = createMatrix(m, n);
     pos_y = createMatrix(m, n);
@@ -153,30 +155,22 @@ void planets () {
 
     nested_map planets;
     planets.emplace(0, StellarObjectsLibrary::Sun);
-    planets.emplace(1, StellarObjectsLibrary::Earth);
-    planets.emplace(2, StellarObjectsLibrary::Mars);
-    planets.emplace(3, StellarObjectsLibrary::Jupiter);
-    planets.emplace(4, StellarObjectsLibrary::Venus);
-    planets.emplace(5, StellarObjectsLibrary::Pluto);
-    planets.emplace(6, StellarObjectsLibrary::Mercury);
-
-    std::string planetNames[m];
-    planetNames[0] = "Sun";
-    planetNames[1] = "Earth";
-    planetNames[2] = "Mars";
-    planetNames[3] = "Jupiter";
-    planetNames[4] = "Venus";
-    planetNames[5] = "Pluto";
-    planetNames[6] = "Mercury";
-
+    planets.emplace(1, StellarObjectsLibrary::Mercury);
+    planets.emplace(2, StellarObjectsLibrary::Venus);
+    planets.emplace(3, StellarObjectsLibrary::Earth);
+    planets.emplace(4, StellarObjectsLibrary::Mars);
+    planets.emplace(5, StellarObjectsLibrary::Jupiter);
+    planets.emplace(6, StellarObjectsLibrary::Saturn);
+    planets.emplace(7, StellarObjectsLibrary::Uranus);
+    planets.emplace(8, StellarObjectsLibrary::Neptune);
+    planets.emplace(9, StellarObjectsLibrary::Pluto);
 
     integrateVerletPlanets(n, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z, finalTime, planets, m);
 
-    for (int i = 0; i < m; i++) {
-        doubleArrayToFile(pos_x[i], n, planetNames[i]+"_x");
-        doubleArrayToFile(pos_y[i], n, planetNames[i]+"_y");
-        doubleArrayToFile(pos_z[i], n, planetNames[i]+"_z");
-    }
+    doubleMatrixToFile(pos_x, n, m, "pos_x");
+    doubleMatrixToFile(pos_y, n, m, "pos_y");
+    doubleMatrixToFile(pos_z, n, m, "pos_z");
+
     deleteMatrix(pos_x, n);
     deleteMatrix(pos_y, n);
     deleteMatrix(pos_z, n);
@@ -546,6 +540,19 @@ void doubleArrayToFile(double *v , int n, std::string filename) {
 	}
 }
 
+void doubleMatrixToFile(double **v , int n, int m, std::string filename) {
+	std::ofstream myfile(filename + ".txt");
+	if (myfile.is_open()) {
+		myfile << n << " " <<  m << "\n";
+		for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                myfile << v[j][i] << " ";
+            }
+            myfile << '\n';
+		}
+	}
+}
+
 double* linspace(double min, double max, int n) {
     double *v;
     v = new double[n];
@@ -568,6 +575,7 @@ double **createMatrix(int m, int n) {
 	}
 	return mat;
 }
+
 void deleteMatrix(double **mat, int n) {
 	for (int i = 0; i < n; i++) {
 		delete[] mat[i];

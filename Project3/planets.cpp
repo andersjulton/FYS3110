@@ -94,12 +94,3 @@ namespace StellarObjectsLibrary {
         {"vz0", -9.301537706126110E-04*360.0}
     };
 }
-
-int main() {
-
-    std::unordered_map<int, std::unordered_map<std::string, double>> Planets;
-    Planets.emplace(0, StellarObjectsLibrary::Neptune);
-    std::cout << Planets[0]["mass"] << '\n';
-
-    return 0;
-}
