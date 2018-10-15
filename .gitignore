@@ -1,9 +1,3 @@
-Project_1_final.sln
-Project_1_final.vcxproj
-Project_1_final.vcxproj.filters
-Project_1_final.vcxproj.user
-proj/
-.vs/
-.DS_Store
-*.exe
-n_*.txt
+pos_x.txt
+pos_y.txt
+pos_z.txt
