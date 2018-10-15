@@ -19,11 +19,11 @@ pos_x = read_file("pos_x.txt")
 pos_y = read_file("pos_y.txt")
 pos_z = read_file("pos_z.txt")
 
-
 names = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]
 
 fig = plt.figure()
 ax = fig.gca(projection='3d')
+#ax.set_zlim(-1, 1)
 for i, n in enumerate(names):
 	ax.plot(pos_x[:,i], pos_y[:,i], pos_z[:,i], label = n, linewidth=0.5)
 ax.legend()

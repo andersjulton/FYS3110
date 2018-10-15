@@ -6,22 +6,9 @@
 
 typedef std::unordered_map<int, std::unordered_map<std::string, double>> nested_map;
 
-struct MassObjectv2 {
-	std::string name;
-	double mass;
-	// position:
-	double x;
-	double y;
-	double z;
-	//velocity:
-	double vx;
-	double vy;
-	double vz;
-};
-
 namespace StellarObjectsLibrary {
     std::unordered_map<std::string, double> Sun {
-        {"mass", 2e30},
+        {"mass", 2*10e30},
         {"x0", -1.474798697566110E-04},
         {"y0", 7.248922398410132E-03},
         {"z0", -7.268118257496195E-05},
@@ -30,7 +17,7 @@ namespace StellarObjectsLibrary {
         {"vz0", 1.896113821987181E-07*360.0}
     };
     std::unordered_map<std::string, double> Earth {
-        {"mass", 6e24},
+        {"mass", 6*10e24},
         {"x0", 9.413801075750535e-01},
         {"y0", 3.379019986046322E-01},
         {"z0", -9.334104672733438E-05},
@@ -39,7 +26,7 @@ namespace StellarObjectsLibrary {
         {"vz0", -1.732657683299539E-07*360.0}
     };
     std::unordered_map<std::string, double> Jupiter {
-        {"mass", 1.9e27},
+        {"mass", 1.9*10e27},
         {"x0", -2.666952709077877},
         {"y0", -4.655671225645230},
         {"z0", 7.896515774211305E-02},
@@ -48,7 +35,7 @@ namespace StellarObjectsLibrary {
         {"vz0", -1.303431975919576E-04*360.0}
     };
     std::unordered_map<std::string, double> Mars {
-        {"mass", 6.6e23},
+        {"mass", 6.6*10e23},
         {"x0", 1.377524608498332},
         {"y0", -1.476563536087052E-01},
         {"z0", -3.712365888122099E-02},
@@ -57,7 +44,7 @@ namespace StellarObjectsLibrary {
         {"vz0", 2.651531936464447E-04*360.0}
     };
     std::unordered_map<std::string, double> Venus {
-        {"mass", 4.9e24},
+        {"mass", 4.9*10e24},
         {"x0", 7.066148066072473E-01},
         {"y0", 1.672271996665292E-01},
         {"z0", -3.866246273128392E-02},
@@ -66,7 +53,7 @@ namespace StellarObjectsLibrary {
         {"vz0", 5.315229360444450E-04*360.0}
     };
     std::unordered_map<std::string, double> Saturn {
-        {"mass", 5.5e26},
+        {"mass", 5.5*10e26},
         {"x0", 1.549159416633817},
         {"y0", -9.935197133379326},
         {"z0", 1.110808051816651E-01},
@@ -75,7 +62,7 @@ namespace StellarObjectsLibrary {
         {"vz0", -2.220199495831516E-04*360.0}
     };
     std::unordered_map<std::string, double> Mercury {
-        {"mass", 3.3e23},
+        {"mass", 3.3*10e23},
         {"x0", -1.534743586808411E-01},
         {"y0", -4.321686982270908E-01},
         {"z0", -2.191308023125118E-02},
@@ -84,7 +71,7 @@ namespace StellarObjectsLibrary {
         {"vz0", -2.561512430419179E-03*360.0}
     };
     std::unordered_map<std::string, double> Uranus {
-        {"mass", 8.8e25},
+        {"mass", 8.8*10e25},
         {"x0", 1.717591494590517E+01},
         {"y0", 9.997664143031971},
         {"z0", -1.853846122526302E-01},
@@ -93,7 +80,7 @@ namespace StellarObjectsLibrary {
         {"vz0", 3.800786256690271E-05*360.0}
     };
     std::unordered_map<std::string, double> Neptune {
-        {"mass", 1.03e26},
+        {"mass", 1.03*10e26},
         {"x0", 2.892029941220658E+01},
         {"y0", -7.722539840090450},
         {"z0", -5.074661608355547E-01},
@@ -102,7 +89,7 @@ namespace StellarObjectsLibrary {
         {"vz0", -8.068388455453793E-05*360.0}
     };
     std::unordered_map<std::string, double> Pluto {
-        {"mass", 1.31e22},
+        {"mass", 1.31*10e22},
         {"x0", 1.164390186496279E+01},
         {"y0", -3.157511878129099E+01},
         {"z0", 1.062859645894982E-02},
@@ -110,39 +97,6 @@ namespace StellarObjectsLibrary {
         {"vy0", 4.214379702145380E-04*360.0},
         {"vz0", -9.301537706126110E-04*360.0}
     };
-}
-
-namespace StellarObjectsLibraryv2 {
-
-    struct MassObjectv2 Sun = {"Sun", 2e30, -1.474798697566110E-04, 7.248922398410132E-03, -7.268118257496195E-05,
-        -7.585746627696994E-06*360.0, 2.590655894257502E-06*360.0, 1.896113821987181E-07*360.0};
-
-    struct MassObjectv2 Mercury = {"Mercury", 3.3e23, -1.534743586808411E-01, -4.321686982270908E-01, -2.191308023125118E-02,
-         2.090296530646647E-02*360.0, -7.871323434203551E-03*360.0, -2.561512430419179E-03*360.0};
-
-    struct MassObjectv2 Venus = {"Venus", 4.9e24, 7.066148066072473E-01, 1.672271996665292E-01, -3.866246273128392E-02,
-        -4.546772256640751E-03*360.0, 1.963882295765339E-02*360.0, 5.315229360444450E-04*360.0};
-
-    struct MassObjectv2 Earth = {"Earth", 6e24, 9.413801075750535e-01, 3.379019986046322E-01, -9.334104672733438E-05,
-        -5.994522787486753E-03*360.0, 1.617377250092178E-02*360.0, -1.732657683299539E-07*360.0};
-
-    struct MassObjectv2 Mars = {"Mars", 6.6e23, 1.377524608498332, -1.476563536087052E-01, -3.712365888122099E-02,
-         2.090430895774286E-03*360.0, 1.510431174964668E-02*360.0, 2.651531936464447E-04*360.0};
-
-    struct MassObjectv2 Jupiter = {"Jupiter", 1.9e27, -2.666952709077877, -4.655671225645230, 7.896515774211305E-02,
-        6.458958874387921E-03*360.0, -3.390642961368397E-03*360.0, -1.303431975919576E-04*360.0};
-
-    struct MassObjectv2 Saturn = {"Saturn", 5.5e26, 1.549159416633817, -9.935197133379326, 1.110808051816651E-01,
-         5.204592319579984E-03*360.0, 8.422049097583516E-04*360.0, -2.220199495831516E-04*360.0};
-
-    struct MassObjectv2 Uranus = {"Uranus", 8.8e25, 1.717591494590517E+01, 9.997664143031971, -1.853846122526302E-01,
-         -2.007356242188686E-03*360.0, 3.215850240122884E-03*360.0, 3.800786256690271E-05*360.0};
-
-    struct MassObjectv2 Neptune = {"Neptune", 1.03e26, 2.892029941220658E+01, -7.722539840090450, -5.074661608355547E-01,
-         7.890393808745537E-04*360.0, 3.051931545808817E-03*360.0, -8.068388455453793E-05*360.0};
-
-    struct MassObjectv2 Pluto = {"Pluto", 1.31e22, 1.164390186496279E+01, -3.157511878129099E+01, 1.062859645894982E-02,
-         3.018604420452015E-03*360.0, 4.214379702145380E-04*360.0, -9.301537706126110E-04*360.0};
 }
 
 double* createVector(double value, int n);
@@ -164,18 +118,13 @@ double *vel_Ez, double *pos_Jx, double *pos_Jy, double *pos_Jz, double *vel_Jx, 
 void integrateVerletPlanets(int n, double **pos_x, double **pos_y, double **pos_z, double **vel_x, double **vel_y, double **vel_z,
 double finalTime, nested_map planets, int m);
 
-void integrateVerletPlanetsStruct(int n, double **pos_x, double **pos_y, double **pos_z, double **vel_x, double **vel_y, double **vel_z,
-double finalTime, struct MassObjectv2 *planets, int m);
-
 void earthJupiterSun2D();
 
 void earthJupiterSun3D();
 
 void earthSun2D();
 
-void planets();
-
-void planetsStruct(); // NEW FORMAT WITH STRUCT
+void planets ();
 
 double **createMatrix(int m, int n);
 
@@ -188,13 +137,11 @@ int main() {
     //earthJupiterSun3D();
     //earthJupiterSun2D();
     //earthSun2D();
-    //planets();
-    planetsStruct();
-
+    planets();
     return 0;
 }
 
-void planets() {
+void planets () {
     int n = 100000;
     double finalTime = 250.0;
     int m = 10;
@@ -219,46 +166,6 @@ void planets() {
     planets.emplace(9, StellarObjectsLibrary::Pluto);
 
     integrateVerletPlanets(n, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z, finalTime, planets, m);
-
-    doubleMatrixToFile(pos_x, n, m, "pos_x");
-    doubleMatrixToFile(pos_y, n, m, "pos_y");
-    doubleMatrixToFile(pos_z, n, m, "pos_z");
-
-    deleteMatrix(pos_x, n);
-    deleteMatrix(pos_y, n);
-    deleteMatrix(pos_z, n);
-    deleteMatrix(vel_x, n);
-    deleteMatrix(vel_y, n);
-    deleteMatrix(vel_z, n);
-}
-
-void planetsStruct() { // NEW FORMAT WITH STRUCT
-    int n = 100000;
-    double finalTime = 250.0;
-    int m = 10;
-    double **pos_x, **pos_y, **pos_z, **vel_x, **vel_y, **vel_z;
-    pos_x = createMatrix(m, n);
-    pos_y = createMatrix(m, n);
-    pos_z = createMatrix(m, n);
-    vel_x = createMatrix(m, n);
-    vel_y = createMatrix(m, n);
-    vel_z = createMatrix(m, n);
-
-    struct MassObjectv2 *planets;
-    planets = new struct MassObjectv2[m];
-
-    planets[0] = StellarObjectsLibraryv2::Sun;
-    planets[1] = StellarObjectsLibraryv2::Mercury;
-    planets[2] = StellarObjectsLibraryv2::Venus;
-    planets[3] = StellarObjectsLibraryv2::Earth;
-    planets[4] = StellarObjectsLibraryv2::Mars;
-    planets[5] = StellarObjectsLibraryv2::Jupiter;
-    planets[6] = StellarObjectsLibraryv2::Saturn;
-    planets[7] = StellarObjectsLibraryv2::Uranus;
-    planets[8] = StellarObjectsLibraryv2::Neptune;
-    planets[9] = StellarObjectsLibraryv2::Pluto;
-
-    integrateVerletPlanetsStruct(n, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z, finalTime, planets, m);
 
     doubleMatrixToFile(pos_x, n, m, "pos_x");
     doubleMatrixToFile(pos_y, n, m, "pos_y");
@@ -478,83 +385,14 @@ double *pos_Jx, double *pos_Jy, double *vel_Jx, double *vel_Jy) {
     }
 }
 
-void integrateVerletPlanetsStruct(int n, double **pos_x, double **pos_y, double **pos_z, double **vel_x, double **vel_y, double **vel_z,
-double finalTime, struct MassObjectv2 *planets, int m) { // NEW FORMAT WITH STRUCT
-    double h = finalTime/(n+1);
-    double hh = h*h;
-    double pi = 3.14159265359;
-    double fourPiPi = 4*pi*pi;
-    double ax, ay, az, r, denum;
-    double SM = 2e30;
-    double **A;
-
-    A = createMatrix(m, 3);
-    for (int i = 0; i < m; i++) {
-        ax = 0;
-        ay = 0;
-        az = 0;
-        for (int j = 0; j < m; j++) {
-            r = sqrt(pow(planets[i].x - planets[j].x, 2.0)
-            + pow(planets[i].y - planets[j].y, 2.0) + pow(planets[i].z - planets[j].z, 2.0));
-            if (r == 0) {
-                break;
-            }
-            denum = SM*pow(r, 3);
-            ax -= fourPiPi*(planets[i].x - planets[j].x)*planets[j].mass/denum;
-            ay -= fourPiPi*(planets[i].y - planets[j].y)*planets[j].mass/denum;
-            az -= fourPiPi*(planets[i].z - planets[j].z)*planets[j].mass/denum;
-        }
-        pos_x[i][0] = planets[i].x;
-        pos_y[i][0] = planets[i].y;
-        pos_z[i][0] = planets[i].z;
-        vel_x[i][0] = planets[i].vx;
-        vel_y[i][0] = planets[i].vy;
-        vel_z[i][0] = planets[i].vz;
-        A[i][0] = ax;
-        A[i][1] = ay;
-        A[i][2] = az;
-
-    }
-    for (int i = 0; i < n-1; i++) {
-        for (int j = 0; j < m; j++) {
-            pos_x[j][i+1] = pos_x[j][i] + h*vel_x[j][i] + (hh/2.0)*A[j][0];
-            pos_y[j][i+1] = pos_y[j][i] + h*vel_y[j][i] + (hh/2.0)*A[j][1];
-            pos_z[j][i+1] = pos_z[j][i] + h*vel_z[j][i] + (hh/2.0)*A[j][2];
-        }
-        for (int j = 0; j < m; j++) {
-            ax = 0;
-            ay = 0;
-            az = 0;
-            for (int k = 0; k < m; k++) {
-                r = sqrt(pow(pos_x[j][i+1] - pos_x[k][i+1], 2.0)  + pow(pos_y[j][i+1] - pos_y[k][i+1], 2.0) + pow(pos_z[j][i+1] - pos_z[k][i+1], 2.0));
-                if (r == 0) {
-                    break;
-                }
-                denum = SM*pow(r, 3);
-                ax -= fourPiPi*(pos_x[j][i+1] - pos_x[k][i+1])*planets[k].mass/denum;
-                ay -= fourPiPi*(pos_y[j][i+1] - pos_y[k][i+1])*planets[k].mass/denum;
-                az -= fourPiPi*(pos_z[j][i+1] - pos_z[k][i+1])*planets[k].mass/denum;
-            }
-            vel_x[j][i+1] = vel_x[j][i] + (h/2.0)*(A[j][0] + ax);
-            vel_y[j][i+1] = vel_y[j][i] + (h/2.0)*(A[j][1] + ay);
-            vel_z[j][i+1] = vel_z[j][i] + (h/2.0)*(A[j][2] + az);
-
-            A[j][0] = ax;
-            A[j][1] = ay;
-            A[j][2] = az;
-        }
-    }
-    deleteMatrix(A, 3);
-}
-
 void integrateVerletPlanets(int n, double **pos_x, double **pos_y, double **pos_z, double **vel_x, double **vel_y, double **vel_z,
 double finalTime, nested_map planets, int m) {
     double h = finalTime/(n+1);
     double hh = h*h;
     double pi = 3.14159265359;
     double fourPiPi = 4*pi*pi;
-    double ax, ay, az, r, denum;
-    double SM = 2e30;
+    double ax, ay, az, r;
+    double SM = 2*10e30;
     double **A;
 
     A = createMatrix(m, 3);
@@ -568,10 +406,9 @@ double finalTime, nested_map planets, int m) {
             if (r == 0) {
                 break;
             }
-            denum = SM*pow(r, 3);
-            ax -= fourPiPi*(planets[i]["x0"] - planets[j]["x0"])*planets[j]["mass"]/denum;
-            ay -= fourPiPi*(planets[i]["y0"] - planets[j]["y0"])*planets[j]["mass"]/denum;
-            az -= fourPiPi*(planets[i]["z0"] - planets[j]["z0"])*planets[j]["mass"]/denum;
+            ax -= fourPiPi*(planets[i]["x0"] - planets[j]["x0"])*planets[j]["mass"]/(SM*pow(r, 3));
+            ay -= fourPiPi*(planets[i]["y0"] - planets[j]["y0"])*planets[j]["mass"]/(SM*pow(r, 3));
+            az -= fourPiPi*(planets[i]["z0"] - planets[j]["z0"])*planets[j]["mass"]/(SM*pow(r, 3));
         }
         pos_x[i][0] = planets[i]["x0"];
         pos_y[i][0] = planets[i]["y0"];
@@ -599,10 +436,9 @@ double finalTime, nested_map planets, int m) {
                 if (r == 0) {
                     break;
                 }
-                denum = SM*pow(r, 3);
-                ax -= fourPiPi*(pos_x[j][i+1] - pos_x[k][i+1])*planets[k]["mass"]/denum;
-                ay -= fourPiPi*(pos_y[j][i+1] - pos_y[k][i+1])*planets[k]["mass"]/denum;
-                az -= fourPiPi*(pos_z[j][i+1] - pos_z[k][i+1])*planets[k]["mass"]/denum;
+                ax -= fourPiPi*(pos_x[j][i+1] - pos_x[k][i+1])*planets[k]["mass"]/(SM*pow(r, 3));
+                ay -= fourPiPi*(pos_y[j][i+1] - pos_y[k][i+1])*planets[k]["mass"]/(SM*pow(r, 3));
+                az -= fourPiPi*(pos_z[j][i+1] - pos_z[k][i+1])*planets[k]["mass"]/(SM*pow(r, 3));
             }
             vel_x[j][i+1] = vel_x[j][i] + (h/2.0)*(A[j][0] + ax);
             vel_y[j][i+1] = vel_y[j][i] + (h/2.0)*(A[j][1] + ay);
@@ -612,6 +448,7 @@ double finalTime, nested_map planets, int m) {
             A[j][1] = ay;
             A[j][2] = az;
         }
+
     }
     deleteMatrix(A, 3);
 }

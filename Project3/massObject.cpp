@@ -13,7 +13,3 @@ MassObject::MassObject(unordered_map<std::string, double> map) {
 	vy = map["vy0"];
 	vz = map["vz0"];
 }
-
-SolarSystem::SolarSystem(struct MassObjectv2 *planet) {
-	// Takes an array of structs objects as argument
-}
