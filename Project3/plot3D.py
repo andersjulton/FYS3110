@@ -19,7 +19,7 @@ pos_x = read_file("pos_x.txt")
 pos_y = read_file("pos_y.txt")
 pos_z = read_file("pos_z.txt")
 
-names = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]
+names = ["Sun", "Mercury", "Venus", "Earth"]#, "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]
 
 fig = plt.figure()
 ax = fig.gca(projection='3d')
