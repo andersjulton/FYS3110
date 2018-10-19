@@ -25,6 +25,6 @@ fig = plt.figure()
 ax = fig.gca(projection='3d')
 #ax.set_zlim(-1, 1)
 for i, n in enumerate(names):
-	ax.plot(pos_x[:,i], pos_y[:,i], pos_z[:,i], label = n, linewidth=0.5)
+	ax.plot(pos_x[:,i], pos_y[:,i], pos_z[:,i], label = names[i], linewidth=0.5)
 ax.legend()
 plt.show()

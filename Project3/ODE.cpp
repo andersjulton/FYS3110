@@ -1,6 +1,6 @@
-#include <unordered_map>
 #include <string>
 #include "ODE.h"
+#include <chrono>
 #include "utils.h"
 #include <iostream>
 #include <cmath>
@@ -8,8 +8,8 @@
 
 using namespace std;
 
-ODE::ODE(MassObject* initValue, int new_m) {
-	m = new_m;
+ODE::ODE(MassObject* initValue, int m) {
+	m_m = m;
 	massObjects = initValue;
 	createODE();
 	setInit();
@@ -17,34 +17,43 @@ ODE::ODE(MassObject* initValue, int new_m) {
 	distance(0);
 }
 
-void ODE::eulerSolve(int n) {
-    double h = 1.0/(n+1);
-    double r;
-    double fourPiPi = 4*pi*pi;
-    for (int i = 0; i < (n-1); i++) {
-        r = sqrt(pos_x[1][i]*pos_x[1][i] + pos_y[1][i]*pos_y[1][i]);
-
-        pos_x[1][i+1] = pos_x[1][i] + h*vel_x[1][i];
-        pos_y[1][i+1] = pos_y[1][i] + h*vel_y[1][i];
-
-        vel_x[1][i+1] = vel_x[1][i] - h*fourPiPi/(r*r*r)*pos_x[1][i];
-        vel_y[1][i+1] = vel_y[1][i] - h*fourPiPi /(r*r*r)*pos_y[1][i];
-    }
-}
-
-void ODE::integrateVerlet(double finalTime, int steps) {
+void ODE::eulerSolve(double finalTime, int n) {
 	deleteODE();
-	n = steps;
+	m_n = n;
 	createODE();
 	setInit();
 	distance(0);
 
-	h = finalTime/(n+1);
+	double h = finalTime/(n+1);
+    double ax, ay, az;
+
+    for (int i = 0; i < n-1; i++) {
+    	distance(i);
+        for (int j = 0; j < m_m; j++) {
+            pos_x[j][i+1] = pos_x[j][i] + h*vel_x[j][i];
+            pos_y[j][i+1] = pos_y[j][i] + h*vel_y[j][i];
+            pos_z[j][i+1] = pos_z[j][i] + h*vel_z[j][i];
+            acceleration(i, j, &ax, &ay, &az);
+        	vel_x[j][i+1] = vel_x[j][i] + h*ax;
+            vel_y[j][i+1] = vel_y[j][i] + h*ay;
+            vel_z[j][i+1] = vel_z[j][i] + h*az;
+        }
+    }
+}
+
+void ODE::integrateVerlet(double finalTime, int n) {
+	deleteODE();
+	m_n = n;
+	createODE();
+	setInit();
+	distance(0);
+
+	double h = finalTime/(n+1);
     double hh = h*h;
     double ax, ay, az;
     double **A;
-    A = createMatrix(m, 3);
-    for (int i = 0; i < m; i++) {
+    A = createMatrix(m_m, 3);
+    for (int i = 0; i < m_m; i++) {
     	acceleration(0, i, &ax, &ay, &az);
         A[i][0] = ax;
         A[i][1] = ay;
@@ -52,7 +61,7 @@ void ODE::integrateVerlet(double finalTime, int steps) {
 
     }
     for (int i = 0; i < n-1; i++) {
-        for (int j = 0; j < m; j++) {
+        for (int j = 0; j < m_m; j++) {
             pos_x[j][i+1] = pos_x[j][i] + h*vel_x[j][i] + (hh/2.0)*A[j][0];
             pos_y[j][i+1] = pos_y[j][i] + h*vel_y[j][i] + (hh/2.0)*A[j][1];
             pos_z[j][i+1] = pos_z[j][i] + h*vel_z[j][i] + (hh/2.0)*A[j][2];
@@ -67,35 +76,35 @@ void ODE::integrateVerlet(double finalTime, int steps) {
         }
         distance(i+1);
     }
-    deleteMatrix(A, m);
+    deleteMatrix(A, m_m);
 }
 
 void ODE::deleteODE() {
-	deleteMatrix(pos_x, m);
-	deleteMatrix(pos_y, m);
-	deleteMatrix(pos_z, m);
-	deleteMatrix(vel_x, m);
-	deleteMatrix(vel_y, m);
-	deleteMatrix(vel_z, m);
+	deleteMatrix(pos_x, m_m);
+	deleteMatrix(pos_y, m_m);
+	deleteMatrix(pos_z, m_m);
+	deleteMatrix(vel_x, m_m);
+	deleteMatrix(vel_y, m_m);
+	deleteMatrix(vel_z, m_m);
 }
 
-void ODE::writeToFile() {
-	doubleMatrixToFile(pos_x, n, m, "pos_xTEST");
-    doubleMatrixToFile(pos_y, n, m, "pos_yTEST");
-    doubleMatrixToFile(pos_z, n, m, "pos_zTEST");
+void ODE::writeToFile(std::string filename) {
+	doubleMatrixToFile(pos_x, m_n, m_m, filename + "_x");
+    doubleMatrixToFile(pos_y, m_n, m_m, filename + "_y");
+    doubleMatrixToFile(pos_z, m_n, m_m, filename + "_z");
 }
 
 void ODE::createODE() {
-	pos_x = createMatrix(m, n);
-    pos_y = createMatrix(m, n);
-    pos_z = createMatrix(m, n);
-    vel_x = createMatrix(m, n);
-    vel_y = createMatrix(m, n);
-    vel_z = createMatrix(m, n);
+	pos_x = createMatrix(m_m, m_n);
+    pos_y = createMatrix(m_m, m_n);
+    pos_z = createMatrix(m_m, m_n);
+    vel_x = createMatrix(m_m, m_n);
+    vel_y = createMatrix(m_m, m_n);
+    vel_z = createMatrix(m_m, m_n);
 }
 
 void ODE::setInit(){
-	for (int i = 0; i < m; i++) {
+	for (int i = 0; i < m_m; i++) {
 		pos_x[i][0] = massObjects[i].x;
 		pos_y[i][0] = massObjects[i].y;
 		pos_z[i][0] = massObjects[i].z;
@@ -107,7 +116,7 @@ void ODE::setInit(){
 
 void ODE::distance(int iter) {
 	double temp;
-	for (int i = 0; i < m; i++) {
+	for (int i = 0; i < m_m; i++) {
 		for (int j = 0; j < i; j++) {
 			temp = pow(pos_x[i][iter] - pos_x[j][iter], 2.0);
 			temp += pow(pos_y[i][iter] - pos_y[j][iter], 2.0);
@@ -119,25 +128,41 @@ void ODE::distance(int iter) {
 	}
 }
 
-ODE::~ODE() {
-	deleteODE();
-	deleteMatrix(r, m);
+double ODE::timeEulerSolve(double finalTime, int n) {
+	double *times = new double [5];
+	chrono::duration<double> elapsed;
+
+	for (int i = 0; i < 5; i++) {
+			auto begin = chrono::high_resolution_clock::now();
+			eulerSolve(finalTime, n);
+			auto end = chrono::high_resolution_clock::now();
+			elapsed = (end - begin);
+			times[i] = (double)elapsed.count();
+	}
+	sort(times, times + 5);
+	double time = times[2];
+	delete[] times;
+	return time;
 }
 
-void SolarSystem::acceleration(int i, int j, double *ax, double *ay, double *az) {
-    double fourPiPi = 4*pi*pi;
-    double SM = 2e30;  // what is this?
-    double  denum;;
-	*ax = 0;
-	*ay = 0;
-	*az = 0;
-	for (int k = 0; k < m; k++) {
-		if (r[j][k] == 0) {
-			continue;   // why? This means it only considers the earlier planets...
-		}
-		denum = SM*pow(r[j][k], 3);
-		*ax -= fourPiPi*(pos_x[j][i] - pos_x[k][i])*massObjects[k].mass/denum;
-		*ay -= fourPiPi*(pos_y[j][i] - pos_y[k][i])*massObjects[k].mass/denum;
-		*az -= fourPiPi*(pos_z[j][i] - pos_z[k][i])*massObjects[k].mass/denum;
+double ODE::timeVerletSolve(double finalTime, int n) {
+	double *times = new double [5];
+	chrono::duration<double> elapsed;
+
+	for (int i = 0; i < 5; i++) {
+			auto begin = chrono::high_resolution_clock::now();
+			integrateVerlet(finalTime, n);
+			auto end = chrono::high_resolution_clock::now();
+			elapsed = (end - begin);
+			times[i] = (double)elapsed.count();
 	}
+	sort(times, times + 5);
+	double time = times[2];
+	delete[] times;
+	return time;
+}
+
+ODE::~ODE() {
+	deleteODE();
+	deleteMatrix(r, m_m);
 }
