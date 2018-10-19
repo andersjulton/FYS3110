@@ -1,7 +1,7 @@
-#include <string> // not sure if this is needed.
 #include "ODE.h"
 
 namespace StellarObjectsLibraryv2 {
+
 
     struct MassObject Sun = {"Sun", 2e30, -1.474798697566110E-04, 7.248922398410132E-03, -7.268118257496195E-05,
          -7.585746627696994E-06*360.0, 2.590655894257502E-06*360.0, 1.896113821987181E-07*360.0};

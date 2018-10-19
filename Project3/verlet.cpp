@@ -497,7 +497,7 @@ double finalTime, struct MassObjectv2 *planets, int m) { // NEW FORMAT WITH STRU
             r = sqrt(pow(planets[i].x - planets[j].x, 2.0)
             + pow(planets[i].y - planets[j].y, 2.0) + pow(planets[i].z - planets[j].z, 2.0));
             if (r == 0) {
-                break;
+                continue;
             }
             denum = SM*pow(r, 3);
             ax -= fourPiPi*(planets[i].x - planets[j].x)*planets[j].mass/denum;
@@ -528,7 +528,7 @@ double finalTime, struct MassObjectv2 *planets, int m) { // NEW FORMAT WITH STRU
             for (int k = 0; k < m; k++) {
                 r = sqrt(pow(pos_x[j][i+1] - pos_x[k][i+1], 2.0)  + pow(pos_y[j][i+1] - pos_y[k][i+1], 2.0) + pow(pos_z[j][i+1] - pos_z[k][i+1], 2.0));
                 if (r == 0) {
-                    break;
+                    continue;
                 }
                 denum = SM*pow(r, 3);
                 ax -= fourPiPi*(pos_x[j][i+1] - pos_x[k][i+1])*planets[k].mass/denum;
