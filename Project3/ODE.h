@@ -43,7 +43,9 @@ public:
 
 class SolarSystem : public ODE {
 protected:
+	double m_centerMass = 0;
 	void acceleration(int, int, double*, double*, double*);
 public:
 	using ODE::ODE;
+	void setCenterMass(double);
 };
