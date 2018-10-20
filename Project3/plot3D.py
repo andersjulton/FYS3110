@@ -42,6 +42,17 @@ def plotOne(planet):
 pos_x = readFileArray("ES_pos_x.txt")
 pos_y = readFileArray("ES_pos_y.txt")
 
+<<<<<<< HEAD
 
 plt.plot(pos_x[0:100], pos_y[0:100])
+=======
+names = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]#, "Pluto"]
+
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+#ax.set_zlim(-1, 1)
+for i, n in enumerate(names):
+	ax.plot(pos_x[:,i], pos_y[:,i], pos_z[:,i], label = names[i], linewidth=0.5)
+ax.legend()
+>>>>>>> 2677d0bf9f6c69318245fbd0b9e828f435f1c8d2
 plt.show()

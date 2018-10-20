@@ -1,5 +1,7 @@
 #include "ODE.h"
 #include "utils.h"
+#include <cmath>
+
 
 void SolarSystem::acceleration(int i, int j, double *ax, double *ay, double *az) {
     double fourPiPi = 4*pi*pi;

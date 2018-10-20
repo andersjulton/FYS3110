@@ -6,11 +6,27 @@ using namespace std;
 
 
 int main() {
-	int m = 10;
+	int m = 2;
     MassObject *planets = new MassObject[m];
 
     int n = 100000;
     double finalTime = 250.0;
+
+    string filename = "euler";
+
+    planets[0] = StellarObjectsLibraryv2::Sun;
+    planets[1] = StellarObjectsLibraryv2::Earth;
+
+    SolarSystem hrrr(planets, m);
+    hrrr.eulerSolve(finalTime, n);
+    hrrr.writeToFile(filename);
+
+    delete[] planets;
+
+    m = 10;
+    planets = new MassObject[m];
+    filename = "pos";
+
 
     planets[0] = StellarObjectsLibraryv2::Sun;
     planets[1] = StellarObjectsLibraryv2::Mercury;
@@ -25,7 +41,12 @@ int main() {
 
     SolarSystem ths(planets, m);
     ths.integrateVerlet(finalTime, n);
-    ths.writeToFile();
+    ths.writeToFile(filename);
+
+    double time = ths.timeVerletSolve(finalTime, n);
+    printf("verlet = %f\n", time);
+    time = ths.timeEulerSolve(finalTime, n);
+    printf("euler = %f\n", time);
 
     delete[] planets;
 	return 0;
