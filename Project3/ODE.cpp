@@ -165,3 +165,4 @@ double ODE::timeVerletSolve(double finalTime, int n) {
 ODE::~ODE() {
 	deleteODE();
 	deleteMatrix(r, m_m);
+}
