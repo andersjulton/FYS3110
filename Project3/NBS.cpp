@@ -1,5 +1,5 @@
 #include <string>
-#include "ODE.h"
+#include "NBS.h"
 #include <chrono>
 #include "utils.h"
 #include <iostream>
@@ -8,19 +8,19 @@
 
 using namespace std;
 
-ODE::ODE(MassObject* initValue, int m) {
+NBS::NBS(MassObject* initValue, int m) {
 	m_m = m;
 	massObjects = initValue;
-	createODE();
+	createNBS();
 	setInit();
 	r = createMatrix(m, m);
 	distance(0);
 }
 
-void ODE::eulerSolve(double finalTime, int n) {
-	deleteODE();
+void NBS::eulerSolve(double finalTime, int n) {
+	deleteNBS();
 	m_n = n;
-	createODE();
+	createNBS();
 	setInit();
 	distance(0);
 
@@ -41,10 +41,10 @@ void ODE::eulerSolve(double finalTime, int n) {
     }
 }
 
-void ODE::integrateVerlet(double finalTime, int n) {
-	deleteODE();
+void NBS::verletSolve(double finalTime, int n) {
+	deleteNBS();
 	m_n = n;
-	createODE();
+	createNBS();
 	setInit();
 	distance(0);
 
@@ -65,6 +65,9 @@ void ODE::integrateVerlet(double finalTime, int n) {
             pos_x[j][i+1] = pos_x[j][i] + h*vel_x[j][i] + (hh/2.0)*A[j][0];
             pos_y[j][i+1] = pos_y[j][i] + h*vel_y[j][i] + (hh/2.0)*A[j][1];
             pos_z[j][i+1] = pos_z[j][i] + h*vel_z[j][i] + (hh/2.0)*A[j][2];
+        }
+        distance(i+1);
+        for (int j = 0; j < m_m; j++) {
             acceleration((i+1), j, &ax, &ay, &az);
             vel_x[j][i+1] = vel_x[j][i] + (h/2.0)*(A[j][0] + ax);
             vel_y[j][i+1] = vel_y[j][i] + (h/2.0)*(A[j][1] + ay);
@@ -74,12 +77,11 @@ void ODE::integrateVerlet(double finalTime, int n) {
             A[j][1] = ay;
             A[j][2] = az;
         }
-        distance(i+1);
     }
     deleteMatrix(A, m_m);
 }
 
-void ODE::deleteODE() {
+void NBS::deleteNBS() {
 	deleteMatrix(pos_x, m_m);
 	deleteMatrix(pos_y, m_m);
 	deleteMatrix(pos_z, m_m);
@@ -88,13 +90,13 @@ void ODE::deleteODE() {
 	deleteMatrix(vel_z, m_m);
 }
 
-void ODE::writeToFile(std::string filename) {
+void NBS::writeToFile(std::string filename) {
 	doubleMatrixToFile(pos_x, m_n, m_m, filename + "_x");
     doubleMatrixToFile(pos_y, m_n, m_m, filename + "_y");
     doubleMatrixToFile(pos_z, m_n, m_m, filename + "_z");
 }
 
-void ODE::createODE() {
+void NBS::createNBS() {
 	pos_x = createMatrix(m_m, m_n);
     pos_y = createMatrix(m_m, m_n);
     pos_z = createMatrix(m_m, m_n);
@@ -103,7 +105,7 @@ void ODE::createODE() {
     vel_z = createMatrix(m_m, m_n);
 }
 
-void ODE::setInit(){
+void NBS::setInit(){
 	for (int i = 0; i < m_m; i++) {
 		pos_x[i][0] = massObjects[i].x;
 		pos_y[i][0] = massObjects[i].y;
@@ -114,7 +116,7 @@ void ODE::setInit(){
 	}
 }
 
-void ODE::distance(int iter) {
+void NBS::distance(int iter) {
 	double temp;
 	for (int i = 0; i < m_m; i++) {
 		for (int j = 0; j < i; j++) {
@@ -128,7 +130,7 @@ void ODE::distance(int iter) {
 	}
 }
 
-double ODE::timeEulerSolve(double finalTime, int n) {
+double NBS::timeEulerSolve(double finalTime, int n) {
 	double *times = new double [5];
 	chrono::duration<double> elapsed;
 
@@ -145,13 +147,13 @@ double ODE::timeEulerSolve(double finalTime, int n) {
 	return time;
 }
 
-double ODE::timeVerletSolve(double finalTime, int n) {
+double NBS::timeVerletSolve(double finalTime, int n) {
 	double *times = new double [5];
 	chrono::duration<double> elapsed;
 
 	for (int i = 0; i < 5; i++) {
 			auto begin = chrono::high_resolution_clock::now();
-			integrateVerlet(finalTime, n);
+			verletSolve(finalTime, n);
 			auto end = chrono::high_resolution_clock::now();
 			elapsed = (end - begin);
 			times[i] = (double)elapsed.count();
@@ -162,7 +164,7 @@ double ODE::timeVerletSolve(double finalTime, int n) {
 	return time;
 }
 
-ODE::~ODE() {
-	deleteODE();
+NBS::~NBS() {
+	deleteNBS();
 	deleteMatrix(r, m_m);
 }

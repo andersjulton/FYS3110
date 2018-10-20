@@ -18,7 +18,7 @@ struct MassObject {
 	double vz;
 };
 
-class ODE {
+class NBS {
 protected:
 	int m_n = 2;
 	int m_m = 1;
@@ -28,24 +28,29 @@ protected:
 
 	void distance(int);
 	virtual void acceleration(int, int, double*, double*, double*) = 0;
-	void createODE();
+	void createNBS();
 	void setInit();
-	void deleteODE();
+	void deleteNBS();
 public:
-	ODE(MassObject*, int); // constructor
-	~ODE();
+	NBS(MassObject*, int); // constructor
+	~NBS();
 	void eulerSolve(double, int);
-	void integrateVerlet(double, int);
+	void verletSolve(double, int);
 	void writeToFile(std::string);
 	double timeEulerSolve(double, int);
 	double timeVerletSolve(double, int);
 };
 
-class SolarSystem : public ODE {
+class SolarSystem : public NBS {
 protected:
 	double m_centerMass = 0;
+	double m_beta = 3;
 	void acceleration(int, int, double*, double*, double*);
 public:
-	using ODE::ODE;
+	using NBS::NBS;
 	void setCenterMass(double);
+	void setBeta(double);
+
 };
+
+

@@ -1,53 +1,57 @@
 #include <unordered_map>
 #include <string>
-#include "ODE.h"
+#include "NBS.h"
 #include "planets_v2.h"
-using namespace std;
 
+using namespace std;
+using namespace StellarObjectsLibraryv2;
 
 int main() {
-	int m = 2;
-    MassObject *planets = new MassObject[m];
+	int m, n;
+	double finalTime;
+	string filename;
+	MassObject *planets;
 
-    int n = 100000;
-    double finalTime = 250.0;
-
-    string filename = "euler";
-
-    planets[0] = StellarObjectsLibraryv2::Sun;
-    planets[1] = StellarObjectsLibraryv2::Earth;
-
-    SolarSystem hrrr(planets, m);
-    hrrr.eulerSolve(finalTime, n);
-    hrrr.writeToFile(filename);
-
+	// part a) Earth-Sun system, fixed mass center.
+	m = 1;
+    planets = new MassObject[m];
+    // what should the initial velocity be here?
+    MassObject Earth2D = {"2DEarth", 6e24, 1, 0, 0,
+        -5.994522787486753E-03*360.0, 1.617377250092178E-02*360.0, 0};
+    planets[0] = Earth2D;
+    finalTime = 50.0;
+    n = finalTime*1000;
+    SolarSystem earth_sun(planets, m);
+    earth_sun.setCenterMass(Sun.mass);
+    filename = "earth_sun_euler";
+    earth_sun.eulerSolve(finalTime, n);
+    earth_sun.writeToFile(filename);
+    filename = "earth_sun_verlet";
+    earth_sun.verletSolve(finalTime, n);
+    earth_sun.writeToFile(filename);
     delete[] planets;
 
+    // all planets
     m = 10;
     planets = new MassObject[m];
-    filename = "pos";
-
-
-    planets[0] = StellarObjectsLibraryv2::Sun;
-    planets[1] = StellarObjectsLibraryv2::Mercury;
-    planets[2] = StellarObjectsLibraryv2::Venus;
-    planets[3] = StellarObjectsLibraryv2::Earth;
-    planets[4] = StellarObjectsLibraryv2::Mars;
-    planets[5] = StellarObjectsLibraryv2::Jupiter;
-    planets[6] = StellarObjectsLibraryv2::Saturn;
-    planets[7] = StellarObjectsLibraryv2::Uranus;
-    planets[8] = StellarObjectsLibraryv2::Neptune;
-    planets[9] = StellarObjectsLibraryv2::Pluto;
-
-    SolarSystem ths(planets, m);
-    ths.integrateVerlet(finalTime, n);
-    ths.writeToFile(filename);
-
-    double time = ths.timeVerletSolve(finalTime, n);
-    printf("verlet = %f\n", time);
-    time = ths.timeEulerSolve(finalTime, n);
-    printf("euler = %f\n", time);
-
+    planets[0] = Sun;
+    planets[1] = Mercury;
+    planets[2] = Venus;
+    planets[3] = Earth;
+    planets[4] = Mars;
+    planets[5] = Jupiter;
+    planets[6] = Saturn;
+    planets[7] = Uranus;
+    planets[8] = Neptune;
+    planets[9] = Pluto;
+    n = 100000;
+    finalTime = 250.0;
+    filename = "whole";
+    SolarSystem whole(planets, m);
+    whole.verletSolve(finalTime, n);
+    whole.writeToFile(filename);
     delete[] planets;
+
+
 	return 0;
 }
