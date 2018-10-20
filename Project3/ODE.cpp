@@ -165,8 +165,3 @@ double ODE::timeVerletSolve(double finalTime, int n) {
 ODE::~ODE() {
 	deleteODE();
 	deleteMatrix(r, m_m);
-<<<<<<< HEAD
-}
-=======
-}
->>>>>>> 2677d0bf9f6c69318245fbd0b9e828f435f1c8d2
