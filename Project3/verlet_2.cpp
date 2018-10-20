@@ -128,7 +128,8 @@ void earthSun() {
 
 void mercury(bool rel) {
 	int n = 1e7;
-    double finalTime = 100.0*365.0/88.0;
+	double years = 50.0;
+    double finalTime = years*88.0/365.0;
 	double pi = 3.14159265359;
     double *pos_x, *pos_y, *vel_x, *vel_y;
     pos_x = createVector(0, n);
@@ -141,15 +142,15 @@ void mercury(bool rel) {
 	vel_x[0] = 0.0;
 	vel_y[0] = 12.44;
 
-	int N = n - n/100;
+	int N = n - n/years;
 	double r;
 	double rmin;
-	int index;
+	int index = N;
 
 	mercuryIntegrate(n, rel, finalTime, pos_x, pos_y, vel_x, vel_y);
 
-	rmin = sqrt(pow(pos_x[N-1], 2) + pow(pos_y[N-1], 2));
-	for (int i = N; i < n; i++) {
+	rmin = sqrt(pow(pos_x[N], 2) + pow(pos_y[N], 2));
+	for (int i = N+1; i < n; i++) {
 		r = sqrt(pow(pos_x[i], 2) + pow(pos_y[i], 2));
 		if (r < rmin) {
 			rmin = r;
@@ -158,6 +159,7 @@ void mercury(bool rel) {
 	}
 
 	std::cout << "Position of perihelion is: (" << pos_x[index] << "," << pos_y[index] << ")\n";
+	std::cout << "Distance from sun: " << sqrt(pow(pos_x[index],2) + pow(pos_y[index],2)) << "\n";
 	std::cout << "Argument of perihelion is: " << atan2(pos_y[index], pos_x[index])*206264.806 << " arcseconds/century.\n";
 
     delete[] pos_x;
@@ -281,7 +283,7 @@ void mercuryIntegrate(int n, bool rel, double finalTime, double *pos_x, double *
 
 	ll = l*l;
     a = -fourPiPi*(1.0 + 3.0*ll/(r*r*cc))/pow(r, 3);
-	std::cout << "Angular momentum before simulation : " << l << '\n';
+	std::cout << "Angular momentum before simulation : " << pos_x[0]*vel_y[0] - pos_y[0]*vel_x[0] << '\n';
 
     for (int i = 0; i < (n-1); i++) {
         pos_x[i+1] = pos_x[i] + h*vel_x[i] + (hh/2.0)*a*pos_x[i];
