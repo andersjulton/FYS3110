@@ -43,6 +43,9 @@ public:
 
 class SolarSystem : public NBS {
 protected:
+	double pi = 3.14159265359;
+	double fourPiPi = 4*pi*pi;
+    double SM = 2e30;
 	double m_centerMass = 0;
 	double m_beta = 3;
 	void acceleration(int, int, double*, double*, double*);
@@ -51,6 +54,15 @@ public:
 	void setCenterMass(double);
 	void setBeta(double);
 
+};
+
+class SolarSystemRelativistic : public SolarSystem {
+	void acceleration(int, int, double*, double*, double*);
+	double c = 63239.7263; // Speed of light AU/yr
+	double cc = c*c;
+	double *l;
+public:
+	SolarSystemRelativistic(MassObject*, int);
 };
 
 
