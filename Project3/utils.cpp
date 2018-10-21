@@ -159,12 +159,23 @@ void intArrayToFile(int *v , int n, std::string filename, bool zeroPadding = fal
 void doubleMatrixToFile(double **v , int n, int m, std::string filename) {
 	std::ofstream myfile(filename + ".txt");
 	if (myfile.is_open()) {
-		myfile << n << " " <<  m << "\n";
+		myfile << n << " " <<  m << '\n';
 		for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                myfile << v[j][i] << " ";
+                myfile << v[i][j] << " ";
             }
             myfile << '\n';
 		}
 	}
+}
+
+void doubleMatrixToBinary(double **a, double n, double m, std::string filename) {
+    std::ofstream fileTxt(filename + "_DIM.txt");
+    fileTxt << n << " " << m;
+    fileTxt.close();
+    std::ofstream fileBin(filename, std::ios::binary|std::ios::out);
+    for (int i = 0; i < m; i++) {
+        fileBin.write(reinterpret_cast<char *>(a[i]), n*sizeof(double));
+    }
+    fileBin.close();
 }

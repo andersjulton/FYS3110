@@ -1,9 +1,6 @@
 #pragma once
 #include <string>
 
-
-double* diagToVector(double **A, int n);
-
 double* createVector(double value, int n);
 
 double* linspace(double min, double max, int n);
@@ -27,3 +24,5 @@ void intArrayToFile(int *v , int n, std::string filename, bool zeroPadding = fal
 void doubleArrayToFile(double *v , int n, std::string filename, bool zeroPadding = false);
 
 void doubleMatrixToFile(double **v , int n, int m, std::string filename);
+
+void doubleMatrixToBinary(double **a, double n, double m, std::string filename);

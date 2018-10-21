@@ -73,7 +73,7 @@ double *vel_Ez, double *pos_Jx, double *pos_Jy, double *pos_Jz, double *vel_Jx, 
 void integrateVerletPlanetsStruct(int n, double **pos_x, double **pos_y, double **pos_z, double **vel_x, double **vel_y, double **vel_z,
 double finalTime, struct MassObject *planets, int m);
 
-void mercuryIntegrate(int n, bool rel, double finalTime, double *pos_x, double *pos_y, double *vel_x, double *vel_y);
+void mercuryIntegrate(int n, bool rel, double finalTime, double *pos_x, double *pos_y, double vx0, double vy0);
 
 void earthSun();
 
@@ -127,27 +127,27 @@ void earthSun() {
 }
 
 void mercury(bool rel) {
-	int n = 1e7;
-	double years = 50.0;
+	int n = 1e8;
+	double years = 100.0;
     double finalTime = years*88.0/365.0;
 	double pi = 3.14159265359;
-    double *pos_x, *pos_y, *vel_x, *vel_y;
+    double *pos_x, *pos_y;
+	double vx0, vy0;
     pos_x = createVector(0, n);
     pos_y = createVector(0, n);
-    vel_x = createVector(0, n);
-    vel_y = createVector(0, n);
+
 
 	pos_x[0] = 0.3075;
 	pos_y[0] = 0.0;
-	vel_x[0] = 0.0;
-	vel_y[0] = 12.44;
+	vx0 = 0.0;
+	vy0 = 12.44;
 
 	int N = n - n/years;
 	double r;
 	double rmin;
 	int index = N;
 
-	mercuryIntegrate(n, rel, finalTime, pos_x, pos_y, vel_x, vel_y);
+	mercuryIntegrate(n, rel, finalTime, pos_x, pos_y, vx0, vy0);
 
 	rmin = sqrt(pow(pos_x[N], 2) + pow(pos_y[N], 2));
 	for (int i = N+1; i < n; i++) {
@@ -164,8 +164,6 @@ void mercury(bool rel) {
 
     delete[] pos_x;
     delete[] pos_y;
-    delete[] vel_x;
-    delete[] vel_y;
 }
 
 void planetsStruct() {
@@ -267,38 +265,40 @@ void earthJupiterSun3D() {
     delete[] vel_Jz;
 }
 
-void mercuryIntegrate(int n, bool rel, double finalTime, double *pos_x, double *pos_y, double *vel_x, double *vel_y) {
-    double h = finalTime/n;
+void mercuryIntegrate(int n, bool rel, double finalTime, double *pos_x, double *pos_y, double vx0, double vy0) {
+    double h = finalTime/(n-1);
     double hh = h*h;
     double pi = 3.14159265359;
 	double c = 63239.7263; // Speed of light AU/yr
 	double cc = c*c;
-    double r, rn, a, an, l, ll;
+    double r, rn, a, an, l, ll, vxn, vyn;
     double fourPiPi = 4*pi*pi;
 
 	r = sqrt(pow(pos_x[0], 2) + pow(pos_y[0], 2));
 
-	if (rel) {l = pos_x[0]*vel_y[0] - pos_y[0]*vel_x[0];}
+	if (rel) {l = pos_x[0]*vy0 - pos_y[0]*vx0;}
 	else {l = 0;}
 
 	ll = l*l;
     a = -fourPiPi*(1.0 + 3.0*ll/(r*r*cc))/pow(r, 3);
-	std::cout << "Angular momentum before simulation : " << pos_x[0]*vel_y[0] - pos_y[0]*vel_x[0] << '\n';
+	std::cout << "Angular momentum before simulation : " << pos_x[0]*vy0 - pos_y[0]*vx0 << '\n';
 
     for (int i = 0; i < (n-1); i++) {
-        pos_x[i+1] = pos_x[i] + h*vel_x[i] + (hh/2.0)*a*pos_x[i];
-		pos_y[i+1] = pos_y[i] + h*vel_y[i] + (hh/2.0)*a*pos_y[i];
+        pos_x[i+1] = pos_x[i] + h*vx0 + (hh/2.0)*a*pos_x[i];
+		pos_y[i+1] = pos_y[i] + h*vy0 + (hh/2.0)*a*pos_y[i];
 
         rn = sqrt(pos_x[i+1]*pos_x[i+1] + pos_y[i+1]*pos_y[i+1]);
         an = -fourPiPi*(1.0 + 3.0*ll/(rn*rn*cc))/pow(rn, 3);
 
-        vel_x[i+1] = vel_x[i] + (h/2.0)*(an*pos_x[i+1] + a*pos_x[i]);
-        vel_y[i+1] = vel_y[i] + (h/2.0)*(an*pos_y[i+1] + a*pos_y[i]);
+        vxn = vx0 + (h/2.0)*(an*pos_x[i+1] + a*pos_x[i]);
+        vyn = vy0 + (h/2.0)*(an*pos_y[i+1] + a*pos_y[i]);
 
         r = rn;
         a = an;
+		vx0 = vxn;
+		vy0 = vyn;
     }
-	std::cout << "Angular momentum after simulation : " << pos_x[n-1]*vel_y[n-1] - pos_y[n-1]*vel_x[n-1] << '\n';
+	std::cout << "Angular momentum after simulation : " << pos_x[n-1]*vy0 - pos_y[n-1]*vx0 << '\n';
 }
 
 void integrateVerlet(int n, double beta, double mass, double finalTime, double *pos_x, double *pos_y, double *pos_z,

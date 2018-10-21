@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -91,9 +92,9 @@ void NBS::deleteNBS() {
 }
 
 void NBS::writeToFile(std::string filename) {
-	doubleMatrixToFile(pos_x, m_n, m_m, filename + "_x");
-    doubleMatrixToFile(pos_y, m_n, m_m, filename + "_y");
-    doubleMatrixToFile(pos_z, m_n, m_m, filename + "_z");
+	doubleMatrixToBinary(pos_x, m_n, m_m, filename + "_x");
+	doubleMatrixToBinary(pos_y, m_n, m_m, filename + "_y");
+	doubleMatrixToBinary(pos_z, m_n, m_m, filename + "_z");
 }
 
 void NBS::createNBS() {
