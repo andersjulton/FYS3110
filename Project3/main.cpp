@@ -32,7 +32,7 @@ void mercury() {
 		0, 12.44, 0 };
 	planets[0] = RelMercury;
 	finalTime = 100 * 88.0 / 365.0;
-	
+
 	SolarSystemRelativistic mercury(planets, m);
 	mercury.setCenterMass(Sun.mass);
 	mercury.perihelionPrecession(0, finalTime, n, 100);
@@ -51,20 +51,20 @@ void earthSun() {
 	MassObject Earth2D = { "2DEarth", Earth.mass, 1, 0, 0, 0, 2.0*acos(-1.0), 0 };
 	planets[0] = Earth2D;
 
-	SolarSystem earth_sun(planets, m);
-	earth_sun.setCenterMass(Sun.mass);
+    SolarSystem earth_sun(planets, m);
+    earth_sun.setCenterMass(Sun.mass);
 
 	double finalTime = 50;
-	int n = 100;
-	for (int i = 0; i < 4; i++) {
-		earth_sun.eulerSolve(finalTime, (int)(100 * finalTime));
-		earth_sun.writeToFile(filename1 + to_string(n));
+    int n = 100;
+    for (int i = 0; i < 4; i++) {
+        earth_sun.eulerSolve(finalTime, (int) (100*finalTime) );
+        earth_sun.writeToFile(filename1 + to_string(n));
 
-		earth_sun.verletSolve(finalTime, (int)(100 * finalTime));
-		earth_sun.writeToFile(filename2 + to_string(n));
-		n = n * 10;
-	}
-	earth_sun.destroy();
+        earth_sun.verletSolve(finalTime, (int) (100*finalTime) );
+        earth_sun.writeToFile(filename2 + to_string(n));
+        n = n*10;
+    }
+    earth_sun.destroy();
 }
 
 void allPlanets() {
@@ -92,118 +92,118 @@ void allPlanets() {
 	whole.verletSolve(finalTime, n);
 	whole.writeToFile(filename);
 
-	whole.destroy();
+    whole.destroy();
 }
 
 void escapeVelocity() {
-	int m, n;
-	double finalTime, *A;
-	MassObject *planets;
+    int m, n;
+    double finalTime, *A;
+    MassObject *planets;
 
-	// part a) Earth-Sun system, fixed mass center.
-	m = 1;
-	planets = new MassObject[m];
-	// what should the initial velocity be here?
-	double pi = 3.14159265359;
-	MassObject planet = { "Earth", 6e24, 1, 0, 0, 0, 0, 0 };
-	planets[0] = planet;
-	finalTime = 3500.0;
-	n = 1000000;
-
-
-	double v1 = 8.875;
-	planets[0].vy = v1;
-	SolarSystem earth_sun(planets, m);
-	earth_sun.setCenterMass(Sun.mass);
-	earth_sun.verletSolve(finalTime, n);
-	A = earth_sun.getAcceleration(1);
-	double *R = earth_sun.getDistance(1);
-	printf("a = %.20f, r = %.3f \n", A[0], R[0]);
-	delete[] R; delete[] A;
-	A = earth_sun.getAcceleration(n / 2);
-	R = earth_sun.getDistance(n / 2);
-	printf("a = %.20f, r = %.3f \n", A[0], R[0]);
-	delete[] R; delete[] A;
-	A = earth_sun.getAcceleration(n - 1);
-	R = earth_sun.getDistance(n - 1);
-	printf("a = %.20f, r = %.3f \n", A[0], R[0]);
-	delete[] R; delete[] A;
-	earth_sun.writeToFile("Earth_Sun_min");
+    // part a) Earth-Sun system, fixed mass center.
+    m = 1;
+    planets = new MassObject[m];
+    // what should the initial velocity be here?
+    double pi = 3.14159265359;
+    MassObject planet = {"Earth", 6e24, 1, 0, 0, 0, 0, 0};
+    planets[0] = planet;
+    finalTime = 3500.0;
+    n = 1000000;
 
 
-	double v2 = 8.89;
-	planets[0].vy = v2;
-	earth_sun.verletSolve(finalTime, n);
-	A = earth_sun.getAcceleration(1);
-	R = earth_sun.getDistance(1);
-	printf("\na = %.20f, r = %.3f \n", A[0], R[0]);
-	delete[] R; delete[] A;
-	A = earth_sun.getAcceleration(n / 2);
-	R = earth_sun.getDistance(n / 2);
-	printf("a = %.20f, r = %.3f \n", A[0], R[0]);
-	delete[] R; delete[] A;
-	A = earth_sun.getAcceleration(n - 1);
-	R = earth_sun.getDistance(n - 1);
-	printf("a = %.20f, r = %.3f \n", A[0], R[0]);
-	delete[] R; delete[] A;
-	earth_sun.writeToFile("Earth_Sun_max");
+    double v1 = 8.875;
+    planets[0].vy = v1;
+    SolarSystem earth_sun(planets, m);
+    earth_sun.setCenterMass(Sun.mass);
+    earth_sun.verletSolve(finalTime, n);
+    A = earth_sun.getAcceleration(1);
+    double *R = earth_sun.getDistance(1);
+    printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+    delete[] R; delete[] A;
+    A = earth_sun.getAcceleration(n/2);
+    R = earth_sun.getDistance(n/2);
+    printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+    delete[] R; delete[] A;
+    A = earth_sun.getAcceleration(n-1);
+    R = earth_sun.getDistance(n-1);
+    printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+    delete[] R; delete[] A;
+    earth_sun.writeToFile("Earth_Sun_min");
 
-	double ve = (v1 + v2) / 2;
-	double ana = sqrt(8)*pi;
-	printf("\nAnalytical %.20f \n", ana);
-	printf("Ve %.20f \n", ve);
-	printf("relative error %.5f %% \n", fabs(ana - ve) / ana * 100.0);
 
-	finalTime = 20.0;
-	n = 10000;
+    double v2 = 8.89;
+    planets[0].vy = v2;
+    earth_sun.verletSolve(finalTime, n);
+    A = earth_sun.getAcceleration(1);
+    R = earth_sun.getDistance(1);
+    printf("\na = %.20f, r = %.3f \n", A[0], R[0]);
+    delete[] R; delete[] A;
+    A = earth_sun.getAcceleration(n/2);
+    R = earth_sun.getDistance(n/2);
+    printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+    delete[] R; delete[] A;
+    A = earth_sun.getAcceleration(n-1);
+    R = earth_sun.getDistance(n-1);
+    printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+    delete[] R; delete[] A;
+    earth_sun.writeToFile("Earth_Sun_max");
 
-	v1 = 6.8;
-	v2 = 7.4;
-	double v3 = 8.0;
-	double v4 = 8.8;
-	double beta;
-	string filename;
-	for (int i = 0; i < 4; i++) {
-		beta = 2 + (double)i / 3.0;
-		printf("\nBeta = %.3f\n", beta);
-		filename = "Beta_" + to_string(i) + "_";
-		earth_sun.setBeta(beta);
+    double ve = (v1 + v2)/2;
+    double ana = sqrt(8)*pi;
+    printf("\nAnalytical %.20f \n", ana);
+    printf("Ve %.20f \n", ve);
+    printf("relative error %.5f %% \n", fabs(ana - ve)/ana*100.0);
 
-		printf("v = %.3f\n", v1);
-		planets[0].vy = v1;
-		earth_sun.verletSolve(finalTime, n);
-		A = earth_sun.getAcceleration(n - 1);
-		R = earth_sun.getDistance(n - 1);
-		printf("a = %.20f, r = %.3f \n", A[0], R[0]);
-		earth_sun.writeToFile(filename + to_string(1));
-		delete[] R; delete[] A;
+    finalTime = 20.0;
+    n = 10000;
 
-		printf("v = %.3f\n", v2);
-		planets[0].vy = v2;
-		earth_sun.verletSolve(finalTime, n);
-		A = earth_sun.getAcceleration(n - 1);
-		R = earth_sun.getDistance(n - 1);
-		printf("a = %.20f, r = %.3f \n", A[0], R[0]);
-		earth_sun.writeToFile(filename + to_string(2));
-		delete[] R; delete[] A;
+    v1 = 6.8;
+    v2 = 7.4;
+    double v3 = 8.0;
+    double v4 = 8.8;
+    double beta;
+    string filename;
+    for (int i = 0; i < 4; i++) {
+        beta = 2 + (double) i/3.0;
+        printf("\nBeta = %.3f\n", beta);
+        filename = "Beta_" + to_string(i) + "_";
+        earth_sun.setBeta(beta);
 
-		printf("v = %.3f\n", v3);
-		planets[0].vy = v3;
-		earth_sun.verletSolve(finalTime, n);
-		A = earth_sun.getAcceleration(n - 1);
-		R = earth_sun.getDistance(n - 1);
-		printf("a = %.20f, r = %.3f \n", A[0], R[0]);
-		earth_sun.writeToFile(filename + to_string(3));
-		delete[] R; delete[] A;
+        printf("v = %.3f\n", v1);
+        planets[0].vy = v1;
+        earth_sun.verletSolve(finalTime, n);
+        A = earth_sun.getAcceleration(n-1);
+        R = earth_sun.getDistance(n-1);
+        printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+        earth_sun.writeToFile(filename + to_string(1));
+        delete[] R; delete[] A;
 
-		printf("v = %.3f\n", v4);
-		planets[0].vy = v4;
-		earth_sun.verletSolve(finalTime, n);
-		A = earth_sun.getAcceleration(n - 1);
-		R = earth_sun.getDistance(n - 1);
-		printf("a = %.20f, r = %.3f \n", A[0], R[0]);
-		earth_sun.writeToFile(filename + to_string(4));
-		delete[] R; delete[] A;
-	}
-	earth_sun.destroy();
+        printf("v = %.3f\n", v2);
+        planets[0].vy = v2;
+        earth_sun.verletSolve(finalTime, n);
+        A = earth_sun.getAcceleration(n-1);
+        R = earth_sun.getDistance(n-1);
+        printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+        earth_sun.writeToFile(filename + to_string(2));
+        delete[] R; delete[] A;
+
+        printf("v = %.3f\n", v3);
+        planets[0].vy = v3;
+        earth_sun.verletSolve(finalTime, n);
+        A = earth_sun.getAcceleration(n-1);
+        R = earth_sun.getDistance(n-1);
+        printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+        earth_sun.writeToFile(filename + to_string(3));
+        delete[] R; delete[] A;
+
+        printf("v = %.3f\n", v4);
+        planets[0].vy = v4;
+        earth_sun.verletSolve(finalTime, n);
+        A = earth_sun.getAcceleration(n-1);
+        R = earth_sun.getDistance(n-1);
+        printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+        earth_sun.writeToFile(filename + to_string(4));
+        delete[] R; delete[] A;
+    }
+   earth_sun.destroy();
 }

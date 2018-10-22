@@ -68,5 +68,3 @@ public:
 	double *verletSolveRel2D(int, double, int, int);
 	void perihelionPrecession(int, double, int, int);
 };
-
-
