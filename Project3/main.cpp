@@ -13,9 +13,10 @@ void mercury();
 
 int main() {
 
-	//mercury();
-	//earthSun();
+	mercury();
+	earthSun();
 	escapeVelocity();
+    allPlanets();
 	return 0;
 }
 
@@ -31,60 +32,44 @@ void mercury() {
 	MassObject RelMercury = { "RelMercury", Mercury.mass, 0.3075, 0, 0,
 		0, 12.44, 0 };
 	planets[0] = RelMercury;
-	finalTime = 100 * 88.0 / 365.0;
+	finalTime = 100 * 88.0 / 365.25;
 
 	
-	SolarSystemRelativistic mercury(planets, m, 0);
+	SolarSystemRelativistic mercury(planets, m);
 	mercury.setCenterMass(Sun.mass);
-	mercury.verletSolveRel(finalTime, n, 0);
-	mercury.perihelionPrecession(100);
+	//mercury.verletSolveRel(finalTime, n, 0);
+	//mercury.perihelionPrecession(100);
+
+    mercury.destroy();
 	system("PAUSE");
 
 }
 
 void earthSun() {
-	int m, n;
-	int finalTime;
-	string filename;
+	string filename1 = "earth_sun_euler_";
+    string filename2 = "earth_sun_verlet_";
 	MassObject *planets;
 
-	m = 1;
+	int m = 1;
 	planets = new MassObject[m];
 
-	MassObject Earth2D = { "2DEarth", Earth.mass, 1, 0, 0,
-		0, 2.0*acos(-1.0), 0 };
+	MassObject Earth2D = { "2DEarth", Earth.mass, 1, 0, 0, 0, 2.0*acos(-1.0), 0 };
 	planets[0] = Earth2D;
-	finalTime = 50;
 
-	SolarSystem earth_sun(planets, m);
-	earth_sun.setCenterMass(Sun.mass);
-	filename = "earth_sun_euler_100";
-	earth_sun.eulerSolve(finalTime, 100*finalTime);
-	earth_sun.writeToFile(filename);
-	filename = "earth_sun_verlet_100";
-	earth_sun.verletSolve(finalTime, 100*finalTime);
-	earth_sun.writeToFile(filename);
-	earth_sun.setCenterMass(Sun.mass);
-	filename = "earth_sun_euler_1000";
-	earth_sun.eulerSolve(finalTime, 1000*finalTime);
-	earth_sun.writeToFile(filename);
-	filename = "earth_sun_verlet_1000";
-	earth_sun.verletSolve(finalTime, 1000*finalTime);
-	earth_sun.writeToFile(filename);
-	earth_sun.setCenterMass(Sun.mass);
-	filename = "earth_sun_euler_10000";
-	earth_sun.eulerSolve(finalTime, 10000*finalTime);
-	earth_sun.writeToFile(filename);
-	filename = "earth_sun_verlet_10000";
-	earth_sun.verletSolve(finalTime, 10000*finalTime);
-	earth_sun.writeToFile(filename);
-	filename = "earth_sun_euler_100000";
-	earth_sun.eulerSolve(finalTime, 100000*finalTime);
-	earth_sun.writeToFile(filename);
-	filename = "earth_sun_verlet_100000";
-	earth_sun.verletSolve(finalTime, 100000*finalTime);
-	earth_sun.writeToFile(filename);
-	delete[] planets;
+    SolarSystem earth_sun(planets, m);
+    earth_sun.setCenterMass(Sun.mass);
+
+	double finalTime = 50;
+    int n = 100;
+    for (int i = 0; i < 4; i++) {
+        earth_sun.eulerSolve(finalTime, (int) (100*finalTime) );
+        earth_sun.writeToFile(filename1 + to_string(n));
+
+        earth_sun.verletSolve(finalTime, (int) (100*finalTime) );
+        earth_sun.writeToFile(filename2 + to_string(n));
+        n = n*10;
+    }
+    earth_sun.destroy();
 }
 
 void allPlanets() {
@@ -111,7 +96,8 @@ void allPlanets() {
 	SolarSystem whole(planets, m);
 	whole.verletSolve(finalTime, n);
 	whole.writeToFile(filename);
-	delete[] planets;
+
+    whole.destroy();
 }
 
 void escapeVelocity() {
@@ -138,12 +124,15 @@ void escapeVelocity() {
     A = earth_sun.getAcceleration(1);
     double *R = earth_sun.getDistance(1);
     printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+    delete[] R; delete[] A;
     A = earth_sun.getAcceleration(n/2);
     R = earth_sun.getDistance(n/2);
     printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+    delete[] R; delete[] A;
     A = earth_sun.getAcceleration(n-1);
     R = earth_sun.getDistance(n-1);
     printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+    delete[] R; delete[] A;
     earth_sun.writeToFile("Earth_Sun_min");
     
 
@@ -153,12 +142,15 @@ void escapeVelocity() {
     A = earth_sun.getAcceleration(1);
     R = earth_sun.getDistance(1);
     printf("\na = %.20f, r = %.3f \n", A[0], R[0]);
+    delete[] R; delete[] A;
     A = earth_sun.getAcceleration(n/2);
     R = earth_sun.getDistance(n/2);
     printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+    delete[] R; delete[] A;
     A = earth_sun.getAcceleration(n-1);
     R = earth_sun.getDistance(n-1);
     printf("a = %.20f, r = %.3f \n", A[0], R[0]);
+    delete[] R; delete[] A;
     earth_sun.writeToFile("Earth_Sun_max");
 
     double ve = (v1 + v2)/2;
@@ -189,6 +181,7 @@ void escapeVelocity() {
         R = earth_sun.getDistance(n-1);
         printf("a = %.20f, r = %.3f \n", A[0], R[0]);
         earth_sun.writeToFile(filename + to_string(1));
+        delete[] R; delete[] A;
 
         printf("v = %.3f\n", v2);
         planets[0].vy = v2;
@@ -197,6 +190,7 @@ void escapeVelocity() {
         R = earth_sun.getDistance(n-1);
         printf("a = %.20f, r = %.3f \n", A[0], R[0]);
         earth_sun.writeToFile(filename + to_string(2));
+        delete[] R; delete[] A;
 
         printf("v = %.3f\n", v3);
         planets[0].vy = v3;
@@ -205,7 +199,7 @@ void escapeVelocity() {
         R = earth_sun.getDistance(n-1);
         printf("a = %.20f, r = %.3f \n", A[0], R[0]);
         earth_sun.writeToFile(filename + to_string(3));
-
+        delete[] R; delete[] A;
 
         printf("v = %.3f\n", v4);
         planets[0].vy = v4;
@@ -214,9 +208,7 @@ void escapeVelocity() {
         R = earth_sun.getDistance(n-1);
         printf("a = %.20f, r = %.3f \n", A[0], R[0]);
         earth_sun.writeToFile(filename + to_string(4));
+        delete[] R; delete[] A;
     }
-
-    delete[] planets;
-    delete[] R;
-    delete[] A;
+   earth_sun.destroy();
 }

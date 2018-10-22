@@ -36,7 +36,6 @@ protected:
 
 public:
 	NBS(MassObject*, int); // constructor
-	~NBS();
 	void eulerSolve(double, int);
 	void verletSolve(double, int);
 	void writeToFile(std::string);
