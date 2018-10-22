@@ -25,6 +25,78 @@ void SolarSystem::acceleration(int i, int j, double *ax, double *ay, double *az)
 	}
 }
 
+double SolarSystem::conservationEnergy() {
+	double K = 0;  
+	double U = 0;
+	distance(0);
+	for (int i = 0; i < m_m; i++) {
+		K += (vel_x[i][0]*vel_x[i][0] + vel_y[i][0]*vel_y[i][0] + vel_z[i][0]*vel_z[i][0])*massObjects[i].mass;
+		for (int j = 0; j < m_m; j++) {
+			if (j == i) {continue;}
+			U += massObjects[i].mass*massObjects[j].mass/r[i][j];
+		}
+	} 
+	double E_0 = K*0.5 - U*G;
+	double E_min = E_0;
+	double E_max = E_0;
+	double E;
+	for (int i = 1; i < m_n; i++) {
+		K = 0;
+		U = 0;
+		distance(i);
+		for (int j = 0; j < m_m; j++) {
+			K += (vel_x[j][i]*vel_x[j][i] + vel_y[j][i]*vel_y[j][i] + vel_z[j][i]*vel_z[j][i])*massObjects[j].mass;
+			for (int k = 0; k < m_m; k++) {
+				if (j == k) {
+					continue;
+				}
+				U += massObjects[j].mass*massObjects[k].mass/r[j][k];
+			}
+		} 
+		E = K*0.5 - U*G;
+		//printf("%f\n", E);
+		if (E < E_min) {
+			E_min = E;
+		} else if (E > E_max) {
+			E_max = E;
+		}
+	}
+	printf("%.9f\n", (E_0 - E_min)/E_0);
+	printf("%.9f\n", (E_max - E_0)/E_0);
+	return (E_max - E_min)/E_0;
+}
+
+double SolarSystem::conservationEnergy2() {
+	double K = 0;  
+	double U = 0;
+	distance(0);
+	for (int i = 0; i < m_m; i++) {
+		K += (vel_x[i][0]*vel_x[i][0] + vel_y[i][0]*vel_y[i][0] + vel_z[i][0]*vel_z[i][0])*massObjects[i].mass;
+		U += massObjects[i].mass/(pos_x[i][0]*pos_x[i][0] + pos_y[i][0]*pos_y[i][0] + pos_z[i][0]*pos_z[i][0]);
+	} 
+	double E_0 = K*0.5 - U*fourPiPi;
+	double E_min = E_0;
+	double E_max = E_0;
+	double E;
+	for (int i = 1; i < m_n; i++) {
+		K = 0;
+		U = 0;
+		distance(i);
+		for (int j = 0; j < m_m; j++) {
+			K += (vel_x[j][i]*vel_x[j][i] + vel_y[j][i]*vel_y[j][i] + vel_z[j][i]*vel_z[j][i])*massObjects[j].mass;
+			U += massObjects[j].mass/(pos_x[j][i]*pos_x[j][i] + pos_y[j][i]*pos_y[j][i] + pos_z[j][i]*pos_z[j][i]);
+		} 
+		E = K*0.5 - U*fourPiPi;
+		//printf("%f\n", E);
+		if (E < E_min) {
+			E_min = E;
+		} else if (E > E_max) {
+			E_max = E;
+		}
+	}
+	return (E_max - E_min)/E_0;
+}
+
 void SolarSystem::setCenterMass(double centerMass) {
 	m_centerMass = centerMass;
 }

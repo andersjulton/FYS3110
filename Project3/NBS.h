@@ -55,6 +55,8 @@ public:
 	using NBS::NBS;
 	void setCenterMass(double);
 	void setBeta(double);
+	double conservationEnergy();
+	double conservationEnergy2();
 };
 
 class SolarSystemRelativistic : public SolarSystem {

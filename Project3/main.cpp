@@ -1,5 +1,6 @@
 #include <string>
 #include "NBS.h"
+#include <cmath>
 #include "planetsLib.h"
 
 using namespace std;
@@ -169,13 +170,16 @@ void allPlanets() {
 	planets[7] = Uranus;
 	planets[8] = Neptune;
 	planets[9] = Pluto;
-	n = 1e6;
-	finalTime = 250.0;
+	n = 1e2;
+	finalTime = 1.0;
 	filename = "whole";
 	SolarSystem whole(planets, m);
 	whole.verletSolve(finalTime, n);
 	whole.writeToFile(filename);
 
+
+    double dE = whole.conservationEnergy();
+    printf("dE = %.12f\n", dE);
     whole.destroy();
 	delete[] planets;
 }
