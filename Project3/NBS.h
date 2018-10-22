@@ -39,6 +39,8 @@ public:
 	void writeToFile(std::string);
 	double timeEulerSolve(double, int);
 	double timeVerletSolve(double, int);
+	double* getAcceleration(int);
+	double* getDistance(int);
 };
 
 class SolarSystem : public NBS {
@@ -53,7 +55,6 @@ public:
 	using NBS::NBS;
 	void setCenterMass(double);
 	void setBeta(double);
-
 };
 
 class SolarSystemRelativistic : public SolarSystem {

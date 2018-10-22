@@ -34,7 +34,7 @@ def plot_2D_compare(filenames, figname, labels):
 		n, m = get_dim(filename)
 		pos_x = read_file(filename + "_x", n, m)
 		pos_y = read_file(filename + "_y", n, m)
-		plt.plot(pos_x[:,0], pos_y[:,0])
+		plt.plot(pos_x, pos_y)
 	#plt.legend(labels, fontsize=15)
 	#plt.axis('equal')
 	plt.xticks(fontsize=15)
