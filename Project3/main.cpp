@@ -13,9 +13,9 @@ void mercury();
 
 int main() {
 
-	mercury();
+	//mercury();
 	//earthSun();
-	//escapeVelocity();
+	escapeVelocity();
 	return 0;
 }
 

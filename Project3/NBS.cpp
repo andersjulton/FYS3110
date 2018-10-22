@@ -82,65 +82,6 @@ void NBS::verletSolve(double finalTime, int n) {
     deleteMatrix(A, m_m);
 }
 
-void NBS::verletSolveRel(double finalTime, int n, int index) {
-	m_n = n;
-	createNBSrel();
-	double vx0, vy0, vxn, vyn;
-	
-	x0 = massObjects[index].x;
-	y0 = massObjects[index].y;
-	vx0 = massObjects[index].vx;
-	vy0 = massObjects[index].vy;
-	distance(0);
-
-	double h = finalTime / (n + 1);
-	double hh = h * h;
-	double ax, ay, axn, ayn, az, azn;
-	int count = 0;
-	acceleration(0, 0, &ax, &ay, &az);
-
-	for (int i = 0; i < n - n/100; i++) {
-		xn = x0 + h*vx0 + (hh/2.0)*ax;
-		yn = y0 + h*vy0 + (hh/2.0)*ay;
-
-		x0 = xn;
-		y0 = yn;
-		distance(i + 1);
-
-		acceleration((i + 1), 0, &axn, &ayn, &azn);
-		vxn = vx0 + (h/2.0)*(ax + axn);
-		vyn = vy0 + (h/2.0)*(ay + ayn);
-
-		ax = axn;
-		ay = ayn;
-		vx0 = vxn;
-		vy0 = vyn;
-	}
-	rel_pos_x[0] = x0;
-	rel_pos_y[0] = y0;
-	for (int i = 0; i < n / 100; i++) {
-		xn = x0 + h * vx0 + (hh / 2.0)*ax;
-		yn = y0 + h * vy0 + (hh / 2.0)*ay;
-
-		rel_pos_x[i + 1] = xn;
-		rel_pos_y[i + 1] = yn;
-
-		x0 = xn;
-		y0 = yn;
-		distance(i + 1);
-
-		acceleration((i + 1), 0, &axn, &ayn, &azn);
-		vxn = vx0 + (h/2.0)*(ax + axn);
-		vyn = vy0 + (h/2.0)*(ay + ayn);
-
-		ax = axn;
-		ay = ayn;
-		vx0 = vxn;
-		vy0 = vyn;
-	}
-
-}
-
 void NBS::deleteNBS() {
 	deleteMatrix(pos_x, m_m);
 	deleteMatrix(pos_y, m_m);
@@ -265,7 +206,8 @@ double NBS::timeVerletSolve(double finalTime, int n) {
 	return time;
 }
 
-NBS::~NBS() {
+void NBS::destroy() {
 	deleteNBS();
 	deleteMatrix(r, m_m);
+	delete[] massObjects;
 }
