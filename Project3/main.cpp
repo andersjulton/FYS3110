@@ -1,6 +1,7 @@
 #include <string>
 #include "NBS.h"
 #include "planets_v2.h"
+#include <iostream>
 
 using namespace std;
 using namespace StellarObjectsLibraryv2;
@@ -8,11 +9,37 @@ using namespace StellarObjectsLibraryv2;
 void earthSun();
 void allPlanets();
 void escapeVelocity();
+void mercury();
 
 int main() {
 
-	escapeVelocity();
+	mercury();
+	//earthSun();
+	//escapeVelocity();
 	return 0;
+}
+
+void mercury() {
+	int m, n;
+	double finalTime;
+	string filename;
+	MassObject *planets;
+	n = 1e9;
+
+	m = 1;
+	planets = new MassObject[m];
+	MassObject RelMercury = { "RelMercury", Mercury.mass, 0.3075, 0, 0,
+		0, 12.44, 0 };
+	planets[0] = RelMercury;
+	finalTime = 100 * 88.0 / 365.0;
+
+	
+	SolarSystemRelativistic mercury(planets, m, 0);
+	mercury.setCenterMass(Sun.mass);
+	mercury.verletSolveRel(finalTime, n, 0);
+	mercury.perihelionPrecession(100);
+	system("PAUSE");
+
 }
 
 void earthSun() {

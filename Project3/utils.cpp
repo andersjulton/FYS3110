@@ -155,7 +155,7 @@ void intArrayToFile(int *v , int n, std::string filename, bool zeroPadding = fal
 	}
 }
 
-// write n x m matrix (double) to a txt-file
+// write n x m matrix (double) to a txt file
 void doubleMatrixToFile(double **v , int n, int m, std::string filename) {
 	std::ofstream myfile(filename + ".txt");
 	if (myfile.is_open()) {
@@ -169,6 +169,13 @@ void doubleMatrixToFile(double **v , int n, int m, std::string filename) {
 	}
 }
 
+void doubleArrayToBinary(double *a, double n,  std::string filename) {
+    std::ofstream file(filename, std::ios::binary|std::ios::out);
+    file.write(reinterpret_cast<char *>(a), n*sizeof(double));
+    file.close();
+}
+
+// write n x m matrix (double) to a binary file
 void doubleMatrixToBinary(double **a, double n, double m, std::string filename) {
     std::ofstream file(filename, std::ios::binary|std::ios::out);
     for (int i = 0; i < m; i++) {
@@ -177,6 +184,7 @@ void doubleMatrixToBinary(double **a, double n, double m, std::string filename) 
     file.close();
 }
 
+// write dimensions of n x m matrix to txt file
 void writeMatrixDim(int n, int m, std::string filename) {
 	std::ofstream file(filename + "_DIM.txt");
 	file << n << " " << m;
