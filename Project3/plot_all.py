@@ -64,6 +64,37 @@ def plotComp():
 	plt.show()
 
 
+def plotCompBeta():
+	labels = [r"v = 6.8 AU/yr", r"v = 7.4 AY/yr", r"v = 8.0 AU/yr", r"v = 8.8 AU/yr"]
+	plt.figure(figsize=(12,12))
+	plt.subplot(221)
+	plt.title(r' $\beta = 2$', fontsize=15)
+	plt.ylabel(r'$y \ \ [AU]$', fontsize=15)
+	plot_2D_compare(["Beta_0_1", "Beta_0_2", "Beta_0_3", "Beta_0_4"], "", labels)
+	plt.xlim(-20, 5)
+	plt.ylim(-4, 8)
+	plt.subplot(222)
+	plt.title(r'$\beta = 2.33$', fontsize=15)
+	plot_2D_compare(["Beta_1_1", "Beta_1_2", "Beta_1_3", "Beta_1_4"], "", labels)
+	plt.xlim(-40, 10)
+	plt.ylim(-10, 40)
+	plt.subplot(223)
+	plt.title(r'$\beta = 2.67$', fontsize=15)
+	plt.xlabel(r'$x \ \ [AU]$', fontsize=15)
+	plt.ylabel(r'$y \ \ [AU]$', fontsize=15)
+	plot_2D_compare(["Beta_2_1", "Beta_2_2", "Beta_2_3", "Beta_2_4"], "", labels)
+	plt.xlim(-50, 10)
+	plt.ylim(-10, 60)
+	plt.subplot(224)
+	plt.title(r'$\beta = 3$', fontsize=15)
+	plt.xlabel(r'$x  \ \ [AU]$', fontsize=15)
+	plot_2D_compare(["Beta_3_1", "Beta_3_2", "Beta_3_3", "Beta_3_4"], "", labels)
+	plt.xlim(-50, 5)
+	plt.ylim(-40, 60)
+	plt.legend(labels, fontsize=15)
+	plt.savefig("ComparisonBeta.pdf")
+	plt.close()
+
 names = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]
 plot_3D(names, "whole")
 n, m = get_dim("whole")
