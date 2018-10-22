@@ -117,6 +117,40 @@ void NBS::setInit(){
 	}
 }
 
+// returns acceleration of position of index
+double* NBS::getAcceleration(int index) {
+	if (index < 0) {
+		index = 0;
+	} else if (index >= m_n) {
+		index = m_n - 1;
+	}
+	double *A = createVector(m_m, 0);
+	double ax, ay, az;
+	for (int i = 0; i < m_m; i++) {
+		acceleration(index, i, &ax, &ay, &az);
+		A[i] = sqrt(ax*ax + ay*ay + az*az);
+	}
+	return A;
+}
+
+// distance from center
+double* NBS::getDistance(int index) {
+	if (index < 0) {
+		index = 0;
+	} else if (index >= m_n) {
+		index = m_n - 1;
+	}
+	double x, y, z;
+	double *R = createVector(m_m, 0);
+	for (int i = 0; i < m_m; i++) {
+		x = pos_x[i][index];
+		y = pos_y[i][index];
+		z = pos_z[i][index];
+		R[i] = sqrt(x*x + y*y + z*z);
+	}
+	return R;
+}
+
 void NBS::distance(int iter) {
 	double temp;
 	for (int i = 0; i < m_m; i++) {

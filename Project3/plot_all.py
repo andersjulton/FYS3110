@@ -27,7 +27,7 @@ def plot_3D(names, filename):
 	plt.savefig(filename + ".png")
 	plt.close()
 
-def plot_2D_compare(filenames, figname, labels):
+def plot_2D_compare(filenames, figname, labels, title):
 	fig = plt.figure(1, figsize = (8,8))
 	ax = fig.add_subplot(1, 1, 1)
 	for filename in filenames:
@@ -35,15 +35,17 @@ def plot_2D_compare(filenames, figname, labels):
 		pos_y = read_file(filename + "_y.txt")
 		pos_z = read_file(filename + "_z.txt")
 		ax.plot(pos_x[:,0], pos_y[:,0])
-	plt.legend(labels)
-	plt.xlabel("x")
-	plt.ylabel("y")
+	plt.legend(labels, fontsize=15)
+	plt.xlabel(r"$x [AU]$")
+	plt.ylabel(r"$y [AU]$")
+	plt.xticks(fontsize=15)
+	plt.title(title)
+	plt.yticks(fontsize=15)
+	#plt.ylim(-50, 150)
+	#plt.xlim(-1600, 50)
 	plt.grid()
 	plt.savefig(figname + ".png")
 	plt.close()
 
-plt.axis([-3, 3, -3, 3])
-plot_2D_compare(["earth_sun_euler", "earth_sun_verlet"], "earth_sun", ["Eulers", "Verlet"])
-
-names = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
-plot_3D(names, "whole")
+plot_2D_compare(["Earth_Sun_min", "Earth_Sun_max"], "escapeVel", \
+	[r"$v = 8.875 AU/yr$", r"$v = 8.89 AU/yr$"], "")
