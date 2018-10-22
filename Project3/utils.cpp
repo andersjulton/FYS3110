@@ -170,12 +170,15 @@ void doubleMatrixToFile(double **v , int n, int m, std::string filename) {
 }
 
 void doubleMatrixToBinary(double **a, double n, double m, std::string filename) {
-    std::ofstream fileTxt(filename + "_DIM.txt");
-    fileTxt << n << " " << m;
-    fileTxt.close();
-    std::ofstream fileBin(filename, std::ios::binary|std::ios::out);
+    std::ofstream file(filename, std::ios::binary|std::ios::out);
     for (int i = 0; i < m; i++) {
-        fileBin.write(reinterpret_cast<char *>(a[i]), n*sizeof(double));
+        file.write(reinterpret_cast<char *>(a[i]), n*sizeof(double));
     }
-    fileBin.close();
+    file.close();
+}
+
+void writeMatrixDim(int n, int m, std::string filename) {
+	std::ofstream file(filename + "_DIM.txt");
+	file << n << " " << m;
+	file.close();
 }

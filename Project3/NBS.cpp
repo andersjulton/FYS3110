@@ -92,6 +92,7 @@ void NBS::deleteNBS() {
 }
 
 void NBS::writeToFile(std::string filename) {
+	writeMatrixDim(m_n, m_m, filename);
 	doubleMatrixToBinary(pos_x, m_n, m_m, filename + "_x");
 	doubleMatrixToBinary(pos_y, m_n, m_m, filename + "_y");
 	doubleMatrixToBinary(pos_z, m_n, m_m, filename + "_z");

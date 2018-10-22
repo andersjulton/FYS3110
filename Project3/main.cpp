@@ -10,7 +10,8 @@ void allPlanets();
 
 int main() {
 
-	earthSun();
+	//earthSun();
+	allPlanets();
 	return 0;
 }
 
@@ -29,7 +30,7 @@ void earthSun() {
 	finalTime = 50;
 
 	SolarSystem earth_sun(planets, m);
-	earth_sun.setCenterMass(Sun.mass);/*
+	earth_sun.setCenterMass(Sun.mass);
 	filename = "earth_sun_euler_100";
 	earth_sun.eulerSolve(finalTime, 100*finalTime);
 	earth_sun.writeToFile(filename);
@@ -49,13 +50,13 @@ void earthSun() {
 	earth_sun.writeToFile(filename);
 	filename = "earth_sun_verlet_10000";
 	earth_sun.verletSolve(finalTime, 10000*finalTime);
-	earth_sun.writeToFile(filename);*/
-	filename = "earth_sun_euler_1000";
-	earth_sun.eulerSolve(finalTime, 1000*finalTime);
 	earth_sun.writeToFile(filename);
-	//filename = "earth_sun_verlet_100000";
-	//earth_sun.verletSolve(finalTime, 100000*finalTime);
-	//earth_sun.writeToFile(filename);
+	filename = "earth_sun_euler_100000";
+	earth_sun.eulerSolve(finalTime, 100000*finalTime);
+	earth_sun.writeToFile(filename);
+	filename = "earth_sun_verlet_100000";
+	earth_sun.verletSolve(finalTime, 100000*finalTime);
+	earth_sun.writeToFile(filename);
 	delete[] planets;
 }
 
@@ -82,6 +83,6 @@ void allPlanets() {
 	filename = "whole";
 	SolarSystem whole(planets, m);
 	whole.verletSolve(finalTime, n);
-	//whole.writeToFile(filename);
+	whole.writeToFile(filename);
 	delete[] planets;
 }

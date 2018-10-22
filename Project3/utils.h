@@ -26,3 +26,5 @@ void doubleArrayToFile(double *v , int n, std::string filename, bool zeroPadding
 void doubleMatrixToFile(double **v , int n, int m, std::string filename);
 
 void doubleMatrixToBinary(double **a, double n, double m, std::string filename);
+
+void writeMatrixDim(int n, int m, std::string filename);
