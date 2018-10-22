@@ -9,9 +9,13 @@ void earthSun();
 void allPlanets();
 void escapeVelocity();
 void mercury();
+void earthJupiter();
+void sunEarthJupiter();
 
 int main() {
 
+	//sunEarthJupiter();
+	//earthJupiter();
 	//mercury();
 	//earthSun();
 	allPlanets();
@@ -38,6 +42,7 @@ void mercury() {
 	mercury.perihelionPrecession(0, finalTime, n, 100);
 	system("PAUSE");
 	mercury.destroy();
+	delete[] planets;
 }
 
 void earthSun() {
@@ -65,15 +70,94 @@ void earthSun() {
         n = n*10;
     }
     earth_sun.destroy();
+	delete[] planets;
 }
 
+
+void sunEarthJupiter() {
+	int m, n;
+	double finalTime = 50.0;
+	string filename = "sunEarthJupiter";
+	MassObject *planets;
+
+	n = 1000000;
+	m = 3;
+
+	planets = new MassObject[m];
+	planets[0] = Sun;
+	planets[1] = Earth;
+	planets[2] = Jupiter;
+
+	SolarSystem sunEarthJupiter(planets, m);
+	sunEarthJupiter.verletSolve(finalTime, n);
+	sunEarthJupiter.writeToFile(filename);
+
+	sunEarthJupiter.destroy();
+	delete[] planets;
+}
+void earthJupiter() {
+	int m, n;
+	double finalTime;
+	string filename;
+	MassObject *planets;
+
+	m = 2;
+	planets = new MassObject[m];
+	MassObject earth, jupiter;
+	earth.mass = Earth.mass;
+	// Positions with sun at center
+	earth.x = 9.415200029562484E-01;
+	earth.y = 3.306556713288177E-01;
+	earth.z = -2.047028652191917E-05;
+	earth.vx = -5.986939558621437E-03*365.0;
+	earth.vy = 1.617117290454856E-02*365.0;
+	earth.vz = -3.628095647481011E-07*365.0;
+	jupiter.mass = Jupiter.mass;
+	jupiter.x = -2.666812813696682;
+	jupiter.y = -4.662917552921043;
+	jupiter.z = 7.903802850231831E-02;
+	jupiter.vx = 6.466542103253237E-03*365.0;
+	jupiter.vy = -3.393242557741619E-03*365.0;
+	jupiter.vz = -1.305327413883757E-04*365.0;
+
+	planets[0] = earth;
+	planets[1] = jupiter;
+
+	n = 1000000;
+	finalTime = 50.0;
+	filename = "earth_jupiter";
+
+	SolarSystem earthJupiter1(planets, m);
+	earthJupiter1.setCenterMass(Sun.mass);
+	earthJupiter1.verletSolve(finalTime, n);
+	earthJupiter1.writeToFile(filename + "1x");
+	
+	planets[1].mass = Jupiter.mass*10.0;
+	SolarSystem earthJupiter10(planets, m);
+	earthJupiter10.setCenterMass(Sun.mass);
+	earthJupiter10.verletSolve(finalTime, n);
+	earthJupiter10.writeToFile(filename + "10x");
+
+	planets[1].mass = Jupiter.mass*1000.0;
+	SolarSystem earthJupiter1000(planets, m);
+	earthJupiter1000.setCenterMass(Sun.mass);
+	earthJupiter1000.verletSolve(finalTime, n);
+	earthJupiter1000.writeToFile(filename + "1000x");
+
+	earthJupiter1.destroy();
+	earthJupiter10.destroy();
+	earthJupiter1000.destroy();
+
+	delete[] planets;
+}
+	
 void allPlanets() {
 	int m, n;
 	double finalTime;
 	string filename;
 	MassObject *planets;
 
-	m = 5;
+	m = 10;
 	planets = new MassObject[m];
 	planets[0] = Sun;
 	planets[1] = Mercury;
@@ -85,7 +169,7 @@ void allPlanets() {
 	planets[7] = Uranus;
 	planets[8] = Neptune;
 	planets[9] = Pluto;
-	n = 100000;
+	n = 1e6;
 	finalTime = 250.0;
 	filename = "whole";
 	SolarSystem whole(planets, m);
@@ -93,6 +177,7 @@ void allPlanets() {
 	whole.writeToFile(filename);
 
     whole.destroy();
+	delete[] planets;
 }
 
 void escapeVelocity() {
@@ -206,4 +291,5 @@ void escapeVelocity() {
         delete[] R; delete[] A;
     }
    earth_sun.destroy();
+   delete[] planets;
 }

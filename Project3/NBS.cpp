@@ -204,5 +204,4 @@ double NBS::timeVerletSolve(double finalTime, int n) {
 void NBS::destroy() {
 	deleteNBS();
 	deleteMatrix(r, m_m);
-	delete[] massObjects;
 }
