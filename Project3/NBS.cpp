@@ -20,6 +20,7 @@ NBS::NBS(MassObject* initValue, int m) {
 void NBS::eulerSolve(double finalTime, int n) {
 	deleteNBS();
 	m_n = n;
+	m_finalTime = finalTime;
 	createNBS();
 	setInit();
 	distance(0);
@@ -44,6 +45,7 @@ void NBS::eulerSolve(double finalTime, int n) {
 void NBS::verletSolve(double finalTime, int n) {
 	deleteNBS();
 	m_n = n;
+	m_finalTime = finalTime;
 	createNBS();
 	setInit();
 	distance(0);
@@ -58,7 +60,6 @@ void NBS::verletSolve(double finalTime, int n) {
         A[i][0] = ax;
         A[i][1] = ay;
         A[i][2] = az;
-
     }
     for (int i = 0; i < n-1; i++) {
         for (int j = 0; j < m_m; j++) {
@@ -80,8 +81,6 @@ void NBS::verletSolve(double finalTime, int n) {
     }
     deleteMatrix(A, m_m);
 }
-
-
 
 void NBS::deleteNBS() {
 	deleteMatrix(pos_x, m_m);
@@ -156,6 +155,10 @@ double* NBS::getDistance(int index) {
 void NBS::distance(int iter) {
 	double temp;
 	for (int i = 0; i < m_m; i++) {
+		temp = pos_x[i][iter]*pos_x[i][iter];
+		temp += pos_y[i][iter]*pos_y[i][iter];
+		temp += pos_z[i][iter]*pos_z[i][iter];
+		r[i][i] = sqrt(temp);
 		for (int j = 0; j < i; j++) {
 			temp = pow(pos_x[i][iter] - pos_x[j][iter], 2.0);
 			temp += pow(pos_y[i][iter] - pos_y[j][iter], 2.0);

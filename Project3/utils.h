@@ -30,3 +30,5 @@ void doubleArrayToBinary(double *a, double n, std::string filename);
 void doubleMatrixToBinary(double **a, double n, double m, std::string filename);
 
 void writeMatrixDim(int n, int m, std::string filename);
+
+int *intLinspace(int min, int max, int n);

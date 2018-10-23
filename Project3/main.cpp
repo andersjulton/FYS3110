@@ -2,12 +2,12 @@
 #include "NBS.h"
 #include <cmath>
 #include "planetsLib.h"
+#include <iostream>
 
 using namespace std;
 using namespace StellarObjectsLibraryv2;
 
 void earthSun();
-void testEarthSun();
 void allPlanets();
 void escapeVelocity();
 void mercury();
@@ -22,9 +22,9 @@ int main() {
 	//earthJupiter_mass();
 	//mercury();
 	//earthSun();
-    testEarthSun();
 	//allPlanets();
 	//escapeVelocity();
+
 	return 0;
 }
 
@@ -77,7 +77,7 @@ void earthSun() {
     earth_sun.destroy();
 	delete[] planets;
 }
-
+/*
 void testEarthSun() {
     MassObject *planets;
     int m = 1;
@@ -106,7 +106,7 @@ void testEarthSun() {
     earth_sun.destroy();
     delete[] planets;
 }
-
+*/
 
 void sunEarthJupiter() {
 	int m, n;
@@ -131,7 +131,7 @@ void sunEarthJupiter() {
 }
 
 void earthJupiter() {
-	int m, n;
+	int m, n, points;
 	double finalTime;
 	string filename;
 	MassObject *planets;
@@ -139,9 +139,12 @@ void earthJupiter() {
 	n = 1e7;
 	m = 2;
 	finalTime = 100.0;
+	points = 1000;
+
 	planets = new MassObject[m];
 	MassObject earth, jupiter;
 	earth.mass = Earth.mass;
+
 	// Positions with sun at center
 	earth.x = 9.415200029562484E-01;
 	earth.y = 3.306556713288177E-01;
@@ -169,6 +172,7 @@ void earthJupiter() {
 	earthJupiter.setCenterMass(Sun.mass);
 	earthJupiter.verletSolve(finalTime, n);
 	earthJupiter.writeToFile("earthJupiter");
+	earthJupiter.consEnergyAngular("earthJupiter", points);
 
 	earthSun.destroy();
 	earthJupiter.destroy();
@@ -233,7 +237,7 @@ void earthJupiter_mass() {
 }
 
 void allPlanets() {
-	int m, n;
+	int m, n, points;
 	double finalTime;
 	string filename;
 	MassObject *planets;
@@ -250,13 +254,15 @@ void allPlanets() {
 	planets[7] = Uranus;
 	planets[8] = Neptune;
 	planets[9] = Pluto;
+
 	n = 1e6;
-	finalTime = 1.0;
+	finalTime = 250.0;
+	points = 1000;
 	filename = "whole";
 	SolarSystem whole(planets, m);
 	whole.verletSolve(finalTime, n);
 	whole.writeToFile(filename);
-
+	whole.consEnergyAngular(filename, points);
     whole.destroy();
 	delete[] planets;
 }

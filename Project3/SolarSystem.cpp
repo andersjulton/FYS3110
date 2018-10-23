@@ -9,8 +9,7 @@ void SolarSystem::acceleration(int i, int j, double *ax, double *ay, double *az)
     double x = pos_x[j][i];
     double y = pos_y[j][i];
     double z = pos_z[j][i];
-    double this_r = sqrt(x*x + y*y + z*z);
-    denum = G*m_centerMass/pow(this_r, m_beta);
+    denum = G*m_centerMass/pow(r[j][j], m_beta);
 	*ax = -x*denum;
 	*ay = -y*denum;
 	*az = -z*denum;
@@ -19,10 +18,49 @@ void SolarSystem::acceleration(int i, int j, double *ax, double *ay, double *az)
 			continue;
 		}
 		denum = G*massObjects[k].mass/(pow(r[j][k], m_beta));
-		*ax -= (x - pos_x[k][i])*denum;
-		*ay -= (y - pos_y[k][i])*denum;
-		*az -= (z - pos_z[k][i])*denum;
+		*ax += (pos_x[k][i] - x)*denum;
+		*ay += (pos_y[k][i] - y)*denum;
+		*az += (pos_z[k][i] - z)*denum;
 	}
+}
+
+void SolarSystem::consEnergyAngular(std::string filename, int points) {
+	int *I;
+	double *E, *L;
+	double K;
+	double U;
+	double lx, ly, lz, l;
+	I = intLinspace(0, m_n, points);
+	E = createVector(0, points);
+	L = createVector(0, points);
+	for (int i = 0; i < points; i++) {
+		U = 0;
+		K = 0;
+		l = 0;
+		distance(i);
+		for (int j = 0; j < m_m; j++) {
+			K += (vel_x[j][i]*vel_x[j][i] + vel_y[j][i]*vel_y[j][i] + vel_z[j][i]*vel_z[j][i])*massObjects[j].mass;
+
+			lx = pos_y[j][i]*vel_z[j][i] - pos_z[j][i]*vel_y[j][i];
+			ly = pos_x[j][i]*vel_z[j][i] - pos_z[j][i]*vel_x[j][i];
+			lz = pos_x[j][i]*vel_y[j][i] - pos_y[j][i]*vel_x[j][i];
+			
+			l += sqrt(lx*lx + ly*ly + lz*lz)*massObjects[j].mass;
+			for (int k = 0; k < m_m; k++) {
+				if (k == j) {
+					continue;
+				}
+				U += massObjects[j].mass*massObjects[k].mass/r[j][k];
+			}
+		}
+		L[i] = l;
+		E[i] = 0.5*K - G*U; 
+		
+	}
+	doubleArrayToBinary(L, points, filename+"_angular");
+	doubleArrayToBinary(E, points, filename+"_energy");
+	delete[] E;
+	delete[] I;
 }
 
 void SolarSystem::setCenterMass(double centerMass) {
@@ -43,7 +81,6 @@ void SolarSystemRelativistic::perihelionPrecession(int index, double finalTime, 
 	std::cout << "Argument of perihelion is: " << atan2(per[1], per[0])*206264.806 << " arcseconds/century.\n";
 	delete[] per;
 }
-
 
 SolarSystemRelativistic::SolarSystemRelativistic(MassObject* initValue, int m)
 	: SolarSystem(initValue, m) {

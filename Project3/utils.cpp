@@ -25,6 +25,17 @@ double* linspace(double min, double max, int n) {
     return v;
 }
 
+int *intLinspace(int min, int max, int n) {
+	int *v;
+	v = new int[n];
+	int step = (max - min) / (n - 1);
+	v[0] = min;
+	for (int i = 1; i < n; i++) {
+		v[i] = min + i * step;
+	}
+	return v;
+}
+
 //  Allocating space for a m x n matrix and fill elements with 0
 double **createMatrix(int m, int n) {
 	double **mat;
