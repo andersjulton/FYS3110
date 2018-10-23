@@ -9,8 +9,7 @@ void SolarSystem::acceleration(int i, int j, double *ax, double *ay, double *az)
     double x = pos_x[j][i];
     double y = pos_y[j][i];
     double z = pos_z[j][i];
-    double this_r = sqrt(x*x + y*y + z*z);
-    denum = G*m_centerMass/pow(this_r, m_beta);
+    denum = G*m_centerMass/pow(r[j][j], m_beta);
 	*ax = -x*denum;
 	*ay = -y*denum;
 	*az = -z*denum;
@@ -19,27 +18,39 @@ void SolarSystem::acceleration(int i, int j, double *ax, double *ay, double *az)
 			continue;
 		}
 		denum = G*massObjects[k].mass/(pow(r[j][k], m_beta));
-		*ax -= (x - pos_x[k][i])*denum;
-		*ay -= (y - pos_y[k][i])*denum;
-		*az -= (z - pos_z[k][i])*denum;
+		*ax += (pos_x[k][i] - x)*denum;
+		*ay += (pos_y[k][i] - y)*denum;
+		*az += (pos_z[k][i] - z)*denum;
 	}
 }
 
-double SolarSystem::conservationEnergy() {
-	double K = 0;  
-	double U = 0;
-	distance(0);
-	for (int i = 0; i < m_m; i++) {
-		K += (vel_x[i][0]*vel_x[i][0] + vel_y[i][0]*vel_y[i][0] + vel_z[i][0]*vel_z[i][0])*massObjects[i].mass;
+double* SolarSystem::kineticEnergy() {
+	int h = (int) m_n/(m_finalTime + 1);
+	int i;
+	double *K = createVector(0, ((int) m_finalTime + 1));
+	for (int index = 0; index < ((int) m_finalTime + 1); index++) {
+		i = h*index;
+		distance(i);
 		for (int j = 0; j < m_m; j++) {
-			if (j == i) {continue;}
-			U += massObjects[i].mass*massObjects[j].mass/r[i][j];
+			K[index] += (vel_x[j][i]*vel_x[j][i] + vel_y[j][i]*vel_y[j][i] + vel_z[j][i]*vel_z[j][i])*massObjects[j].mass;
 		}
+		K[index] = K[index]*0.5;
 	} 
+	return K;
+}
+
+/*
+// return total K, U and E for every year
+double* SolarSystem::conservationEnergy() {  
+	double *U = createVector(0, n);
+	double *E = createVector(0, n);
+	distance(0);
+
 	double E_0 = K*0.5 - U*G;
 	double E_min = E_0;
 	double E_max = E_0;
 	double E;
+	printf("E0 = %f\n", E_0);
 	for (int i = 1; i < m_n; i++) {
 		K = 0;
 		U = 0;
@@ -54,38 +65,43 @@ double SolarSystem::conservationEnergy() {
 			}
 		} 
 		E = K*0.5 - U*G;
-		//printf("%f\n", E);
-		if (E < E_min) {
-			E_min = E;
-		} else if (E > E_max) {
-			E_max = E;
-		}
 	}
-	printf("%.9f\n", (E_0 - E_min)/E_0);
-	printf("%.9f\n", (E_max - E_0)/E_0);
+	printf("En = %f\n", E);
+	printf("E_min = %f, E_max = %f\n", E_min, E_max);
 	return (E_max - E_min)/E_0;
 }
+*/
+
 
 double SolarSystem::conservationEnergy2() {
 	double K = 0;  
 	double U = 0;
 	distance(0);
-	for (int i = 0; i < m_m; i++) {
+	for (int i = 1; i < m_m; i++) {
 		K += (vel_x[i][0]*vel_x[i][0] + vel_y[i][0]*vel_y[i][0] + vel_z[i][0]*vel_z[i][0])*massObjects[i].mass;
-		U += massObjects[i].mass/(pos_x[i][0]*pos_x[i][0] + pos_y[i][0]*pos_y[i][0] + pos_z[i][0]*pos_z[i][0]);
+		U += massObjects[i].mass/r[0][i];
 	} 
 	double E_0 = K*0.5 - U*fourPiPi;
 	double E_min = E_0;
 	double E_max = E_0;
+	printf("E0 = %f\n", E_0); 
 	double E;
 	for (int i = 1; i < m_n; i++) {
 		K = 0;
 		U = 0;
 		distance(i);
-		for (int j = 0; j < m_m; j++) {
-			K += (vel_x[j][i]*vel_x[j][i] + vel_y[j][i]*vel_y[j][i] + vel_z[j][i]*vel_z[j][i])*massObjects[j].mass;
-			U += massObjects[j].mass/(pos_x[j][i]*pos_x[j][i] + pos_y[j][i]*pos_y[j][i] + pos_z[j][i]*pos_z[j][i]);
-		} 
+		for (int j = 1; j < m_m; j++) {
+			K += pow((vel_x[j][i] - vel_x[0][i]), 2)*massObjects[j].mass;
+			K += pow((vel_y[j][i] - vel_y[0][i]), 2)*massObjects[j].mass;
+			K += pow((vel_z[j][i] - vel_z[0][i]), 2)*massObjects[j].mass;
+			U += massObjects[j].mass/r[0][j];
+			for (int k = 1; k < m_m; k++) {
+				if (j == k) {
+					continue;
+				}
+				U += massObjects[j].mass*massObjects[k].mass/r[j][k];
+			}
+		}
 		E = K*0.5 - U*fourPiPi;
 		//printf("%f\n", E);
 		if (E < E_min) {
@@ -94,6 +110,47 @@ double SolarSystem::conservationEnergy2() {
 			E_max = E;
 		}
 	}
+	printf("En = %f\n", E);
+	printf("E_min = %f, E_max = %f\n", E_min, E_max);
+	return (E_max - E_min);
+}
+
+// from center of mass
+double SolarSystem::conservationEnergy3() {
+	double totalMass = m_centerMass;
+	for (int i = 0; i < m_m; i++) {
+		totalMass += massObjects[i].mass;
+	}
+	double K = 0;  
+	double U = 0;
+	distance(0);
+	for (int i = 0; i < m_m; i++) {
+		K += (vel_x[i][0]*vel_x[i][0] + vel_y[i][0]*vel_y[i][0] + vel_z[i][0]*vel_z[i][0])*massObjects[i].mass;
+		U += totalMass*massObjects[i].mass/r[i][i];
+	} 
+	double E_0 = K*0.5 - U*G;
+	double E_min = E_0;
+	double E_max = E_0;
+	printf("E0 = %f\n", E_0); 
+	double E;
+	for (int i = 1; i < m_n; i++) {
+		K = 0;
+		U = 0;
+		distance(i);
+		for (int j = 0; j < m_m; j++) {
+			K += (vel_x[j][i]*vel_x[j][i] + vel_y[j][i]*vel_y[j][i] + vel_z[j][i]*vel_z[j][i])*massObjects[j].mass;
+			U += totalMass*massObjects[j].mass/r[j][j];
+		}
+		E = K*0.5 - U*G;
+		//printf("%f\n", E);
+		if (E < E_min) {
+			E_min = E;
+		} else if (E > E_max) {
+			E_max = E;
+		}
+	}
+	printf("En = %f\n", E);
+	printf("E_min = %f, E_max = %f\n", E_min/E_0, E_max/E_0);
 	return (E_max - E_min)/E_0;
 }
 

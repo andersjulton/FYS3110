@@ -7,6 +7,7 @@ using namespace std;
 using namespace StellarObjectsLibraryv2;
 
 void earthSun();
+void testEarthSun();
 void allPlanets();
 void escapeVelocity();
 void mercury();
@@ -19,7 +20,8 @@ int main() {
 	//earthJupiter();
 	//mercury();
 	//earthSun();
-	allPlanets();
+    testEarthSun();
+	//allPlanets();
 	//escapeVelocity();
 	return 0;
 }
@@ -63,15 +65,44 @@ void earthSun() {
 	double finalTime = 50;
     int n = 100;
     for (int i = 0; i < 4; i++) {
-        earth_sun.eulerSolve(finalTime, (int) (100*finalTime) );
+        earth_sun.eulerSolve(finalTime, (int) (n*finalTime) );
         earth_sun.writeToFile(filename1 + to_string(n));
 
-        earth_sun.verletSolve(finalTime, (int) (100*finalTime) );
+        earth_sun.verletSolve(finalTime, (int) (n*finalTime) );
         earth_sun.writeToFile(filename2 + to_string(n));
         n = n*10;
     }
     earth_sun.destroy();
 	delete[] planets;
+}
+
+void testEarthSun() {
+    MassObject *planets;
+    int m = 1;
+    planets = new MassObject[m];
+
+    MassObject Earth2D = { "2DEarth", Earth.mass, 1, 0, 0, 0, 2.0*acos(-1.0), 0 };
+    planets[0] = Earth2D;
+
+    SolarSystem earth_sun(planets, m);
+    earth_sun.setCenterMass(Sun.mass);
+
+    double finalTime = 4;
+    int n = 100;
+    double *K;
+    for (int i = 0; i < 4; i++) {
+        printf("n = %d \n", n);
+        earth_sun.verletSolve(finalTime, (int) (n*finalTime) );
+        K = earth_sun.kineticEnergy();
+        for (int i = 0; i < finalTime + 1; i++) {
+            //printf("year = %d\n", i);
+            printf("K = %.12f\n", K[i]/K[0]);
+        }
+        n = n*10;
+        delete[] K;
+    }
+    earth_sun.destroy();
+    delete[] planets;
 }
 
 
@@ -170,16 +201,13 @@ void allPlanets() {
 	planets[7] = Uranus;
 	planets[8] = Neptune;
 	planets[9] = Pluto;
-	n = 1e2;
+	n = 1e6;
 	finalTime = 1.0;
 	filename = "whole";
 	SolarSystem whole(planets, m);
 	whole.verletSolve(finalTime, n);
 	whole.writeToFile(filename);
 
-
-    double dE = whole.conservationEnergy();
-    printf("dE = %.12f\n", dE);
     whole.destroy();
 	delete[] planets;
 }

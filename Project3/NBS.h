@@ -23,6 +23,7 @@ protected:
 	int m_m = 1;
 	double pi = 3.14159265359;
 	double **pos_x, **pos_y, **pos_z, **vel_x, **vel_y, **vel_z, **r;
+	double m_finalTime = 0;
 	MassObject *massObjects;
 
 	void distance(int);
@@ -48,6 +49,7 @@ protected:
 	double pi = 3.14159265359;
 	double fourPiPi = 4*pi*pi;
 	double G = fourPiPi/2e30;
+	double SM = 2e30;
 	double m_centerMass = 0;
 	double m_beta = 3;
 	void acceleration(int, int, double*, double*, double*);
@@ -55,8 +57,10 @@ public:
 	using NBS::NBS;
 	void setCenterMass(double);
 	void setBeta(double);
-	double conservationEnergy();
+	double* conservationEnergy();
 	double conservationEnergy2();
+	double conservationEnergy3();
+	double* kineticEnergy();
 };
 
 class SolarSystemRelativistic : public SolarSystem {
@@ -64,7 +68,6 @@ class SolarSystemRelativistic : public SolarSystem {
 	double c = 63239.7263; // Speed of light AU/yr
 	double cc = c*c;
 	double *l;
-	double fourPiPi = 4*pi*pi;
 public:
 	SolarSystemRelativistic(MassObject*, int);
 	double *verletSolveRel2D(int, double, int, int);
