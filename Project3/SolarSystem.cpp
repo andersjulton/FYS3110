@@ -24,43 +24,69 @@ void SolarSystem::acceleration(int i, int j, double *ax, double *ay, double *az)
 	}
 }
 
-void SolarSystem::consEnergyAngular(std::string filename, int points) {
-	int *I;
-	double *E, *L;
-	double K;
-	double U;
+double SolarSystem::kineticEnergy(int i) {
+	double K = 0;
+	for (int j = 0; j < m_m; j++) {
+		K += (vel_x[j][i]*vel_x[j][i] + vel_y[j][i]*vel_y[j][i] + vel_z[j][i]*vel_z[j][i])*massObjects[j].mass;
+	}
+	return 0.5*K;
+}
+
+double SolarSystem::potentialEnergy(int i) {
+	double U = 0;
+	distance(i);
+	for (int j = 0; j < m_m; j++) {
+		U -= massObjects[j].mass*m_centerMass/r[j][j];
+		for (int k = 0; k < m_m; k++) {
+			if (k == j) {
+				continue;
+			}
+			U -= massObjects[j].mass*massObjects[k].mass/r[j][k];
+		}
+	}
+	return G*U;
+}
+
+double SolarSystem::angularMomentum(int i) {
 	double lx, ly, lz, l;
+	l = 0;
+	for (int j = 0; j < m_m; j++) {
+		lx = pos_y[j][i]*vel_z[j][i] - pos_z[j][i]*vel_y[j][i];
+		ly = pos_x[j][i]*vel_z[j][i] - pos_z[j][i]*vel_x[j][i];
+		lz = pos_x[j][i]*vel_y[j][i] - pos_y[j][i]*vel_x[j][i];
+
+		l += sqrt(lx*lx + ly*ly + lz*lz)*massObjects[j].mass;
+	}
+	return l;
+}
+	
+void SolarSystem::conservation(std::string filename, int points) {
+	int *I;
+	double *E, *L, *K, *U;
+	int index = 0;
+
 	I = intLinspace(0, m_n, points);
+	K = createVector(0, points);
+	U = createVector(0, points);
 	E = createVector(0, points);
 	L = createVector(0, points);
 	for (int i = 0; i < points; i++) {
-		U = 0;
-		K = 0;
-		l = 0;
-		distance(i);
-		for (int j = 0; j < m_m; j++) {
-			K += (vel_x[j][i]*vel_x[j][i] + vel_y[j][i]*vel_y[j][i] + vel_z[j][i]*vel_z[j][i])*massObjects[j].mass;
-
-			lx = pos_y[j][i]*vel_z[j][i] - pos_z[j][i]*vel_y[j][i];
-			ly = pos_x[j][i]*vel_z[j][i] - pos_z[j][i]*vel_x[j][i];
-			lz = pos_x[j][i]*vel_y[j][i] - pos_y[j][i]*vel_x[j][i];
-			
-			l += sqrt(lx*lx + ly*ly + lz*lz)*massObjects[j].mass;
-			for (int k = 0; k < m_m; k++) {
-				if (k == j) {
-					continue;
-				}
-				U += massObjects[j].mass*massObjects[k].mass/r[j][k];
-			}
-		}
-		L[i] = l;
-		E[i] = 0.5*K - G*U; 
-		
+		index = I[i];
+		K[i] = kineticEnergy(index);
+		U[i] = potentialEnergy(index);
+		L[i] = angularMomentum(index);
+		E[i] = K[i] + U[i];
 	}
+	doubleArrayToBinary(K, points, filename+"_kinetic");
+	doubleArrayToBinary(U, points, filename+"_potential");
 	doubleArrayToBinary(L, points, filename+"_angular");
 	doubleArrayToBinary(E, points, filename+"_energy");
+
+	delete[] K;
+	delete[] U;
 	delete[] E;
 	delete[] I;
+	delete[] L;
 }
 
 void SolarSystem::setCenterMass(double centerMass) {
@@ -134,18 +160,18 @@ double *SolarSystemRelativistic::verletSolveRel2D(int index, double finalTime, i
 	vy0 = massObjects[index].vy;
 	distance(0);
 
-	double h = finalTime / (n + 1);
+	double h = finalTime/(n + 1);
 	double hh = h * h;
 	int count = 0;
 	r = sqrt(pow(x0, 2) + pow(y0, 2));
-	a = -fourPiPi * (1.0 + 3.0*ll / (r*r*cc)) / pow(r, 3);
-	for (int i = 0; i < n - n / 100; i++) {
-		xn = x0 + h*vx0 + (hh / 2.0)*a*x0;
-		yn = y0 + h*vy0 + (hh / 2.0)*a*y0;
+	a = -G*(1.0 + 3.0*ll/(r*r*cc)) / pow(r, 3);
+	for (int i = 0; i < n - n/100; i++) {
+		xn = x0 + h*vx0 + (hh/2.0)*a*x0;
+		yn = y0 + h*vy0 + (hh/2.0)*a*y0;
 		rn = sqrt(xn*xn + yn*yn);
-		an = -fourPiPi*(1.0 + 3.0*ll/(rn*rn*cc))/pow(rn, 3);
-		vxn = vx0 + (h / 2.0)*(an*xn + a*x0);
-		vyn = vy0 + (h / 2.0)*(an*yn + a*y0);
+		an = -G*(1.0 + 3.0*ll/(rn*rn*cc))/pow(rn, 3);
+		vxn = vx0 + (h/2.0)*(an*xn + a*x0);
+		vyn = vy0 + (h/2.0)*(an*yn + a*y0);
 
 		r = rn;
 		a = an;
@@ -158,9 +184,9 @@ double *SolarSystemRelativistic::verletSolveRel2D(int index, double finalTime, i
 	perihelion[0] = x0;
 	perihelion[1] = y0;
 
-	for (int i = 0; i < n / 100; i++) {
-		xn = x0 + h * vx0 + (hh / 2.0)*a*x0;
-		yn = y0 + h * vy0 + (hh / 2.0)*a*y0;
+	for (int i = 0; i < n/100; i++) {
+		xn = x0 + h*vx0 + (hh/2.0)*a*x0;
+		yn = y0 + h*vy0 + (hh/2.0)*a*y0;
 
 		r = sqrt(pow(xn, 2) + pow(yn, 2));
 		if (r < rmin) {
@@ -169,9 +195,9 @@ double *SolarSystemRelativistic::verletSolveRel2D(int index, double finalTime, i
 			perihelion[1] = yn;
 		}
 		rn = sqrt(xn*xn + yn*yn);
-		an = -fourPiPi * (1.0 + 3.0*ll/(rn*rn*cc))/pow(rn, 3);
-		vxn = vx0 + (h / 2.0)*(an*xn + a * x0);
-		vyn = vy0 + (h / 2.0)*(an*yn + a * y0);
+		an = -G*(1.0 + 3.0*ll/(rn*rn*cc))/pow(rn, 3);
+		vxn = vx0 + (h/2.0)*(an*xn + a*x0);
+		vyn = vy0 + (h/2.0)*(an*yn + a*y0);
 
 		r = rn;
 		a = an;

@@ -28,10 +28,10 @@ double* linspace(double min, double max, int n) {
 int *intLinspace(int min, int max, int n) {
 	int *v;
 	v = new int[n];
-	int step = (max - min) / (n - 1);
+	int step = (max - min)/(n - 1);
 	v[0] = min;
 	for (int i = 1; i < n; i++) {
-		v[i] = min + i * step;
+		v[i] = min + i*step;
 	}
 	return v;
 }

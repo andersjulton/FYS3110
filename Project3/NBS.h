@@ -47,9 +47,7 @@ public:
 class SolarSystem : public NBS {
 protected:
 	double pi = 3.14159265359;
-	double fourPiPi = 4*pi*pi;
-	double G = fourPiPi/2e30;
-	double SM = 2e30;
+	double G = 4*pi*pi;
 	double m_centerMass = 0;
 	double m_beta = 3;
 	void acceleration(int, int, double*, double*, double*);
@@ -57,7 +55,10 @@ public:
 	using NBS::NBS;
 	void setCenterMass(double);
 	void setBeta(double);
-	void consEnergyAngular(std::string, int);
+	void conservation(std::string, int);
+	double kineticEnergy(int);
+	double potentialEnergy(int);
+	double angularMomentum(int);
 };
 
 class SolarSystemRelativistic : public SolarSystem {
