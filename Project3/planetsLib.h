@@ -1,6 +1,6 @@
 #include "NBS.h"
 
-namespace StellarObjectsLibraryv2 {
+namespace StellarObjectsLibrary {
 
     double days = 365.25;
     struct MassObject Sun = {"Sun", 2e30, 

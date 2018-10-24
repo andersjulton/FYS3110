@@ -5,7 +5,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace StellarObjectsLibraryv2;
+using namespace StellarObjectsLibrary;
 
 void earthSun();
 void allPlanets();

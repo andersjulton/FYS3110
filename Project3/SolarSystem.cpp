@@ -139,14 +139,11 @@ double *SolarSystemRelativistic::verletSolveRel2D(int index, double finalTime, i
 	int count = 0;
 	r = sqrt(pow(x0, 2) + pow(y0, 2));
 	a = -fourPiPi * (1.0 + 3.0*ll / (r*r*cc)) / pow(r, 3);
-
 	for (int i = 0; i < n - n / 100; i++) {
 		xn = x0 + h*vx0 + (hh / 2.0)*a*x0;
 		yn = y0 + h*vy0 + (hh / 2.0)*a*y0;
-
 		rn = sqrt(xn*xn + yn*yn);
 		an = -fourPiPi*(1.0 + 3.0*ll/(rn*rn*cc))/pow(rn, 3);
-
 		vxn = vx0 + (h / 2.0)*(an*xn + a*x0);
 		vyn = vy0 + (h / 2.0)*(an*yn + a*y0);
 
@@ -157,7 +154,6 @@ double *SolarSystemRelativistic::verletSolveRel2D(int index, double finalTime, i
 		vx0 = vxn;
 		vy0 = vyn;
 	}
-
 	rmin = sqrt(pow(x0, 2) + pow(y0, 2));
 	perihelion[0] = x0;
 	perihelion[1] = y0;
@@ -172,10 +168,8 @@ double *SolarSystemRelativistic::verletSolveRel2D(int index, double finalTime, i
 			perihelion[0] = xn;
 			perihelion[1] = yn;
 		}
-
 		rn = sqrt(xn*xn + yn*yn);
 		an = -fourPiPi * (1.0 + 3.0*ll/(rn*rn*cc))/pow(rn, 3);
-
 		vxn = vx0 + (h / 2.0)*(an*xn + a * x0);
 		vyn = vy0 + (h / 2.0)*(an*yn + a * y0);
 
