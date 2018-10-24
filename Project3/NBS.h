@@ -69,5 +69,5 @@ class SolarSystemRelativistic : public SolarSystem {
 public:
 	SolarSystemRelativistic(MassObject*, int);
 	double *verletSolveRel2D(int, double, int, int);
-	void perihelionPrecession(int, double, int, int);
+	double perihelionPrecession(int, double, int, int);
 };

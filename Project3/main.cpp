@@ -17,14 +17,14 @@ void time();
 
 int main() {
 
-	//sunEarthJupiter();
+	sunEarthJupiter();
 	//earthJupiter();
 	//earthJupiter_mass();
 	//mercury();
 	//earthSun();
 	//allPlanets();
 	//escapeVelocity();
-	time();
+	//time();
 	
 	return 0;
 }
@@ -111,17 +111,37 @@ void earthSun() {
 void sunEarthJupiter() {
 	int m, n;
 	double finalTime = 50.0;
+	double Rx, Ry, Rz, M;
+	Rx = 0;
+	Ry = 0;
+	Rz = 0;
+	M = 0;
 	string filename = "sunEarthJupiter";
 	MassObject *planets;
 
-	n = 1e7;
+	n = 1e5;
 	m = 3;
 
 	planets = new MassObject[m];
 	planets[0] = Sun;
 	planets[1] = Earth;
 	planets[2] = Jupiter;
-
+	
+	for (int i = 0; i < m; i++) {
+		M += planets[i].mass;
+		Rx += planets[i].mass*planets[i].x;
+		Ry += planets[i].mass*planets[i].y;
+		Rz += planets[i].mass*planets[i].z;
+	}
+	for (int i = 0; i < m; i++) {
+		planets[i].x -= Rx/M;
+		planets[i].y -= Ry/M;
+		planets[i].z -= Rz/M;
+	}
+	planets[0].vx = -(planets[1].vx*planets[1].mass + planets[2].vx*planets[2].mass);
+	planets[0].vy = -(planets[1].vy*planets[1].mass + planets[2].vy*planets[2].mass);
+	planets[0].vz = -(planets[1].vz*planets[1].mass + planets[2].vz*planets[2].mass);
+	
 	SolarSystem sunEarthJupiter(planets, m);
 	sunEarthJupiter.verletSolve(finalTime, n);
 	sunEarthJupiter.writeToFile(filename);

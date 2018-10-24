@@ -97,15 +97,18 @@ void SolarSystem::setBeta(double beta) {
 	m_beta = beta + 1;
 }
 
-void SolarSystemRelativistic::perihelionPrecession(int index, double finalTime, int n, int years) {
+double SolarSystemRelativistic::perihelionPrecession(int index, double finalTime, int n, int years) {
 	double *per;
+	double perihelion;
 	per = verletSolveRel2D(index, finalTime, n, years);
 	double r = sqrt(pow(per[0], 2) + pow(per[1], 2));
+	perihelion = atan2(per[1], per[0])*206264.806;
 
 	std::cout << "Position of perihelion is: (" << per[0] << "," << per[1] << ")\n";
 	std::cout << "Distance from sun: " << r << "\n";
-	std::cout << "Argument of perihelion is: " << atan2(per[1], per[0])*206264.806 << " arcseconds/century.\n";
+	std::cout << "Argument of perihelion is: " << perihelion << " arcseconds/century.\n";
 	delete[] per;
+	return perihelion;
 }
 
 SolarSystemRelativistic::SolarSystemRelativistic(MassObject* initValue, int m)
