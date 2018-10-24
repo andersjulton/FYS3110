@@ -13,6 +13,7 @@ void escapeVelocity();
 void mercury();
 void earthJupiter();
 void sunEarthJupiter();
+void time();
 
 int main() {
 
@@ -20,9 +21,10 @@ int main() {
 	//earthJupiter();
 	//earthJupiter_mass();
 	//mercury();
-	earthSun();
+	//earthSun();
 	//allPlanets();
 	//escapeVelocity();
+	time();
 	
 	return 0;
 }
@@ -32,14 +34,14 @@ void mercury() {
 	double finalTime;
 	string filename;
 	MassObject *planets;
-	n = 1e7;
+	n = 1e9;
 
 	m = 1;
 	planets = new MassObject[m];
 	MassObject RelMercury = { "RelMercury", Mercury.mass, 0.3075, 0, 0,
 		0, 12.44, 0 };
 	planets[0] = RelMercury;
-	finalTime = 100 * 88.0 / 365.0;
+	finalTime = 100;
 
 	SolarSystemRelativistic mercury(planets, m);
 	mercury.setCenterMass(Sun.mass);
@@ -47,6 +49,32 @@ void mercury() {
 	system("PAUSE");
 	mercury.destroy();
 	delete[] planets;
+}
+
+void time() {
+	int m = 1;
+	MassObject *planets = new MassObject[m];
+	MassObject Earth2D = { "2DEarth", Earth.mass, 1, 0, 0, 0, 2.0*acos(-1.0), 0 };
+	planets[0] = Earth2D;
+
+    SolarSystem earth_sun(planets, m);
+    earth_sun.setCenterMass(1.0);
+
+	double finalTime = 50;
+    int n = 1000;
+    double timeE, timeV;
+    for (int i = 0; i < 4; i++) {
+    	printf("n = %d\n", n);
+        timeE = earth_sun.timeEulerSolve(finalTime, (int) (n*finalTime));
+        printf("euler = %f\n", timeE);
+        timeV = earth_sun.timeVerletSolve(finalTime, (int) (n*finalTime));
+        printf("verlet = %f\n", timeV);
+        printf("ratio = %f\n", timeV/timeE);
+        n = n*10;
+    }
+    earth_sun.destroy();
+	delete[] planets;
+
 }
 
 void earthSun() {
@@ -79,37 +107,6 @@ void earthSun() {
     earth_sun.destroy();
 	delete[] planets;
 }
-
-/*
-void testEarthSun() {
-    MassObject *planets;
-    int m = 1;
-    planets = new MassObject[m];
-
-    MassObject Earth2D = { "2DEarth", Earth.mass, 1, 0, 0, 0, 2.0*acos(-1.0), 0 };
-    planets[0] = Earth2D;
-
-    SolarSystem earth_sun(planets, m);
-    earth_sun.setCenterMass(Sun.mass);
-
-    double finalTime = 4;
-    int n = 100;
-    double *K;
-    for (int i = 0; i < 4; i++) {
-        printf("n = %d \n", n);
-        earth_sun.verletSolve(finalTime, (int) (n*finalTime) );
-        K = earth_sun.kineticEnergy();
-        for (int i = 0; i < finalTime + 1; i++) {
-            //printf("year = %d\n", i);
-            printf("K = %.12f\n", K[i]/K[0]);
-        }
-        n = n*10;
-        delete[] K;
-    }
-    earth_sun.destroy();
-    delete[] planets;
-}
-*/
 
 void sunEarthJupiter() {
 	int m, n;
