@@ -3,7 +3,6 @@
 #include <cmath>
 #include <iostream>
 
-
 void SolarSystem::acceleration(int i, int j, double *ax, double *ay, double *az) {
     double denum;
     double x = pos_x[j][i];
@@ -165,7 +164,6 @@ double *SolarSystemRelativistic::verletSolveRel2D(int index, double finalTime, i
 
 	double h = finalTime/(n + 1);
 	double hh = h * h;
-	int count = 0;
 	r = sqrt(pow(x0, 2) + pow(y0, 2));
 	a = -G*(1.0 + 3.0*ll/(r*r*cc)) / pow(r, 3);
 	for (int i = 0; i < n - n/100; i++) {

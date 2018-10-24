@@ -17,11 +17,11 @@ void time();
 
 int main() {
 
-	sunEarthJupiter();
+	//sunEarthJupiter();
 	//earthJupiter();
 	//earthJupiter_mass();
 	//mercury();
-	//earthSun();
+	earthSun();
 	//allPlanets();
 	//escapeVelocity();
 	//time();
@@ -99,11 +99,14 @@ void earthSun() {
         //earth_sun.writeToFile(filename1 + to_string(n));
 		//earth_sun.conservation(filename1 + to_string(n), points);
 
-        earth_sun.verletSolve(finalTime, (int) (n*finalTime));
+        //earth_sun.verletSolve(finalTime, (int) (n*finalTime));
         //earth_sun.writeToFile(filename2 + to_string(n));
-		earth_sun.conservation(filename2 + to_string(n), points);
+		//earth_sun.conservation(filename2 + to_string(n), points);
         n = n*10;
     }
+	earth_sun.setBeta(3.0);
+	earth_sun.verletSolve(finalTime, 1e6);
+	earth_sun.writeToFile(filename2 + to_string(n));
     earth_sun.destroy();
 	delete[] planets;
 }

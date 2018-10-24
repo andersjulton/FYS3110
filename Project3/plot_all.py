@@ -23,28 +23,69 @@ def plot_3D(names, filename):
 	maxX = np.max(pos_x)
 	maxY = np.max(pos_y)
 	max = np.max([maxX, maxY])
-	max = 1.2
+	plt.style.use('dark_background')
 	fig = plt.figure(figsize=(10,10))
 	ax = fig.gca(projection='3d')
+
 	ax.set_xlim(-max, max)
 	ax.set_ylim(-max, max)
 	ax.set_zlim(-max, max)
 	ax.set_xlabel(r'$x \ \ [AU]$', fontsize=15)
 	ax.set_ylabel(r'$y \ \ [AU]$', fontsize=15)
 	ax.set_zlabel(r'$z \ \ [AU]$', fontsize=15)
+	ax.tick_params(labelsize=15)
 	ax.xaxis.pane.fill = False
 	ax.yaxis.pane.fill = False
 	ax.zaxis.pane.fill = False
-
+	ax.grid(False)
 	# Now set color to white (or whatever is "invisible")
 	ax.xaxis.pane.set_edgecolor('w')
 	ax.yaxis.pane.set_edgecolor('w')
 	ax.zaxis.pane.set_edgecolor('w')
 
-	for i, n in enumerate(names):
-		ax.plot(pos_x[i], pos_y[i], pos_z[i], label = n, linewidth=0.5)
-	ax.legend()
-	plt.savefig(filename + "inner.pdf")
+	for i, N in enumerate(names):
+		ax.plot(pos_x[i], pos_y[i], pos_z[i], label = N, linewidth=0.5)
+	ax.legend(loc='upper left', fontsize=15)
+
+	#plt.savefig(filename + "_sun.pdf")
+	#plt.close()
+	plt.show()
+
+def plot_whole_inner(names, filename):
+	names = ["Sun", "Mercury", "Venus", "Earth", "Mars"]
+	n, m = get_dim(filename)
+	pos_x = read_file(filename + "_x", n, m)
+	pos_y = read_file(filename + "_y", n, m)
+	pos_z = read_file(filename + "_z", n, m)
+	maxX = np.max(pos_x)
+	maxY = np.max(pos_y)
+	max = np.max([maxX, maxY])
+	max = 1.2
+	plt.style.use('dark_background')
+	fig = plt.figure(figsize=(10,10))
+	ax = fig.gca(projection='3d')
+	years = 2*n/100
+
+	ax.set_xlim(-max, max)
+	ax.set_ylim(-max, max)
+	ax.set_zlim(-max, max)
+	ax.set_xlabel(r'$x \ \ [AU]$', fontsize=15)
+	ax.set_ylabel(r'$y \ \ [AU]$', fontsize=15)
+	ax.set_zlabel(r'$z \ \ [AU]$', fontsize=15)
+	ax.tick_params(labelsize=15)
+	ax.xaxis.pane.fill = False
+	ax.yaxis.pane.fill = False
+	ax.zaxis.pane.fill = False
+	ax.grid(False)
+	# Now set color to white (or whatever is "invisible")
+	ax.xaxis.pane.set_edgecolor('w')
+	ax.yaxis.pane.set_edgecolor('w')
+	ax.zaxis.pane.set_edgecolor('w')
+	for i, N in enumerate(names):
+		ax.plot(pos_x[i][0:years], pos_y[i][0:years], pos_z[i][0:years], label = N, linewidth=0.5)
+	ax.legend(loc='upper left', fontsize=15)
+
+	plt.savefig(filename + "_inner.pdf")
 	#plt.close()
 	plt.show()
 
@@ -57,8 +98,8 @@ def plot_SEJ(names, filename):
 	maxX = np.max(pos_x)
 	maxY = np.max(pos_y)
 	max = np.max([maxX, maxY])
-	fig = plt.figure(figsize=(10,10))
-	ax = fig.gca(projection='3d')
+	fig = plt.figure(figsize=(15,8))
+	ax = fig.add_subplot(121, projection='3d')
 	ax.set_xlim(-max, max)
 	ax.set_ylim(-max, max)
 	ax.set_zlim(-max, max)
@@ -71,8 +112,24 @@ def plot_SEJ(names, filename):
 
 	for i, n in enumerate(names):
 		ax.plot(pos_x[i], pos_y[i], pos_z[i], label = n, linewidth=0.5)
-	ax.legend()
-	#plt.savefig(filename + ".pdf")
+	ax.legend(fontsize=15)
+	ax = fig.add_subplot(122, projection='3d')
+	ax.zaxis.labelpad = 20
+	ax.yaxis.labelpad = 20
+
+	max = 0.01
+	ax.set_xlim(-max, max)
+	ax.set_ylim(-max, max)
+	ax.set_zlim(-max, max)
+	ax.set_xlabel(r'$x \ \ [AU]$', fontsize=15)
+	ax.set_ylabel(r'$y \ \ [AU]$', fontsize=15)
+	ax.set_zlabel(r'$z \ \ [AU]$', fontsize=15)
+	ax.xaxis.pane.fill = False
+	ax.yaxis.pane.fill = False
+	ax.zaxis.pane.fill = False
+	ax.plot(pos_x[0], pos_y[0], pos_z[0], label = "Sun", linewidth=0.5)
+	ax.legend(fontsize=15)
+	plt.savefig(filename + ".pdf")
 	#plt.close()
 	plt.show()
 
@@ -268,9 +325,12 @@ def plot_E_compare():
 	plt.show()
 
 def plot_energyAngular_whole():
+	names = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]
+	plot_3D(names, "whole")
 	E = np.fromfile("whole_energy")
 	L = np.fromfile("whole_angular")
 	x = np.linspace(0, 1000, 1000)
+	mpl.rcParams.update(mpl.rcParamsDefault)
 	plt.figure(figsize=(15,5))
 	plt.subplot(121)
 	plt.xticks(fontsize=15)
@@ -288,55 +348,94 @@ def plot_energyAngular_whole():
 	plt.title('Change in total angular momentum over time', fontsize=13, loc='right')
 	plt.savefig('whole_E_L.pdf')
 	plt.show()
-names = ["Sun", "Mercury", "Venus", "Earth", "Mars"]#, "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]
+
+def compareDistEJ(sunFile, filenames, names):
+	nE, mE = get_dim(sunFile)
+	Epos_x = read_file(sunFile + "_x", nE, mE)
+	Epos_y = read_file(sunFile + "_y", nE, mE)
+	Epos_z = read_file(sunFile + "_z", nE, mE)
+	rE = np.sqrt(Epos_x**2 + Epos_y**2 + Epos_z**2)
+	x = np.linspace(0, 50, nE)
+	for name in filenames:
+		nEJ, mEJ = get_dim(name)
+		EJpos_x = read_file(name + "_x", nEJ, mEJ)
+		EJpos_y = read_file(name + "_y", nEJ, mEJ)
+		EJpos_z = read_file(name + "_z", nEJ, mEJ)
+
+		rEJ = np.sqrt(EJpos_x[0]**2 + EJpos_y[0]**2 + EJpos_z[0]**2)
+		rdiff = np.abs(rE[0] - rEJ)/rE[0]
+		fig = plt.figure(figsize=(16,6))
+		ax = fig.add_subplot(121)
+		ax.plot(x, rdiff)
+		plt.xlabel(r'Years', fontsize=15)
+		plt.ylabel(r'$\frac{|\Delta R|}{R_0}$', fontsize=20)
+		plt.ticklabel_format(axis ='y', style='sci', scilimits=(0,0))
+		plt.xticks(fontsize=15)
+		plt.yticks(fontsize=15)
+		ax = fig.add_subplot(122, projection='3d')
+		maxX = np.max(EJpos_x)
+		maxY = np.max(EJpos_y)
+		max = np.max([maxX, maxY])*0.8
+		ax.set_xlim(-max, max)
+		ax.set_ylim(-max, max)
+		ax.set_zlim(-max, max)
+		ax.set_xlabel(r'$x \ \ [AU]$', fontsize=15)
+		ax.set_ylabel(r'$y \ \ [AU]$', fontsize=15)
+		ax.set_zlabel(r'$z \ \ [AU]$', fontsize=15)
+		ax.tick_params(labelsize=15)
+		ax.xaxis.pane.fill = False
+		ax.yaxis.pane.fill = False
+		ax.zaxis.pane.fill = False
+		# Now set color to white (or whatever is "invisible")
+		ax.xaxis.pane.set_edgecolor('w')
+		ax.yaxis.pane.set_edgecolor('w')
+		ax.zaxis.pane.set_edgecolor('w')
+		for i, N in enumerate(names):
+			ax.plot(EJpos_x[i], EJpos_y[i], EJpos_z[i], label = N, linewidth=0.5)
+		ax.legend(loc='upper left', fontsize=15)
+		plt.savefig(name+'.pdf')
+		#plt.show()
+
+names = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]
+#plot_whole_inner("whole")
 #plot_3D(names, "whole")
 #plot_E_compare()
 #plot_EJ_mass_compare(["Earth", "Jupiter"], ['earth_jupiter1x','earth_jupiter10x', 'earth_jupiter1000x'], "earth_jupiter_compare.pdf")
 #plot_SEJ(["Sun", "Earth", "Jupiter"], "sunEarthJupiter")
 #plot_2D_compare(["earthSun", "earth_jupiter1x"])
+#plot_energyAngular_whole()
+#compareDistEJ("earthSun", ["earthJupiter", "earthJupiter10x", "earthJupiter1000x"], ["Earth", "Jupiter"])
+
+
+x = np.fromfile("earth_sun_verlet_1000000_x")
+y = np.fromfile("earth_sun_verlet_1000000_y")
+z = np.fromfile("earth_sun_verlet_1000000_z")
+plt.plot(x, y)
+plt.show()
 
 
 '''
-filenameE = "earthSun"
-filenameEJ = "earthJupiter"
+energyES = np.fromfile("earthSun_energy")
+energyEJ = np.fromfile("earthJupiter_energy")
+energyEJ10 = np.fromfile("earthJupiter10x_energy")
+energyEJ1000 = np.fromfile("earthJupiter1000x_energy")
 
-nE, mE = get_dim(filenameE)
-nEJ, mEJ = get_dim(filenameEJ)
-Epos_x = read_file(filenameE + "_x", nE, mE)
-Epos_y = read_file(filenameE + "_y", nE, mE)
-Epos_z = read_file(filenameE + "_z", nE, mE)
-EJpos_x = read_file(filenameEJ + "_x", nEJ, mEJ)
-EJpos_y = read_file(filenameEJ + "_y", nEJ, mEJ)
-EJpos_z = read_file(filenameEJ + "_z", nEJ, mEJ)
+angularES = np.fromfile("earthSun_angular")
+angularEJ = np.fromfile("earthJupiter_angular")
+angularEJ10 = np.fromfile("earthJupiter10x_angular")
+angularEJ1000 = np.fromfile("earthJupiter1000x_angular")
 
-xdiff = np.abs(Epos_x - EJpos_x[0])
-ydiff = np.abs(Epos_y - EJpos_y[0])
-zdiff = np.abs(Epos_z - EJpos_z[0])
 
-x = np.linspace(0, 100, nE)
-plt.plot(x[0:50*nE/100], xdiff[0][0:50*nE/100], label= 'xdiff')
-#plt.plot(ydiff[0], label= 'ydiff')
-#plt.plot(zdiff[0], label= 'zdiff')
-plt.xlabel(r'Time [Years]')
-plt.show()'''
-
-E = np.fromfile("earthJupiter_energy")
-L = np.fromfile("earthJupiter_angular")
-x = np.linspace(0, 100, 1000)
-plt.figure(figsize=(15,5))
-plt.subplot(121)
-plt.xticks(fontsize=15)
-plt.yticks(fontsize=15)
-plt.xlabel('Years', fontsize=15)
-plt.ylabel(r'$E/E_0$', fontsize=15)
-plt.plot(x, E/E[0])
-plt.title('Change in total energy over time', fontsize=13)
-plt.subplot(122)
-plt.plot(x, L/L[0])
-plt.xticks(fontsize=15)
-plt.yticks(fontsize=15)
-plt.xlabel('Years', fontsize=15)
-plt.ylabel(r'$L/L_0$', fontsize=15)
-plt.title('Change in total angular momentum over time', fontsize=13, loc='right')
-#plt.savefig('EJ_E_L.pdf')
+x = np.linspace(0, 50, 1000)
+plt.figure()
+plt.plot(x, energyEJ/energyEJ[0], label='True Jupiter mass')
+plt.plot(x, energyEJ10/energyEJ10[0], label='10x Jupiter mass')
+plt.plot(x, energyEJ1000/energyEJ1000[0], label='1000x Jupiter mass')
+plt.legend(loc='best')
+plt.figure()
+plt.plot(x, angularEJ/angularEJ[0], label='True Jupiter mass')
+plt.plot(x, angularEJ10/angularEJ10[0], label='10x Jupiter mass')
+plt.plot(x, angularEJ1000/angularEJ1000[0], label='1000x Jupiter mass')
+plt.legend(loc='best')
 plt.show()
+'''
