@@ -48,4 +48,4 @@ void intArrayToBinary(int *a, int n, std::string filename);
 
 void destroyPointerMatrix(void **matr);
 
-float ran1(long *idum);
+float ran2(long *idum);

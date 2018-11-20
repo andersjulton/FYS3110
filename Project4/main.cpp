@@ -3,7 +3,7 @@
 #include <mpi.h>
 #include "analyticValues.h"
 #include "MCMC.h"
-
+	
 void b();
 void c();
 void d();
@@ -11,10 +11,13 @@ void e();
 
 int main(int argc, char* argv[]) {
 
-	b();
+	//b();
 	//c();
+
+	//MPI_Init(&argc, &argv);
 	//d();
 	//e();
+	//MPI_Finalize();
 
 	return 0;
 }
@@ -24,16 +27,15 @@ void b() {
 	double ftemp = 1.1;
 	double tempStep = 0.1;
 	int L = 2;
-	int mcs = int(1e5);
+	int mcs = int(1e7);
 	int preCycles = 0;
 	bool random = true;
-	long idumshift;
-	for (int i = 0; i < 5; i++) {
+	long idumshift = 5;
+	for (int i = 0; i < 1; i++) {
 		idumshift = i;
 		std::string filename = "ex_b"+std::to_string(i);
 		mcmc(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename, idumshift);
 	}
-
 }
 
 void c() {
@@ -41,10 +43,10 @@ void c() {
 	double ftemp = 1.1;
 	double tempStep = 0.1;
 	int L = 20;
-	int mcs = 5000;
+	int mcs = int(1e5);
 	int preCycles = 0;
 	bool random = true;
-	long idumshift = 0;
+	long idumshift = 5;
 
 	std::string filename = "ex_c_1_unord";
 	mcmc(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename, idumshift);
@@ -65,52 +67,50 @@ void c() {
 }
 
 void d() {
-	MPI_Init(NULL, NULL);
 
 	double itemp = 1.0;
 	double ftemp = 1.1;
 	double tempStep = 0.1;
-	int L = 20;
-	int mcs = (int) 1e5;
-	int preCycles = 1000;
+	int L = 40;
+	int mcs = (int) 1e6;
+	int preCycles = 5000;
 	bool random = true;
 
-	std::string filename = "ex_d_1";
+	std::string filename = "ex_d_1_REV";
 	mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
 
 	itemp = 2.4;
 	ftemp = 2.5;
-	filename = "ex_d_2.4";
-	//mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
-
-	MPI_Finalize();
-
+	filename = "ex_d_2.4_REV";
+	mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
 }
 
 void e() {
-	MPI_Init(NULL, NULL);
 
-	double itemp = 2.2;
-	double ftemp = 2.3;
-	double tempStep = 0.005;
+	double itemp = 2.25;
+	double ftemp = 2.29;
+	double tempStep = 0.0015;
 	int L = 40;
-	int mcs = (int) 1e5;
-	int preCycles = 1000;
+	int mcs = (int) 1e6;
+	int preCycles = 5000;
 	bool random = true;
 
-	std::string filename = "ex_e_40x40_0.005";
+	std::string filename = "ex_e_40x40_2.25-2.29";
 	mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
 
 	L = 60;
-	filename = "ex_e_60x60_0.005";
-	//mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
+	filename = "ex_e_60x60_2.25-2.29";
+	mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
 
 	L = 80;
-	filename = "ex_e_80x80_0.005";
-	//mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
+	filename = "ex_e_80x80_2.25-2.29";
+	mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
 
 	L = 100;
-	filename = "ex_e_100x100_0.005";
-	//mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
-	MPI_Finalize();
+	filename = "ex_e_100x100_2.25-2.29";
+	mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
+
+	L = 140;
+	filename = "ex_e_140x140_2.5-2.29";
+	mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
 }

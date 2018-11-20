@@ -18,7 +18,7 @@ void valueInfoToTXT(int n, int m, double temp, std::string filename);
 
 void reachEquib(int cycles, int L, int **spinMatrix, long &idum, double *w, double &E, double &M);
 
-void getProb(double *a, int n, double temp, std::string filename);
+void getProb(double *a, int n, std::string filename);
 
 template <typename myType>
 myType *createArray(myType value, int n);

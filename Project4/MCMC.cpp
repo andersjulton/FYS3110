@@ -4,39 +4,48 @@
 #include "MCMC.h"
 #include "utils.h"
 
-
+// Function for handling the boundary conditions
 inline int periodicBoundary(int i, int limit, int add) {
     return (i+limit+add) % (limit);
 }
 
+
+// Function used to evaluate implementation and test validity
 void mcmc(double itemp, double ftemp, double tempStep, int L, int mcs, bool random, int preCycles, std::string filename, long idumshift) {
 	double E, M, values[5], totalValues[5], w[17], **outputValues;
 	int counter, **spinMatrix, j, outputInterval = mcs/10, counterNorm;
 	long idum = -1 - idumshift;
 
 	spinMatrix = (int**)createPointerMatrix(L, L, sizeof(int));
-	outputValues = (double**)createPointerMatrix(6, outputInterval, sizeof(double));
+	outputValues = (double**)createPointerMatrix(7, outputInterval, sizeof(double));
 
 	for (double temp = itemp; temp < ftemp; temp += tempStep) {
 		j = 0;
-		init(idum, w, values, totalValues, spinMatrix, L, mcs, temp, E, M, random, preCycles);
-				
+		if (temp == itemp) {
+			init(idum, w, values, totalValues, spinMatrix, L, mcs, temp, E, M, random, preCycles);
+		}
+		else {
+			reachEquib(0, L, spinMatrix, idum, w, E, M);
+		}
 		for (int cycles = 0; cycles < mcs; cycles++) {
 			counter = 0;
 			metropolis(L, idum, counter, spinMatrix, E, M, w);
+			// Update expectation values
 			values[0] += E;
 			values[1] += E*E;
 			values[2] += M;
 			values[3] += M*M;
 			values[4] += fabs(M);
+			// Extract normalized expectation values at a set interval
 			if ((cycles) % 10 == 0) {
 				counterNorm = cycles + 1;
-				outputValues[0][j] = values[0]/counterNorm;	// mean energy
-				outputValues[1][j] = values[4]/counterNorm;	// mean abs magn
-				outputValues[2][j] = (values[1]/counterNorm - values[0]*values[0]/counterNorm/counterNorm);	// CV
-				outputValues[3][j] = (values[3]/counterNorm - values[4]*values[4]/counterNorm/counterNorm);	// Susc
-				outputValues[4][j] = counter;					// accepted configs per MC cycle
-				outputValues[5][j] = E;							// for prob measurements
+				outputValues[0][j] = values[0]/counterNorm;	
+				outputValues[1][j] = values[4]/counterNorm;	
+				outputValues[2][j] = (values[1]/counterNorm - values[0]*values[0]/counterNorm/counterNorm);	
+				outputValues[3][j] = (values[3]/counterNorm - values[4]*values[4]/counterNorm/counterNorm);	
+				outputValues[4][j] = counter;
+				outputValues[5][j] = E;							
+				outputValues[6][j] = fabs(M);
 				j++;
 			}
 		}
@@ -46,6 +55,7 @@ void mcmc(double itemp, double ftemp, double tempStep, int L, int mcs, bool rand
 	destroyPointerMatrix((void**)outputValues);
 }
 
+// Function for simulating larger lattice sizes
 void mcmcPara(double itemp, double ftemp, double tempStep, int L, int mcs, bool random, int preCycles, std::string filename) {
 	double E, M, values[5], totalValues[5], w[17], *eBuffer, *eFull, **output;
 	int counter, **spinMatrix, gsize, myRank, j, k = 0;
@@ -56,12 +66,12 @@ void mcmcPara(double itemp, double ftemp, double tempStep, int L, int mcs, bool 
 	MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
 
 	if (myRank == 0) {
-		std::cout << "Beginning calculations with " << gsize << " processors.\n";
+		std::cout << "Beginning calculations with " << gsize << " processes.\n";
 		std::cout << "Lattice size: " << L << "x" << L << "\n";
 		std::cout << mcs << " monte carlo cycles\n";
 	}
 
-	// Divide total number of MC cycles into intervals for each processor 
+	// Divide total number of MC cycles into intervals for each process 
 	int intervals = mcs/gsize;
 	int istart = myRank*intervals;
 	int iend = (myRank+1)*intervals;
@@ -119,7 +129,8 @@ void mcmcPara(double itemp, double ftemp, double tempStep, int L, int mcs, bool 
 	if (myRank == 0) {
 		
 		std::cout << "Elapsed time = " << totTime << "\n";
-		writeMatrixDim(5, fint, filename);
+		doubleArrayToBinary(eFull, mcs, filename+"E");
+		writeMatrixDim(7, fint, filename);
 		doubleMatrixToBinary(output, 7, fint, filename);
 	}
     destroyPointerMatrix((void**)spinMatrix);
@@ -128,70 +139,39 @@ void mcmcPara(double itemp, double ftemp, double tempStep, int L, int mcs, bool 
 	delete[] eFull;
 }
 
+// Function for performing a Monte Carlo step with the Metropolis test
 void metropolis(int L, long &idum, int &counter, int **spinMatrix, double &E, double &M, double *w) {
     for(int i = 0; i < L*L; i++) {
-		int ranj = (int) (ran1(&idum)*(double)L);
-        int rani = (int) (ran1(&idum)*(double)L);
+		// Choose random spin
+		int ranj = (int) (ran2(&idum)*(double)L);
+        int rani = (int) (ran2(&idum)*(double)L);
+
+		// Calculate energy difference when flipping one spin
         int deltaE = 2*spinMatrix[rani][ranj]*
         (spinMatrix[rani][periodicBoundary(ranj, L, -1)] +
 			spinMatrix[periodicBoundary(rani, L, -1)][ranj] +
 			spinMatrix[rani][periodicBoundary(ranj, L, 1)] +
 			spinMatrix[periodicBoundary(rani, L, 1)][ranj]);
-		if(ran1(&idum) <= w[deltaE + 8]) {
+
+		// Flip spin and update observables if Metropolis test is passed.
+		// For dE < 0, exp(-dE/temp) > 1, so test will always be passed for these values
+		if(ran2(&idum) <= w[deltaE + 8]) {
 			spinMatrix[rani][ranj] *= -1;
             M += (double) 2*spinMatrix[rani][ranj];
             E += (double) deltaE;
-            counter++;
+            counter++; // For counting accepted configurations
         }
     }
 }
 
-/*
-
-
-void outputPara(double **totalValues, double *eFull, double temp, int mcs, int L, int k, std::string filename) {
-	double norm = (1.0/(double(mcs)));
-	double Emean = totalValues[0]*norm;
-	double E2mean = totalValues[1]*norm;
-	double Mmean = totalValues[2]*norm;
-	double M2mean = totalValues[3]*norm;
-	double Mabsmean = totalValues[4]*norm;
-	double Evar = (E2mean - Emean*Emean);
-	double M2var = (M2mean - Mabsmean*Mabsmean);
-	double CV = Evar/temp/temp;
-	double susc = M2var/temp;
-	
-	//getProb(eFull, mcs, temp, filename);
-	outputValues[0][k] = Emean;
-	outputValues[1][k] = Mabsmean;
-	outputValues[2][k] = CV;
-	outputValues[3][k] = susc;
-}
-*/
+// Writes expectation values to binary file
 void output(double *totalValues, double **outputValues, double temp, int mcs, int L, int outputInterval, std::string filename) {
-    double norm = (1.0/(double(mcs)));
-    double Emean = totalValues[0]*norm;
-    double E2mean = totalValues[1]*norm;
-    double Mmean = totalValues[2]*norm;
-    double M2mean = totalValues[3]*norm;
-    double Mabsmean = totalValues[4]*norm;
-
-    double Evar = (E2mean - Emean*Emean)/temp/temp;
-    double M2var = (M2mean - Mabsmean*Mabsmean)/temp;
-	/*
-	std::cout << "\nNumerical values for temperature = " << temp << " and " << mcs << " monte carlo cycles\n";
-	std::cout << "Mean energy = " << Emean << '\n';
-	std::cout << "Mean energy squared = " << E2mean << '\n';
-	std::cout << "Mean absolute magnetization = " << Mabsmean << '\n';
-	std::cout << "Mean magnetization squared = " << M2mean << '\n';
-	std::cout << "Specific heat = " << Evar << '\n';
-	std::cout << "Magnetic susceptibility = " << M2var << '\n';*/
-	std::string str = std::to_string(temp);
-	str.erase(str.find_last_not_of('0') + 1, std::string::npos);
-	valueInfoToTXT(6, outputInterval, temp, filename);
-	doubleMatrixToBinary(outputValues, 6, outputInterval, filename);
+	// Expectation values are written to file for plotting in python.
+	valueInfoToTXT(7, outputInterval, temp, filename);
+	doubleMatrixToBinary(outputValues, 7, outputInterval, filename);
 }
 
+// Initializing various value arrays and the spin matrix
 void init(long &idum, double *w, double *values, double *totalValues, int **spinMatrix, 
 	int L, int mcs, double temp, double &E, double &M, bool random, int preCycles) {
     E = M = 0;
@@ -201,17 +181,21 @@ void init(long &idum, double *w, double *values, double *totalValues, int **spin
 		values[i] = 0;
 		totalValues[i] = 0;
 	}
+	// Set up the array for holding the possible Boltzmann factors
     for(int de =-8; de <= 8; de+=4) {w[de+8] = exp(-de/temp);}
 
+	// For random configuration
     if (random) {
         for(int i = 0; i < L; i++) {
             for(int j = 0; j < L; j++) {
-                if(ran1(&idum)>=0.5) {spinMatrix[i][j] = 1;}
+                if(ran2(&idum)>=0.5) {spinMatrix[i][j] = 1;}
                 else {spinMatrix[i][j] = -1;}
             }
         }
 		reachEquib(preCycles, L, spinMatrix, idum, w, E, M);
     }
+
+	// For ordered (all spins up) configuration
     else {
         for(int i = 0; i < L; i++) {
             for(int j = 0; j < L; j++) {
@@ -223,18 +207,18 @@ void init(long &idum, double *w, double *values, double *totalValues, int **spin
     }
 }
 
+// Runs a set number of monte carlo cycles before measurements
 void reachEquib(int preCycles, int L, int **spinMatrix, long &idum, double *w, double &E, double &M) {
-	// Runs a set number of monte carlo cycles before measurements
 	for (int i = 0; i < preCycles; i++) {
 		for (int j = 0; j < L*L; j++) {
-			int ranj = (int)(ran1(&idum)*(double)L);
-			int rani = (int)(ran1(&idum)*(double)L);
+			int ranj = (int)(ran2(&idum)*(double)L);
+			int rani = (int)(ran2(&idum)*(double)L);
 			int deltaE = 2*spinMatrix[rani][ranj]*
 				(spinMatrix[rani][periodicBoundary(ranj, L, -1)] +
 					spinMatrix[periodicBoundary(rani, L, -1)][ranj] +
 					spinMatrix[rani][periodicBoundary(ranj, L, 1)] +
 					spinMatrix[periodicBoundary(rani, L, 1)][ranj]);
-			if (ran1(&idum) <= w[deltaE + 8]) {
+			if (ran2(&idum) <= w[deltaE + 8]) {
 				spinMatrix[rani][ranj] *= -1;
 			}
 		}
@@ -266,7 +250,9 @@ void valueInfoToTXT(int n, int m,  double temp, std::string filename) {
 	file.close();
 }
 
-void getProb(double *a, int mcs, double temp, std::string filename) {
+
+// Function for calculating energy probabilites. 
+void getProb(double *a, int mcs, std::string filename) {
 	int *seen, k = 0;
 	double **buffer, **output;
 
@@ -292,11 +278,9 @@ void getProb(double *a, int mcs, double temp, std::string filename) {
 		output[0][i] = buffer[0][i];
 		output[1][i] = buffer[1][i];
 	}
-
-	std::string str = std::to_string(temp);
-	str.erase(str.find_last_not_of('0') + 1, std::string::npos);
-	valueInfoToTXT(2, k, temp, filename);
-	doubleMatrixToBinary(output, 2, k, filename);
+	
+	valueInfoToTXT(2, k, 0, filename+"_prob");
+	doubleMatrixToBinary(output, 2, k, filename+"_prob");
 
 	delete[] seen;
 	deleteMatrix(output, 2);
