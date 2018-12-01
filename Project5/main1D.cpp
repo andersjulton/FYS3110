@@ -1,0 +1,68 @@
+#include "PDE.h"
+#include "utils.h"
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+void writeToFile(double t, double dx, string filename);
+
+int main() {
+	double t1 = 0.5;
+	double t2 = t1;
+	writeToFile(t1, 0.01, "t1_dx_0.01");
+	writeToFile(t2, 0.01, "t2_dx_0.01");
+	writeToFile(t1, 0.1, "t1_dx_0.1");
+	writeToFile(t2, 0.1, "t2_dx_0.1");
+
+	printf("done\n");
+}
+
+void writeToFile(double t, double dx, string filename) {
+	double dt = 0.5*(dx*dx);
+	int timeSteps = (int) t/dt + 1;
+	int n = (int) 1/dx + 1;				// L = 1
+	printf("%d\n", n);
+	double alpha = dt/(dx*dx);
+
+	double **u = createMatrix(3, n);
+	double *exact = createVector(1, n); 		 // ------FIX THIS-------
+	double **error = new double*[3];
+
+	u[0][n-1] = 1;
+	u[1][n-1] = 1;
+	u[2][n-1] = 1;
+
+	forwardEuler(u[0], alpha, timeSteps, n);
+	backwardEuler(u[1], alpha, timeSteps, n);
+	crank_nicolson(u[2], alpha, timeSteps, n);
+
+	error[0] = relErrorArray(exact, u[0], n);
+	error[1] = relErrorArray(exact, u[1], n);
+	error[2] = relErrorArray(exact, u[2], n);
+
+
+	ofstream outfile, errorfile;
+	outfile.open(filename + ".txt");
+	errorfile.open(filename + "_error.txt");
+
+	outfile << "Forward Euler\tBackward Euler\tCrank-Nicolson\texact";
+	errorfile << "Forward Euler\tBackward Euler\tCrank-Nicolson";
+
+	for (int i = 0; i < n; i++) {
+		outfile << "\n";
+		errorfile << "\n";
+		for (int j = 0; j < 3; j++) {
+			outfile << to_string(u[j][i]) + "\t\t ";
+			errorfile << to_string(error[j][i]) + "\t\t ";
+		}
+		outfile << to_string(exact[i]);
+	}
+	outfile.close();
+	errorfile.close();
+	
+	delete[] exact;
+	deleteMatrix(u, 3);
+	deleteMatrix(error, 3);
+}
+
