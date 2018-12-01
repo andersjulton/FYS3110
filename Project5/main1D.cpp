@@ -9,21 +9,25 @@ void writeToFile(double t, double dx, string filename);
 
 int main() {
 	double t1 = 0.5;
-	double t2 = t1;
+	double t2 = 0.05;
+	printf("t = %.2f, t = %.2f\n", t1, t2);
 	writeToFile(t1, 0.01, "t1_dx_0.01");
 	writeToFile(t2, 0.01, "t2_dx_0.01");
 	writeToFile(t1, 0.1, "t1_dx_0.1");
 	writeToFile(t2, 0.1, "t2_dx_0.1");
 
 	printf("done\n");
+	return 0;
 }
 
 void writeToFile(double t, double dx, string filename) {
 	double dt = 0.5*(dx*dx);
-	int timeSteps = (int) t/dt + 1;
-	int n = (int) 1/dx + 1;				// L = 1
+	printf("dt = %f, t = %f \n", dt, t);
+	int timeSteps = (int) (t/dt + 1);
+	int n = (int) (1.0/dx + 1);				// L = 1
 	printf("%d\n", n);
 	double alpha = dt/(dx*dx);
+	printf("time steps = %d\n", timeSteps);
 
 	double **u = createMatrix(3, n);
 	double *exact = createVector(1, n); 		 // ------FIX THIS-------
