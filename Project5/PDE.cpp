@@ -23,16 +23,16 @@ void backwardEuler(double *u, double alpha, int timeSteps, int n) {
 	double *temp = createVector(0, n);
 
 	for (int i = 0; i < timeSteps/2; i++) {		// time
+		// avoiding copying between vectors by doing two time-iterations at once
 		triDiaSolver(offDia, dia, offDia, temp, u, n);
 		triDiaSolver(offDia, dia, offDia, u, temp, n);
 	}
 	if (timeSteps % 2 == 1) {
 		triDiaSolver(offDia, dia, offDia, temp, u, n);
-		for (int j = 1; j < (n-1); j++) {
-			u[j] = temp[j];
+		for (int i = 1; i < (n-1); i++) {
+			u[i] = temp[i];
 		}
 	}
-
 	delete[] temp;
 }
 

@@ -15,8 +15,6 @@ int main() {
 	writeToFile(t2, 0.01, "t2_dx_0.01");
 	writeToFile(t1, 0.1, "t1_dx_0.1");
 	writeToFile(t2, 0.1, "t2_dx_0.1");
-
-	printf("done\n");
 	return 0;
 }
 
@@ -41,9 +39,9 @@ void writeToFile(double t, double dx, string filename) {
 	backwardEuler(u[1], alpha, timeSteps, n);
 	crank_nicolson(u[2], alpha, timeSteps, n);
 
-	error[0] = relErrorArray(exact, u[0], n);
-	error[1] = relErrorArray(exact, u[1], n);
-	error[2] = relErrorArray(exact, u[2], n);
+	error[0] = relError(exact, u[0], n);
+	error[1] = relError(exact, u[1], n);
+	error[2] = relError(exact, u[2], n);
 
 
 	ofstream outfile, errorfile;

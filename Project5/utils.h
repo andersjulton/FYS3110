@@ -3,11 +3,17 @@
 
 double* createVector(double value, int n);
 
+int* createVectorInt(int value, int n);
+
 double* copyVector(double* vector, int n);
 
 double* linspace(double min, double max, int n);
 
 double **createMatrix(int m, int n);
+
+double **copyMatrix(double **original, int m, int n);
+
+double *copyMatrixTo1D(double **original, int m, int n);
 
 double **createDiaMatrix(double d, int n);
 
@@ -19,7 +25,13 @@ double maxError(double *expected, double *computed, int n);
 
 double maxEpsilon(double *expected, double *computed, int n); 
 
-double *relErrorArray(double *expected, double *computed, int n);
+double *relError(double *expected, double *computed, int n);
+
+double **relError(double **expected, double **computed, int m, int n);
+
+double **absError(double **expected, double **computed, int m, int n);
+
+double *absError(double *expected, double *computed, int n);
 
 void printError(double *u, double *v, int n);
 
@@ -28,6 +40,8 @@ void intArrayToFile(int *v , int n, std::string filename, bool zeroPadding = fal
 void doubleArrayToFile(double *v , int n, std::string filename, bool zeroPadding = false);
 
 void doubleMatrixToFile(double **v , int n, int m, std::string filename);
+
+void doubleMatrixToFile(double *v , int n, int m, std::string filename);
 
 void doubleArrayToBinary(double *a, double n, std::string filename);
 

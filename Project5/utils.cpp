@@ -13,6 +13,16 @@ double* createVector(double value, int n) {
 	return vector;
 }
 
+//  Allocating space for a vector and fill elements with a constant value
+int* createVectorInt(int value, int n) {
+	int *vector;
+	vector = new int[n];
+	for (int i = 0; i < n; i++) {
+		vector[i] = value;
+	}
+	return vector;
+}
+
 double* copyVector(double* vector, int n) {
 	double *copy;
 	copy = new double[n];
@@ -53,6 +63,32 @@ double **createMatrix(int m, int n) {
 		mat[i] = new double[n];
 		for(int j = 0; j < n; j++) {
 			mat[i][j] = 0.0;
+		}
+	}
+	return mat;
+}
+
+
+//  Copy m x n matrix
+double **copyMatrix(double **original, int m, int n) {
+	double **mat;
+	mat = new double*[m];
+	for(int i = 0; i < m; i++) {
+		mat[i] = new double[n];
+		for(int j = 0; j < n; j++) {
+			mat[i][j] = original[i][j];
+		}
+	}
+	return mat;
+}
+
+//  Copy m x n matrix and represent it in a 1D-array
+double *copyMatrixTo1D(double **original, int m, int n) {
+	double *mat;
+	mat = new double[m*n];
+	for(int i = 0; i < m; i++) {
+		for(int j = 0; j < n; j++) {
+			mat[i*m + j] = original[i][j];
 		}
 	}
 	return mat;
@@ -121,13 +157,43 @@ double maxError(double *expected, double *computed, int n) {
 }
 
 //return array with relative error
-double *relErrorArray(double *expected, double *computed, int n) {
+double *relError(double *expected, double *computed, int n) {
 	double *error = createVector(0, n);
 	for (int i = 0; i < n; i++) {
 		error[i] = fabs((expected[i] - computed[i])/expected[i]);
 	}
 	return error;
+}
 
+//return matrix with relative error
+double **relError(double **expected, double **computed, int m, int n) {
+	double **error = createMatrix(n, n);
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			error[i][j] = fabs((expected[i][j] - computed[i][j])/expected[i][j]);
+		}
+	}
+	return error;
+}
+
+//return array with absolute error
+double *absError(double *expected, double *computed, int n) {
+	double *error = createVector(0, n);
+	for (int i = 0; i < n; i++) {
+		error[i] = fabs(expected[i] - computed[i]);
+	}
+	return error;
+}
+
+//return matrix with absolute error
+double **absError(double **expected, double **computed, int m, int n) {
+	double **error = createMatrix(n, n);
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			error[i][j] = fabs((expected[i][j] - computed[i][j]));
+		}
+	}
+	return error;
 }
 
 // returns log10 of the max relative error
@@ -193,6 +259,20 @@ void doubleMatrixToFile(double **v , int n, int m, std::string filename) {
 		for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 myfile << v[i][j] << " ";
+            }
+            myfile << '\n';
+		}
+	}
+}
+
+// write n x m matrix (double) represented as a 1D-array to a txt file
+void doubleMatrixToFile(double *v , int n, int m, std::string filename) {
+	std::ofstream myfile(filename + ".txt");
+	if (myfile.is_open()) {
+		myfile << n << " " <<  m << '\n';
+		for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                myfile << v[i*m + j] << " ";
             }
             myfile << '\n';
 		}

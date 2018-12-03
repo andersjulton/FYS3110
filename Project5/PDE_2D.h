@@ -1,7 +1,5 @@
 #pragma once
 
-void forwardEuler(double **u, double alpha, int timeSteps, int n);
+void forwardEuler(double **u, double alpha, int timeSteps, int m, int n);
 
-void backwardEuler(double **u, double alpha, int timeSteps, int n);
-
-void crank_nicolson(double **u, double alpha, int timeSteps, int n);
+void forwardEuler(double **u, double alpha, int timeSteps, int m, int n, int my_rank, int final_rank);
