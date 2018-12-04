@@ -88,7 +88,7 @@ double *copyMatrixTo1D(double **original, int m, int n) {
 	mat = new double[m*n];
 	for(int i = 0; i < m; i++) {
 		for(int j = 0; j < n; j++) {
-			mat[i*m + j] = original[i][j];
+			mat[i*n + j] = original[i][j];
 		}
 	}
 	return mat;
@@ -167,7 +167,7 @@ double *relError(double *expected, double *computed, int n) {
 
 //return matrix with relative error
 double **relError(double **expected, double **computed, int m, int n) {
-	double **error = createMatrix(n, n);
+	double **error = createMatrix(m, n);
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) {
 			error[i][j] = fabs((expected[i][j] - computed[i][j])/expected[i][j]);
@@ -187,7 +187,7 @@ double *absError(double *expected, double *computed, int n) {
 
 //return matrix with absolute error
 double **absError(double **expected, double **computed, int m, int n) {
-	double **error = createMatrix(n, n);
+	double **error = createMatrix(m, n);
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) {
 			error[i][j] = fabs((expected[i][j] - computed[i][j]));
@@ -266,13 +266,13 @@ void doubleMatrixToFile(double **v , int n, int m, std::string filename) {
 }
 
 // write n x m matrix (double) represented as a 1D-array to a txt file
-void doubleMatrixToFile(double *v , int n, int m, std::string filename) {
+void doubleMatrixToFile(double *v , int m, int n, std::string filename) {
 	std::ofstream myfile(filename + ".txt");
 	if (myfile.is_open()) {
-		myfile << n << " " <<  m << '\n';
-		for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                myfile << v[i*m + j] << " ";
+		myfile << m << " " <<  n << '\n';
+		for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                myfile << v[i*n + j] << " ";
             }
             myfile << '\n';
 		}

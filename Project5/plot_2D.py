@@ -4,12 +4,10 @@ import numpy as no
 def read_file(filename):
 	with open(filename, 'r') as infile:
 		first_line = infile.readline().strip().split()
-		n = int(first_line[0])
-		values = [[] for i in range(n)]
+		values = []
 		for line in infile:
-			line = line.split()
-			for i in range(n):
-				values[i].append(float(line[i]))
+			line = [float(value) for value in line.split()]
+			values.append(line)
 	return values
 
 

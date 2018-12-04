@@ -42,23 +42,14 @@ void writeToFile(double t, double h, string filename){
 			// using-ish eq. from page 314, just needed something to test, no idea if it's correct
 			// using L = 1 & n = 1
 			u[i][j] = sin(pi*x)*sin(pi*y);						// ------FIX THIS-------
-			//printf("u[%d,%d]=%.3g, ", i, j, u[i][j]);
 			exact[i][j] = u[i][j]*exp(-2*pi*pi*t);				// ------FIX THIS-------
-		}
-		//printf("\n");
+		};
 	}
 	printf("x = %.19f, y = %.19f\n", x+h, y+h);
-
-	/*for (int i = 1; i < (n-1); i++) {
-		for (int j = 1; j < (n-1); j++) {
-			printf("exact[%d,%d]=%.3g, ", i, j, exact[i][j]);
-		}
-		printf("\n");
-	}*/
 	forwardEuler(u, alpha, timeSteps, m, n);
 	double **error = absError(exact, u, n, n);
 
-	doubleMatrixToFile(u , n, n, filename);
+	doubleMatrixToFile(u, n, n, filename);
 	doubleMatrixToFile(error , n, n, filename + "_error");
 	
 	deleteMatrix(u, n);

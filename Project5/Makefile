@@ -15,10 +15,10 @@
 
 parallel:
 	clear
-	mpic++ -std=c++11  -O3 parallel.cpp triDiaSolver.cpp PDE_2D.cpp utils.cpp -o parallel.exe
+	mpic++ -std=c++11  -O3 parallel.cpp triDiaSolver.cpp PDE_2DP.cpp utils.cpp -o parallel.exe
 	mpiexec --hostfile hostfile -np 4 ./parallel.exe
 	python plot_2D.py
 	mv t1_h* t2_h* 2DP_results/
-
+	
 clean:
 	rm *.txt *.png *.pdf

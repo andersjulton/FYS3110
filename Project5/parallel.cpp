@@ -83,15 +83,24 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 	// edges filled with zero
 	for (int i = 0; i < m; i++) {
 		for (int j = 1; j < (n-1); j++) {
-			x = i*h;
+			x = j*h;
 			// using-ish eq. from page 314, just needed something to test, no idea if it's correct
 			// using L = 1 & n = 1
 			u[i][j] = sin(pi*x)*sin(pi*y);							// ------FIX THIS-------
-			exact[i*m + j] = u[i][j]*exp(-2*pi*pi*t);				// ------FIX THIS-------
+			exact[i*n + j] = u[i][j]*exp(-2*pi*pi*t);				// ------FIX THIS-------
+			//u[i][j] = my_rank + 1;
 		}
 		y += h;
 	}
+
+	if (my_rank == num_procs-1) {
+		for (int i = 0; i < n; i++) {
+			exact[(m-1)*n + i] = 0.0;
+			u[(m-1)][i] = 0.0;
+		}
+	}
 	forwardEuler(u, alpha, timeSteps, m, n, my_rank, num_procs-1);
+
 
 	if (my_rank != num_procs-1) {
 		mySize = (m-2)*n;
