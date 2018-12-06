@@ -1,4 +1,5 @@
-#include "PDE_2D.h"
+#define _USE_MATH_DEFINES
+#include "PDE.h"
 #include "utils.h"	
 #include <iostream>
 #include <fstream>
@@ -45,7 +46,6 @@ void writeToFile(double t, double h, string filename){
 			exact[i][j] = u[i][j]*exp(-2*pi*pi*t);				// ------FIX THIS-------
 		};
 	}
-	printf("x = %.19f, y = %.19f\n", x+h, y+h);
 	forwardEuler(u, alpha, timeSteps, m, n);
 	double **error = absError(exact, u, n, n);
 
@@ -54,6 +54,5 @@ void writeToFile(double t, double h, string filename){
 	
 	deleteMatrix(u, n);
 	deleteMatrix(exact, n);
-	deleteMatrix(error, n);
-	printf("alpha = %f\n", alpha);
+	deleteMatrix(error, n);;
 }

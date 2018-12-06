@@ -40,12 +40,7 @@ void crank_nicolson(double *u, double alpha, int timeSteps, int n) {
 	double offDia = -alpha;
 	double dia = 2 + 2*alpha;
 
-	double lowerBound = u[0];
-	double upperBound = u[n-1];
-
 	double *r = createVector(0, n);
-	r[0] = lowerBound;
-	r[n-1] = upperBound;
 
 	for (int i = 0; i < timeSteps; i++) {		// time
 		// Crank Nicolson method for right hand side
@@ -55,4 +50,22 @@ void crank_nicolson(double *u, double alpha, int timeSteps, int n) {
 		triDiaSolver(offDia, dia, offDia, u, r, n);
 	}
 	delete[] r;
+}
+
+// 2D
+void forwardEuler(double **u, double alpha, int timeSteps, int m, int n) {
+	double **u_new = copyMatrix(u, m, n);
+	double **temp;
+
+	for (int i = 0; i < timeSteps; i++) {		// time
+		for (int j = 1; j < (m-1); j++) {
+			for (int k = 1; k < (n-1); k++) {
+				u_new[j][k] = u[j][k] + alpha*(u[j+1][k] + u[j-1][k]+ u[j][k+1] + u[j][k-1] - 4*u[j][k]);
+			}
+		}
+		temp = u;
+		u = u_new;
+		u_new = temp;
+	}
+	deleteMatrix(u_new, m);
 }

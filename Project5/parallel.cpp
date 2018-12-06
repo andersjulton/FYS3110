@@ -1,4 +1,5 @@
-#include "PDE_2D.h"
+#define _USE_MATH_DEFINES
+#include "PDE.h"
 #include "utils.h"	
 #include <iostream>
 #include <fstream>
@@ -15,7 +16,6 @@ int main(int narg, char** argv) {
 
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-
 
 	double t1 = 0.05;
 	double t2 = 0.005;
@@ -50,10 +50,8 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 		double your_y = (m-2)*h;
 		int your_m = m + 1;
 
-		printf("count = %d\n", count[0]);
 		for (int i = 1; i < num_procs; i++) {
 			displs[i] = displs[i-1] + count[i-1];
-			printf("disp = %d\n", displs[i]);
 			if (n % num_procs == (num_procs - i)) {
 				your_m++;
 			} 
@@ -63,20 +61,15 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 			} else {
 				count[i] = (your_m-2)*n;
 			}
-			printf("count = %d\n", count[i]);
 			MPI_Send(&your_m, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
 			MPI_Send(&your_y, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
 			your_y += (your_m-2)*h;
 		}
-		printf("h = %f\n", h);
-		printf("n = %d, n x n = %d, y = %f\n", n, n*n, your_y+h);
 	} else {
 		MPI_Recv(&m, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		MPI_Recv(&y, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	}
 
-
-	printf("my rank is %d, m = %d, y = %f\n", my_rank, m, y);
 	double **u = createMatrix(m, n);
 	double *exact = createVector(0.0, m*n);
 
@@ -84,11 +77,8 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 	for (int i = 0; i < m; i++) {
 		for (int j = 1; j < (n-1); j++) {
 			x = j*h;
-			// using-ish eq. from page 314, just needed something to test, no idea if it's correct
-			// using L = 1 & n = 1
-			u[i][j] = sin(pi*x)*sin(pi*y);							// ------FIX THIS-------
+			//u[i][j] = sin(pi*x)*sin(pi*y);							// ------FIX THIS-------
 			exact[i*n + j] = u[i][j]*exp(-2*pi*pi*t);				// ------FIX THIS-------
-			//u[i][j] = my_rank + 1;
 		}
 		y += h;
 	}
@@ -96,11 +86,10 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 	if (my_rank == num_procs-1) {
 		for (int i = 0; i < n; i++) {
 			exact[(m-1)*n + i] = 0.0;
-			u[(m-1)][i] = 0.0;
+			u[(m-1)][i] = 1.0;
 		}
 	}
 	forwardEuler(u, alpha, timeSteps, m, n, my_rank, num_procs-1);
-
 
 	if (my_rank != num_procs-1) {
 		mySize = (m-2)*n;
@@ -115,7 +104,6 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 		whole_u = createVector(0.0, n*n);
 		whole_error = createVector(0.0, n*n);
 	}
-	printf("rank (%d) my size is %d\n", my_rank, mySize);
 
 	MPI_Gatherv(myPart, mySize, MPI_DOUBLE, whole_u, count, displs, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	MPI_Gatherv(error, mySize, MPI_DOUBLE, whole_error, count, displs, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -128,7 +116,6 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 		delete[] count;
 		delete[] displs;
 	}
-	
 	deleteMatrix(u, m);
 	delete[] exact;
 	delete[] error;
