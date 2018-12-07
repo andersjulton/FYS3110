@@ -41,6 +41,8 @@ void crank_nicolson(double *u, double alpha, int timeSteps, int n) {
 	double dia = 2 + 2*alpha;
 
 	double *r = createVector(0, n);
+	r[0] = u[0];
+	r[n-1] = u[n-1];
 
 	for (int i = 0; i < timeSteps; i++) {		// time
 		// Crank Nicolson method for right hand side

@@ -4,10 +4,10 @@
 void triDiaSolver(double a, double b, double c, double *v, double *f, int n) {
 	double *d, *g;
 	d = createVector(b, n);
-	g = createVector(f[0], n);
+	g = createVector(f[1], n);
 	double ac = a*c;
 	// Forward substitution
-	for (int i = 1; i < (n-1); i++) {
+	for (int i = 2; i < (n-1); i++) {
 		d[i] = b - ac/d[i-1];
 		g[i] = f[i] - g[i-1]*a/d[i-1];
 	}
