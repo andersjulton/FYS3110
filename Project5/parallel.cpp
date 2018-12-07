@@ -77,7 +77,7 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 	for (int i = 0; i < m; i++) {
 		for (int j = 1; j < (n-1); j++) {
 			x = j*h;
-			//u[i][j] = sin(pi*x)*sin(pi*y);							// ------FIX THIS-------
+			u[i][j] = sin(pi*x)*sin(pi*y);							// ------FIX THIS-------
 			exact[i*n + j] = u[i][j]*exp(-2*pi*pi*t);				// ------FIX THIS-------
 		}
 		y += h;
@@ -86,7 +86,6 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 	if (my_rank == num_procs-1) {
 		for (int i = 0; i < n; i++) {
 			exact[(m-1)*n + i] = 0.0;
-			u[(m-1)][i] = 1.0;
 		}
 	}
 	forwardEuler(u, alpha, timeSteps, m, n, my_rank, num_procs-1);

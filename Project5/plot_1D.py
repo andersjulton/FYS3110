@@ -27,6 +27,7 @@ for t in t_:
 		plz.legend(fontsize=15)
 		plz.xlabel(r"x", fontsize=15)
 		plz.ylabel(r"u(x, t)", fontsize=15)
+		filename = filename.replace(".", "")
 		plz.savefig(filename + ".png")
 		plz.close()
 
@@ -41,6 +42,7 @@ for t in t_:
 		plz.legend(fontsize=15)
 		plz.xlabel(r"x", fontsize=15)
 		plz.ylabel(r"u(x, t)", fontsize=15)
+		filename = filename.replace(".", "")
 		plz.savefig(filename + ".png")
 		plz.close()
 

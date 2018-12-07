@@ -3,26 +3,28 @@
 
 using namespace std;
 
+// implementation of the explicit forward Euler algorithm in 1D
 void forwardEuler(double *u, double alpha, int timeSteps, int n) {
-	double u_prev, u_j;		// avoiding several vectors
+	double u_prev, u_i;		// avoiding several vectors
 
-	for (int i = 0; i < timeSteps; i++) {		// time
+	for (int time = 0; time < timeSteps; time++) {
 		u_prev = u[0];
-		for (int j = 1; j < n-1; j++) {
-			u_j = u[j];
-			u[j] = u_j + alpha*(u_prev + u[j+1] - 2*u_j);
-			u_prev = u_j;
+		for (int i = 1; i < n-1; i++) {
+			u_i = u[i];
+			u[i] = u_i + alpha*(u_prev + u[i+1] - 2*u_i);
+			u_prev = u_i;
 		}
 	}
 }
 
+// implementation of the implicit backward Euler algorithm in 1D
 void backwardEuler(double *u, double alpha, int timeSteps, int n) {
 	double offDia = -alpha;
 	double dia = 1 + 2*alpha;
 
 	double *temp = createVector(0, n);
 
-	for (int i = 0; i < timeSteps/2; i++) {		// time
+	for (int time = 0; time < timeSteps/2; time++) {
 		// avoiding copying between vectors by doing two time-iterations at once
 		triDiaSolver(offDia, dia, offDia, temp, u, n);
 		triDiaSolver(offDia, dia, offDia, u, temp, n);
@@ -36,6 +38,7 @@ void backwardEuler(double *u, double alpha, int timeSteps, int n) {
 	delete[] temp;
 }
 
+// implementation of the implicit Crank-Nicolson scheme in 1D
 void crank_nicolson(double *u, double alpha, int timeSteps, int n) {
 	double offDia = -alpha;
 	double dia = 2 + 2*alpha;
@@ -44,7 +47,7 @@ void crank_nicolson(double *u, double alpha, int timeSteps, int n) {
 	r[0] = u[0];
 	r[n-1] = u[n-1];
 
-	for (int i = 0; i < timeSteps; i++) {		// time
+	for (int time = 0; time < timeSteps; time++) {	
 		// Crank Nicolson method for right hand side
 		for (int j = 1; j < (n-1); j++) {
 			r[j] = 2*u[j]*(1 - alpha) + alpha*(u[j-1] + u[j+1]);
@@ -54,15 +57,15 @@ void crank_nicolson(double *u, double alpha, int timeSteps, int n) {
 	delete[] r;
 }
 
-// 2D
+// implementation of the explicit forward Euler algorithm in 2D
 void forwardEuler(double **u, double alpha, int timeSteps, int m, int n) {
 	double **u_new = copyMatrix(u, m, n);
 	double **temp;
 
-	for (int i = 0; i < timeSteps; i++) {		// time
-		for (int j = 1; j < (m-1); j++) {
-			for (int k = 1; k < (n-1); k++) {
-				u_new[j][k] = u[j][k] + alpha*(u[j+1][k] + u[j-1][k]+ u[j][k+1] + u[j][k-1] - 4*u[j][k]);
+	for (int time = 0; time < timeSteps; time++) {	
+		for (int i = 1; i < (m-1); i++) {
+			for (int j = 1; j < (n-1); j++) {
+				u_new[i][j] = u[i][j] + alpha*(u[i+1][j] + u[i-1][j]+ u[i][j+1] + u[i][j-1] - 4*u[i][j]);
 			}
 		}
 		temp = u;
