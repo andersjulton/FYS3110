@@ -22,20 +22,20 @@ void backwardEuler(double *u, double alpha, int timeSteps, int n) {
 	double offDia = -alpha;
 	double dia = 1 + 2*alpha;
 
-	double *temp = createVector(0, n);
+	double *u_new = createVector(0, n);
 
 	for (int time = 0; time < timeSteps/2; time++) {
 		// avoiding copying between vectors by doing two time-iterations at once
-		triDiaSolver(offDia, dia, offDia, temp, u, n);
-		triDiaSolver(offDia, dia, offDia, u, temp, n);
+		triDiaSolver(offDia, dia, offDia, u_new, u, n);
+		triDiaSolver(offDia, dia, offDia, u, u_new, n);
 	}
 	if (timeSteps % 2 == 1) {
-		triDiaSolver(offDia, dia, offDia, temp, u, n);
+		triDiaSolver(offDia, dia, offDia, u_new, u, n);
 		for (int i = 1; i < (n-1); i++) {
-			u[i] = temp[i];
+			u[i] = u_new[i];
 		}
 	}
-	delete[] temp;
+	delete[] u_new;
 }
 
 // implementation of the implicit Crank-Nicolson scheme in 1D
