@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
 #include "PDE.h"
-#include "utils.h"	
+#include "utils.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -33,7 +33,6 @@ void writeToFile(double t, double h, string filename){
 	double **u = createMatrix(n, n);
 	double **exact = createMatrix(n, n);
 
-	double pi = 3.141592653589793238462643383279502884;
 	double x, y;
 	// edges filled with zero
 	for (int i = 1; i < (m-1); i++) {
@@ -42,8 +41,8 @@ void writeToFile(double t, double h, string filename){
 			x = h*j;
 			// using-ish eq. from page 314, just needed something to test, no idea if it's correct
 			// using L = 1 & n = 1
-			u[i][j] = sin(pi*x)*sin(pi*y);						// ------FIX THIS-------
-			exact[i][j] = u[i][j]*exp(-2*pi*pi*t);				// ------FIX THIS-------
+			u[i][j] = sin(M_PI*x)*sin(M_PI*y);						// ------FIX THIS-------
+			exact[i][j] = u[i][j]*exp(-2*M_PI*M_PI*t);				// ------FIX THIS-------
 		};
 	}
 	forwardEuler(u, alpha, timeSteps, m, n);
@@ -51,7 +50,7 @@ void writeToFile(double t, double h, string filename){
 
 	doubleMatrixToFile(u, n, n, filename);
 	doubleMatrixToFile(error , n, n, filename + "_error");
-	
+
 	deleteMatrix(u, n);
 	deleteMatrix(exact, n);
 	deleteMatrix(error, n);;

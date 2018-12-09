@@ -1,5 +1,6 @@
 #include "PDE.h"
 #include "utils.h"
+#include "exact.h"
 #include <iostream>
 #include <fstream>
 
@@ -30,6 +31,8 @@ void writeToFile(double t, double dx, string filename) {
 	double **u = createMatrix(3, n);
 	double *exact = createVector(1, n); 		 // ------FIX THIS-------
 	double **error = new double*[3];
+
+	analytic1D(exact, t, n);
 
 	u[0][n-1] = 1;
 	u[1][n-1] = 1;
@@ -62,9 +65,8 @@ void writeToFile(double t, double dx, string filename) {
 	}
 	outfile.close();
 	errorfile.close();
-	
+
 	delete[] exact;
 	deleteMatrix(u, 3);
 	deleteMatrix(error, 3);
 }
-

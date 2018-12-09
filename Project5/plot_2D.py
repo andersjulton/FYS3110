@@ -12,9 +12,10 @@ def read_file(filename):
 
 
 t_ = ["t1", "t2"]
+times = [0.05, 0.5]
 dx_ = ["0.1", "0.01"]
 counter = 0
-for t in t_:
+for n, t in enumerate(t_):
 	for dx in dx_:
 		counter += 1
 		fig = plz.figure(counter, figsize = (12,10))
@@ -22,11 +23,12 @@ for t in t_:
 		ax1 = fig.add_subplot(1, 1, 1)
 		cmap = plz.get_cmap("inferno")
 		values = read_file(filename + ".txt")
-		im = ax1.pcolor(values, cmap=cmap)
+		im = ax1.pcolor(values, cmap=cmap, vmin=0, vmax=1)
 		plz.xlabel(r"x", fontsize=15)
 		plz.ylabel(r"y", fontsize=15)
 		fig.colorbar(im, ax=ax1)
-		plz.title(r"u(x, y, t)", fontsize=15)
+		plz.clim(0, 1)
+		plz.title(r"u(x, y, t = %1.2f)" % times[n], fontsize=15)
 
 		filename = filename.replace(".", "")
 		plz.savefig(filename + ".png")
@@ -42,9 +44,8 @@ for t in t_:
 		plz.xlabel(r"x", fontsize=15)
 		plz.ylabel(r"y", fontsize=15)
 		fig.colorbar(im, ax=ax2)
+		plz.clim(0, 1)
 
 		filename = filename.replace(".", "")
 		plz.savefig(filename + ".png")
 		plz.close()
-
-

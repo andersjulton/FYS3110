@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
 #include "PDE.h"
-#include "utils.h"	
+#include "utils.h"
 #include <iostream>
 #include <fstream>
 #include <mpi.h>
@@ -29,7 +29,6 @@ int main(int narg, char** argv) {
 }
 
 void writeToFile(double t, double h, string filename, int my_rank, int num_procs){
-	double pi = 3.141592653589793238462643383279502884;
 	double dt = 0.25*(h*h*h*h);					// h = dx = dy
 	double alpha = dt/(h*h);
 	int timeSteps = (int) (t/dt + 1);
@@ -54,7 +53,7 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 			displs[i] = displs[i-1] + count[i-1];
 			if (n % num_procs == (num_procs - i)) {
 				your_m++;
-			} 
+			}
 			if (i == num_procs-1) {
 				your_m--;
 				count[i] = your_m*n;
@@ -77,8 +76,8 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 	for (int i = 0; i < m; i++) {
 		for (int j = 1; j < (n-1); j++) {
 			x = j*h;
-			u[i][j] = sin(pi*x)*sin(pi*y);							// ------FIX THIS-------
-			exact[i*n + j] = u[i][j]*exp(-2*pi*pi*t);				// ------FIX THIS-------
+			u[i][j] = sin(M_PI*x)*sin(M_PI*y);							// ------FIX THIS-------
+			exact[i*n + j] = u[i][j]*exp(-2*M_PI*M_PI*t);				// ------FIX THIS-------
 		}
 		y += h;
 	}
