@@ -9,8 +9,8 @@ using namespace std;
 void writeToFile(double t, double dx, string filename);
 
 int main() {
-	double t1 = 0.5;
-	double t2 = 0.05;
+	double t1 = 0.05;
+	double t2 = 0.5;
 	printf("t = %.2f, t = %.2f\n", t1, t2);
 	writeToFile(t1, 0.01, "t1_dx_0.01");
 	writeToFile(t2, 0.01, "t2_dx_0.01");
@@ -32,7 +32,7 @@ void writeToFile(double t, double dx, string filename) {
 	double *exact = createVector(1, n); 		 // ------FIX THIS-------
 	double **error = new double*[3];
 
-	analytic1D(exact, t, n);
+	analytic1D(exact, t, dx, n);
 
 	u[0][n-1] = 1;
 	u[1][n-1] = 1;
@@ -42,9 +42,9 @@ void writeToFile(double t, double dx, string filename) {
 	backwardEuler(u[1], alpha, timeSteps, n);
 	crank_nicolson(u[2], alpha, timeSteps, n);
 
-	error[0] = relError(exact, u[0], n);
-	error[1] = relError(exact, u[1], n);
-	error[2] = relError(exact, u[2], n);
+	error[0] = absError(exact, u[0], n);
+	error[1] = absError(exact, u[1], n);
+	error[2] = absError(exact, u[2], n);
 
 
 	ofstream outfile, errorfile;
