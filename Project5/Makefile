@@ -18,7 +18,7 @@
 	mpic++ -std=c++11  -O3 parallel.cpp triDiaSolver.cpp PDE_mpi.cpp utils.cpp -o parallel.exe
 	mpiexec --hostfile hostfile -np 4 ./parallel.exe
 	python plot_2D.py
-	mv t1_h* t2_h* results/2D/
+	mv t1_h* t2_h* t3_h* results/2D/
 	
 clean:
 	rm *.txt *.png *.pdf

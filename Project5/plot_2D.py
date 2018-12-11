@@ -11,8 +11,8 @@ def read_file(filename):
 	return values
 
 
-t_ = ["t1", "t2"]
-times = [0.05, 0.5]
+t_ = ["t1", "t2", "t3"]
+times = ["0.05", "0.05", "0.5"]
 dx_ = ["0.1", "0.01"]
 counter = 0
 for n, t in enumerate(t_):
@@ -27,8 +27,7 @@ for n, t in enumerate(t_):
 		plz.xlabel(r"x", fontsize=15)
 		plz.ylabel(r"y", fontsize=15)
 		fig.colorbar(im, ax=ax1)
-		plz.clim(0, 1)
-		plz.title(r"u(x, y, t = %1.2f)" % times[n], fontsize=15)
+		plz.title(r"u(x, y, t = %s)" % times[n], fontsize=15)
 
 		filename = filename.replace(".", "")
 		plz.savefig(filename + ".png")
@@ -44,7 +43,6 @@ for n, t in enumerate(t_):
 		plz.xlabel(r"x", fontsize=15)
 		plz.ylabel(r"y", fontsize=15)
 		fig.colorbar(im, ax=ax2)
-		plz.clim(0, 1)
 
 		filename = filename.replace(".", "")
 		plz.savefig(filename + ".png")

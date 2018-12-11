@@ -17,12 +17,16 @@ int main(int narg, char** argv) {
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-	double t1 = 0.05;
-	double t2 = 0.005;
+	double t1 = 0.005;
+	double t2 = 0.05;
+	double t3 = 0.5;
 	writeToFile(t1, 0.01, "t1_h_0.01", my_rank, num_procs);
 	writeToFile(t2, 0.01, "t2_h_0.01", my_rank, num_procs);
+	writeToFile(t3, 0.01, "t3_h_0.01", my_rank, num_procs);
 	writeToFile(t1, 0.1, "t1_h_0.1", my_rank, num_procs);
 	writeToFile(t2, 0.1, "t2_h_0.1", my_rank, num_procs);
+	writeToFile(t3, 0.1, "t3_h_0.1", my_rank, num_procs);
+
 
 	MPI_Finalize();
 	return 0;
@@ -76,14 +80,15 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 	for (int i = 0; i < m; i++) {
 		for (int j = 1; j < (n-1); j++) {
 			x = j*h;
-			u[i][j] = sin(M_PI*x)*sin(M_PI*y);							// ------FIX THIS-------
-			exact[i*n + j] = u[i][j]*exp(-2*M_PI*M_PI*t);				// ------FIX THIS-------
+			u[i][j] = sin(M_PI*x)*sin(M_PI*y);		
+			exact[i*n + j] = u[i][j]*exp(-2*M_PI*M_PI*t);				
 		}
 		y += h;
 	}
 
 	if (my_rank == num_procs-1) {
 		for (int i = 0; i < n; i++) {
+			u[m-1][i] = 0.0;
 			exact[(m-1)*n + i] = 0.0;
 		}
 	}

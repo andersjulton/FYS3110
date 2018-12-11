@@ -17,6 +17,7 @@ int main(int narg, char** argv) {
 	MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
 	double **upper_u, **middle_u, **lower_u;
+	int **displs, **count;
 	int upper_m, middle_m, lower_m;
 	double x, y;
 	double t = 1.0;
@@ -25,7 +26,9 @@ int main(int narg, char** argv) {
 	int n = (int) (1.0/h + 1);
 
 	if (my_rank == 0) {
-
+		count = createMatrix(2, num_procs);
+		displs = createMatrix(2, num_procs);
+		init(count[]);
 	} else {
 		MPI_Recv(&upper_m, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		MPI_Recv(&y, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
