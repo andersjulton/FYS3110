@@ -156,6 +156,18 @@ double maxError(double *expected, double *computed, int n) {
 	return max;
 }
 
+double maxAbsError(double *expected, double *computed, int n) {
+	double max, max_i;
+	max = fabs((expected[0] - computed[0]));
+	for (int i = 1; i < n; i++) {
+		max_i = fabs((expected[i] - computed[i]));
+		if (max < max_i) {
+			max = max_i;
+		}
+	}
+	return max;
+}
+
 //return array with relative error
 double *relError(double *expected, double *computed, int n) {
 	double *error = createVector(0, n);

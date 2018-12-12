@@ -65,7 +65,6 @@ def stability(name):
 	plz.ylabel(r"u(x, t = 0.05)", fontsize=18)
 	plz.xticks(fontsize=15)
 	plz.yticks(fontsize=15)
-	#plz.ylim(-1, 2)
 	plz.savefig(filename + ".pdf")
 	plz.close()
 
@@ -74,7 +73,7 @@ def stability(name):
 	x = no.linspace(0, 1, len(values[0]))
 	fig = plz.figure(figsize=(10,10))
 	for i in range(len(values)):
-		plz.plot(x, values[i], label=(r"dt = %.2g $dx^2$" %float(labels[i])), linewidth=2)
+		plz.plot(x, values[i], label=(r"dt = %.2g $\Delta x^2$" %float(labels[i])), linewidth=2)
 	plz.legend(fontsize=18)
 	plz.xlabel(r"x", fontsize=18)
 	plz.ylabel(r"u(x, t = 0.05)", fontsize=18)
@@ -85,3 +84,22 @@ def stability(name):
 
 stability("1")
 stability("2")
+
+with open("dt_error.txt", 'r') as infile:
+	dt = []
+	error = []
+	for line in infile:
+		line = line.strip().split()
+		dt.append(float(line[0]))
+		error.append(float(line[1]))
+
+plz.plot(dt, error)
+plz.xlabel(r"$ \frac{\Delta t }{ \Delta x^2}$", fontsize=18)
+plz.ylabel(r"error u(x, t = 0.05)", fontsize=18)
+plz.xticks(fontsize=15)
+plz.yticks(fontsize=15)
+plz.tight_layout()
+plz.savefig("dt_error.pdf")
+plz.close()
+
+

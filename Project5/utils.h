@@ -23,6 +23,8 @@ void deleteMatrix(double **mat, int n);
 
 double maxError(double *expected, double *computed, int n);
 
+double maxAbsError(double *expected, double *computed, int n);
+
 double maxEpsilon(double *expected, double *computed, int n); 
 
 double *relError(double *expected, double *computed, int n);

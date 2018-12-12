@@ -10,6 +10,8 @@ void writeToFile(double t, double dx, string filename);
 
 void stability(int calc, int start, double incr, string name);
 
+void dx(int calc, int start, double incr);
+
 int main() {
 	double t1 = 0.05;
 	double t2 = 0.5;
@@ -21,17 +23,16 @@ int main() {
 
 	stability(5, 1, 0.1, "1");
 	stability(5, 10, 0.05, "2");
+
+	dx(1000, 20, 0.001);
 	return 0;
 }
 
 void writeToFile(double t, double dx, string filename) {
 	double dt = 0.5*(dx*dx);
-	printf("dt = %f, t = %f \n", dt, t);
 	int timeSteps = (int) (t/dt + 1);
 	int n = (int) (1.0/dx + 1);				// L = 1
-	printf("%d\n", n);
 	double alpha = dt/(dx*dx);
-	printf("time steps = %d\n", timeSteps);
 
 	double **u = createMatrix(3, n);
 	double *exact = createVector(1, n); 
@@ -102,12 +103,9 @@ void stability(int calc, int start, double incr, string name) {
 		dt = fac*(dx*dx);
 		alpha = dt/(dx*dx);
 		timeSteps = (int) (t/dt + 1);
-		printf("dt = %f, fac = %f \n", dt, fac);
 
 		outfile << to_string(fac) + "\t";
 		errorfile << to_string(fac) + "\t";
-
-		printf("time steps = %d\n", timeSteps);
 
 		forwardEuler(u[i], alpha, timeSteps, n);
 		error[i] = absError(exact, u[i], n);
@@ -129,4 +127,44 @@ void stability(int calc, int start, double incr, string name) {
 	delete[] exact;
 	deleteMatrix(u, calc);
 	deleteMatrix(error, calc);
+}
+
+void dx(int calc, int start, double incr) {
+	double t = 0.05;
+	double dx = 0.1;
+	double dt, fac;
+	int timeSteps;
+	int n = (int) (1.0/dx + 1);				// L = 1
+	printf("%d\n", n);
+	double alpha;
+
+	double *u;
+	double *exact = createVector(1, n);
+	double error;
+
+	analytic1D(exact, t, dx, n);
+
+	string filename = "dt_error.txt";
+	ofstream outfile;
+	outfile.open(filename);
+
+	for (int i = 0; i < calc; i++) {
+		u = createVector(0, n);
+		u[n-1] = 1;
+
+		fac = incr*(i + start);
+		dt = fac*(dx*dx);
+		alpha = dt/(dx*dx);
+		timeSteps = (int) (t/dt + 1);
+		outfile << to_string(fac) + "\t";
+
+		forwardEuler(u, alpha, timeSteps, n);
+		error = maxAbsError(exact, u, n);
+		outfile << to_string(error) + "\n";
+
+		delete[] u;
+	}
+	outfile.close();
+
+	delete[] exact;
 }
