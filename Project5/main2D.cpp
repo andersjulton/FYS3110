@@ -10,9 +10,8 @@ using namespace std;
 void writeToFile(double t, double h, string filename);
 
 int main() {
-	double t1 = 0.05;
-	double t2 = 0.005;
-	printf("t = %.2f, t = %.2f\n", t1, t2);
+	double t1 = 0.005;
+	double t2 = 0.05;
 	writeToFile(t1, 0.01, "t1_h_0.01");
 	writeToFile(t2, 0.01, "t2_h_0.01");
 	writeToFile(t1, 0.1, "t1_h_0.1");
@@ -39,10 +38,9 @@ void writeToFile(double t, double h, string filename){
 		y = h*i;
 		for (int j = 1; j < (n-1); j++) {
 			x = h*j;
-			// using-ish eq. from page 314, just needed something to test, no idea if it's correct
 			// using L = 1 & n = 1
-			u[i][j] = sin(M_PI*x)*sin(M_PI*y);						// ------FIX THIS-------
-			exact[i][j] = u[i][j]*exp(-2*M_PI*M_PI*t);				// ------FIX THIS-------
+			u[i][j] = sin(M_PI*x)*sin(M_PI*y);	
+			exact[i][j] = u[i][j]*exp(-2*M_PI*M_PI*t);	
 		};
 	}
 	forwardEuler(u, alpha, timeSteps, m, n);
@@ -55,3 +53,4 @@ void writeToFile(double t, double h, string filename){
 	deleteMatrix(exact, n);
 	deleteMatrix(error, n);;
 }
+

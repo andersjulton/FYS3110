@@ -14,7 +14,7 @@ def read_file(filename):
 
 
 t_ = ["t1", "t2"]
-times = [0.05, 0.5]
+times = ["0.05", "0.5"]
 dx_ = ["0.1", "0.01"]
 
 for n, t in enumerate(t_):
@@ -27,7 +27,7 @@ for n, t in enumerate(t_):
 			plz.plot(x, values[i], label=(r"%s" %labels[i]), linewidth=2)
 		plz.legend(fontsize=15)
 		plz.xlabel(r"x", fontsize=15)
-		plz.ylabel(r"u(x, t = %1.2f)" % times[n], fontsize=15)
+		plz.ylabel(r"u(x, t = %s)" % times[n], fontsize=15)
 		filename = filename.replace(".", "")
 		plz.savefig(filename + ".png")
 		plz.close()
@@ -42,7 +42,7 @@ for n, t in enumerate(t_):
 			plz.plot(x, values[i], label=(r"%s" %labels[i]), linewidth=2)
 		plz.legend(fontsize=15)
 		plz.xlabel(r"x", fontsize=15)
-		plz.ylabel(r"u(x, t = %1.2f)" % times[n], fontsize=15)
+		plz.ylabel(r"u(x, t = %s)" % times[n], fontsize=15)
 		filename = filename.replace(".", "")
 		plz.savefig(filename + ".png")
 		plz.close()

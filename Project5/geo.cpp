@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
 #include "PDE.h"
-#include "utils.h"
+#include "utils.h"	
 #include <iostream>
 #include <fstream>
 #include <mpi.h>
@@ -8,38 +8,43 @@
 
 using namespace std;
 
-void writeToFile(double t, double h, string filename, int my_rank, int num_procs);
+void geo(double t, double h, string filename, int my_rank, int num_procs);
 
 int main(int narg, char** argv) {
 	int my_rank, num_procs;
 	MPI_Init(&narg, &argv);
-
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-	double t1 = 0.005;
-	double t2 = 0.05;
-	double t3 = 0.5;
-	writeToFile(t1, 0.01, "t1_h_0.01", my_rank, num_procs);
-	writeToFile(t2, 0.01, "t2_h_0.01", my_rank, num_procs);
-	writeToFile(t3, 0.01, "t3_h_0.01", my_rank, num_procs);
-	writeToFile(t1, 0.1, "t1_h_0.1", my_rank, num_procs);
-	writeToFile(t2, 0.1, "t2_h_0.1", my_rank, num_procs);
-	writeToFile(t3, 0.1, "t3_h_0.1", my_rank, num_procs);
+	double **upper_u, **middle_u, **lower_u;
+	int **displs, **count;
+	int upper_m, middle_m, lower_m;
+	double x, y;
+	double t = 1.0;
+	double dt = 0.25*(h*h*h*h);
+	int timeSteps = (int) (t/dt + 1);
+	int n = (int) (1.0/h + 1);
+
+	if (my_rank == 0) {
+		count = createMatrix(2, num_procs);
+		displs = createMatrix(2, num_procs);
+		init(count[]);
+	} else {
+		MPI_Recv(&upper_m, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv(&y, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	}
+
 
 
 	MPI_Finalize();
 	return 0;
 }
 
-void writeToFile(double t, double h, string filename, int my_rank, int num_procs){
-	double dt = 0.25*(h*h*h*h);					// h = dx = dy
-	double alpha = dt/(h*h);
-	int timeSteps = (int) (t/dt + 1);
-	int n = (int) (1.0/h + 1);
-	int m, mySize;
-	double x = 0.0;
-	double y;
+void init(int *displs, int *count, int *my_m, int total_m) {
+
+}
+
+void geo(double t, double h, string filename, int my_rank, int num_procs){
 	double *whole_u, *whole_error, *myPart, *error;
 	int *count, *displs;
 
@@ -57,7 +62,7 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 			displs[i] = displs[i-1] + count[i-1];
 			if (n % num_procs == (num_procs - i)) {
 				your_m++;
-			}
+			} 
 			if (i == num_procs-1) {
 				your_m--;
 				count[i] = your_m*n;
@@ -80,15 +85,14 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 	for (int i = 0; i < m; i++) {
 		for (int j = 1; j < (n-1); j++) {
 			x = j*h;
-			u[i][j] = sin(M_PI*x)*sin(M_PI*y);		
-			exact[i*n + j] = u[i][j]*exp(-2*M_PI*M_PI*t);				
+			u[i][j] = sin(pi*x)*sin(pi*y);							// ------FIX THIS-------
+			exact[i*n + j] = u[i][j]*exp(-2*pi*pi*t);				// ------FIX THIS-------
 		}
 		y += h;
 	}
 
 	if (my_rank == num_procs-1) {
 		for (int i = 0; i < n; i++) {
-			u[m-1][i] = 0.0;
 			exact[(m-1)*n + i] = 0.0;
 		}
 	}
