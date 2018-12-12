@@ -4,7 +4,7 @@
 	c++ -std=c++11 -Wall main1D.cpp diffusion_exact.cpp triDiaSolver.cpp PDE.cpp utils.cpp -o main1D.exe 
 	./main1D.exe
 	python plot_1D.py
-	mv t1_dx* t2_dx* results/1D/
+	mv t1_dx* t2_dx* stabi* results/1D/
 
 2D_serial:
 	clear

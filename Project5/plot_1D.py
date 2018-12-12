@@ -50,3 +50,38 @@ for n, t in enumerate(t_):
 		filename = filename.replace(".", "")
 		plz.savefig(filename + ".pdf")
 		plz.close()
+
+
+def stability(name):
+	filename = "stability" + name
+	labels, values = read_file(filename + ".txt")
+	x = no.linspace(0, 1, len(values[0]))
+	fig = plz.figure(figsize=(10,10))
+	for i in range(len(values)-1):
+		plz.plot(x, values[i], label=(r"dt = %.2g $dx^2$" %float(labels[i])), linewidth=2)
+	plz.plot(x, values[-1], label=(r"%s" %labels[-1]), linewidth=2)
+	plz.legend(fontsize=18)
+	plz.xlabel(r"x", fontsize=18)
+	plz.ylabel(r"u(x, t = 0.05)", fontsize=18)
+	plz.xticks(fontsize=15)
+	plz.yticks(fontsize=15)
+	#plz.ylim(-1, 2)
+	plz.savefig(filename + ".pdf")
+	plz.close()
+
+	filename = "stability" + name + "_error"
+	labels, values = read_file(filename + ".txt")
+	x = no.linspace(0, 1, len(values[0]))
+	fig = plz.figure(figsize=(10,10))
+	for i in range(len(values)):
+		plz.plot(x, values[i], label=(r"dt = %.2g $dx^2$" %float(labels[i])), linewidth=2)
+	plz.legend(fontsize=18)
+	plz.xlabel(r"x", fontsize=18)
+	plz.ylabel(r"u(x, t = 0.05)", fontsize=18)
+	plz.xticks(fontsize=15)
+	plz.yticks(fontsize=15)
+	plz.savefig(filename + ".pdf")
+	plz.close()
+
+stability("1")
+stability("2")

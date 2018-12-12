@@ -25,7 +25,7 @@ void writeToFile(double t, double h, string filename){
 	int timeSteps = (int) (t/dt + 1);
 	int n = (int) (1.0/h + 1);				// L = 1
 	int m = n;
-	printf("n = %d\n", n);
+	printf("n = %d\n", n);                    
 	double alpha = dt/(h*h);
 	printf("time steps = %d\n", timeSteps);
 
