@@ -14,10 +14,10 @@ int main(int argc, char* argv[]) {
 	//b();
 	//c();
 
-	//MPI_Init(&argc, &argv);
-	//d();
+	MPI_Init(&argc, &argv);
+	d();
 	//e();
-	//MPI_Finalize();
+	MPI_Finalize();
 
 	return 0;
 }
@@ -72,17 +72,18 @@ void d() {
 	double ftemp = 1.1;
 	double tempStep = 0.1;
 	int L = 40;
-	int mcs = (int) 1e6;
+	int mcs = (int) 4e6;
 	int preCycles = 5000;
 	bool random = true;
-
 	std::string filename = "ex_d_1_REV";
-	mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
 
+	for (int i = 0; i < 5; i++) {
+		mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
+	}
 	itemp = 2.4;
 	ftemp = 2.5;
 	filename = "ex_d_2.4_REV";
-	mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
+	//mcmcPara(itemp, ftemp, tempStep, L, mcs, random, preCycles, filename);
 }
 
 void e() {

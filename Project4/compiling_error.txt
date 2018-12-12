@@ -1,0 +1,3 @@
+C:\Users\Domingo\AppData\Local\Temp\ccgyMoqh.o:test.cpp:(.text+0x67): undefined reference to `omp_get_thread_num'
+C:\Users\Domingo\AppData\Local\Temp\ccgyMoqh.o:test.cpp:(.text+0x70): undefined reference to `omp_get_num_threads'
+collect2.exe: error: ld returned 1 exit status

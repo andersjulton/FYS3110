@@ -129,9 +129,9 @@ void mcmcPara(double itemp, double ftemp, double tempStep, int L, int mcs, bool 
 	if (myRank == 0) {
 		
 		std::cout << "Elapsed time = " << totTime << "\n";
-		doubleArrayToBinary(eFull, mcs, filename+"E");
-		writeMatrixDim(7, fint, filename);
-		doubleMatrixToBinary(output, 7, fint, filename);
+		//doubleArrayToBinary(eFull, mcs, filename+"E");
+		//writeMatrixDim(7, fint, filename);
+		//doubleMatrixToBinary(output, 7, fint, filename);
 	}
     destroyPointerMatrix((void**)spinMatrix);
 	destroyPointerMatrix((void**)output);
