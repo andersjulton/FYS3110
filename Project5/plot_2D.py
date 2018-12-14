@@ -12,7 +12,7 @@ def read_file(filename):
 
 
 t_ = ["t1", "t2", "t3"]
-times = ["0.05", "0.05", "0.5"]
+times = ["0.005", "0.05", "0.5"]
 dx_ = ["0.1", "0.01"]
 counter = 0
 for n, t in enumerate(t_):

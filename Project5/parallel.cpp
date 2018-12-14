@@ -86,28 +86,20 @@ void writeToFile(double t, double h, string filename, int my_rank, int num_procs
 		y += h;
 	}
 
-	if (my_rank == num_procs-1) {
-		for (int i = 0; i < n; i++) {
-			u[m-1][i] = 0.0;
-			exact[(m-1)*n + i] = 0.0;
-		}
-	}
 	forwardEuler(u, alpha, timeSteps, m, n, my_rank, num_procs-1);
 
 	if (my_rank != num_procs-1) {
 		mySize = (m-2)*n;
 		myPart = copyMatrixTo1D(u, m-2, n);
-		error = absError(exact, myPart, mySize);
 	} else {
 		mySize = m*n;
 		myPart = copyMatrixTo1D(u, m, n);
-		error = absError(exact, myPart, mySize);
 	}
 	if (my_rank == 0) {
 		whole_u = createVector(0.0, n*n);
 		whole_error = createVector(0.0, n*n);
 	}
-
+	error = absError(exact, myPart, mySize);
 	MPI_Gatherv(myPart, mySize, MPI_DOUBLE, whole_u, count, displs, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	MPI_Gatherv(error, mySize, MPI_DOUBLE, whole_error, count, displs, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 

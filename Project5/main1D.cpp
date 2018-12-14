@@ -15,7 +15,6 @@ void dx(int calc, int start, double incr);
 int main() {
 	double t1 = 0.05;
 	double t2 = 0.5;
-	printf("t = %.2f, t = %.2f\n", t1, t2);
 	writeToFile(t1, 0.01, "t1_dx_0.01");
 	writeToFile(t2, 0.01, "t2_dx_0.01");
 	writeToFile(t1, 0.1, "t1_dx_0.1");
@@ -83,7 +82,6 @@ void stability(int calc, int start, double incr, string name) {
 	double dt, fac;
 	int timeSteps;
 	int n = (int) (1.0/dx + 1);				// L = 1
-	printf("%d\n", n);
 	double alpha;
 
 	double **u = createMatrix(calc, n);
@@ -135,7 +133,6 @@ void dx(int calc, int start, double incr) {
 	double dt, fac;
 	int timeSteps;
 	int n = (int) (1.0/dx + 1);				// L = 1
-	printf("%d\n", n);
 	double alpha;
 
 	double *u;
